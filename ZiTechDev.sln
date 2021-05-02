@@ -3,16 +3,14 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31129.286
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZiTechDev.WebApp", "ZiTechDev.WebApp\ZiTechDev.WebApp.csproj", "{D2657729-0515-4E87-B586-E8DD841EEA53}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{9504BDFB-E5E2-48C2-AB00-D5C6FAA9696E}"
 	ProjectSection(SolutionItems) = preProject
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZiTechDev.Data", "ZiTechDev.Data\ZiTechDev.Data.csproj", "{A1148F45-ACA8-4FEB-B085-16487F03BA67}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ZiTechDev.Data", "ZiTechDev.Data\ZiTechDev.Data.csproj", "{A1148F45-ACA8-4FEB-B085-16487F03BA67}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZiTechDev.Business", "ZiTechDev.Business\ZiTechDev.Business.csproj", "{80DB7300-8ED7-4F50-B4E3-92CE24225C19}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ZiTechDev.Business", "ZiTechDev.Business\ZiTechDev.Business.csproj", "{80DB7300-8ED7-4F50-B4E3-92CE24225C19}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -20,10 +18,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{D2657729-0515-4E87-B586-E8DD841EEA53}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D2657729-0515-4E87-B586-E8DD841EEA53}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D2657729-0515-4E87-B586-E8DD841EEA53}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D2657729-0515-4E87-B586-E8DD841EEA53}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A1148F45-ACA8-4FEB-B085-16487F03BA67}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A1148F45-ACA8-4FEB-B085-16487F03BA67}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A1148F45-ACA8-4FEB-B085-16487F03BA67}.Release|Any CPU.ActiveCfg = Release|Any CPU
