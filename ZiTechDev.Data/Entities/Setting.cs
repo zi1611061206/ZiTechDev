@@ -5,7 +5,7 @@ using ZiTechDev.Data.Enums;
 
 namespace ZiTechDev.Data.Entities
 {
-    public class Configuration
+    public class Setting
     {
         public string key { get; set; }
         public string value { get; set; }
