@@ -10,5 +10,7 @@ namespace ZiTechDev.Data.Entities
         public string Name { get; set; }
         public string Description { get; set; }
         public int FunctionId { get; set; }
+        public Function Function { get; set; }
+        public List<Log> Logs { get; set; }
     }
 }

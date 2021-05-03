@@ -23,6 +23,9 @@ namespace ZiTechDev.Data.Configs
                 .HasDefaultValue(0);
             builder.Property(x => x.ParentId)
                 .IsRequired(false);
+            builder.HasOne(p => p.Post)
+                .WithMany(c => c.Comments)
+                .HasForeignKey(fk => fk.PostId);
         }
     }
 }

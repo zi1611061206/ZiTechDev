@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using ZiTechDev.Data.Entities;
+using ZiTechDev.Data.Enums;
 
 namespace ZiTechDev.Data.Configs
 {
@@ -18,7 +19,7 @@ namespace ZiTechDev.Data.Configs
                 .HasMaxLength(50)
                 .IsUnicode(true);
             builder.Property(x => x.IsDefault)
-                .HasDefaultValue(false);
+                .HasDefaultValue(Default.No);
         }
     }
 }

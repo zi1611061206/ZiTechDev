@@ -8,5 +8,6 @@ namespace ZiTechDev.Data.Entities
     {
         public int Id { get; set; }
         public int? ParentId { get; set; }
+        public List<Post> Posts { get; set; }
     }
 }

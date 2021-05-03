@@ -26,6 +26,9 @@ namespace ZiTechDev.Data.Configs
                 .HasDefaultValue(PostStatus.Pending);
             builder.Property(x => x.Thumbnail)
                 .IsRequired(false);
+            builder.HasOne(c => c.Category)
+                .WithMany(p => p.Posts)
+                .HasForeignKey(fk => fk.CategoryId);
         }
     }
 }

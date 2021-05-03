@@ -15,6 +15,9 @@ namespace ZiTechDev.Data.Configs
             builder.HasKey(x => x.Id);
             builder.Property(x => x.ActionTime)
                 .HasDefaultValueSql("getdate()");
+            builder.HasOne(a => a.Activity)
+                .WithMany(l => l.Logs)
+                .HasForeignKey(fk => fk.ActivityId);
         }
     }
 }

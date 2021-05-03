@@ -21,6 +21,9 @@ namespace ZiTechDev.Data.Configs
                 .IsRequired(false)
                 .HasMaxLength(500)
                 .IsUnicode();
+            builder.HasOne(f => f.Function)
+                .WithMany(a => a.Activities)
+                .HasForeignKey(fk => fk.FunctionId);
         }
     }
 }

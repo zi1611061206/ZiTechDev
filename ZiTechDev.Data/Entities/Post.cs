@@ -17,5 +17,7 @@ namespace ZiTechDev.Data.Entities
         public PostStatus Status { get; set; }
         public int CategoryId { get; set; }
         public byte[] Thumbnail { get; set; }
+        public List<Comment> Comments { get; set; }
+        public Category Category { get; set; }
     }
 }

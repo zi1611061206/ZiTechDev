@@ -11,5 +11,6 @@ namespace ZiTechDev.Data.Entities
         public string Desciption { get; set; }
         public string Url { get; set; }
         public int? ParentId { get; set; }
+        public List<Activity> Activities { get; set; }
     }
 }

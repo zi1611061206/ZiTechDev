@@ -33,6 +33,9 @@ namespace ZiTechDev.Data.Configs
             builder.Property(x => x.SEOAlias)
                 .IsRequired(false)
                 .IsUnicode(false);
+            builder.HasOne(l => l.Language)
+                .WithMany(c => c.CategoryTranslations)
+                .HasForeignKey(fk => fk.LanguageId);
         }
     }
 }
