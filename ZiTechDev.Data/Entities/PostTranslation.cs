@@ -15,5 +15,6 @@ namespace ZiTechDev.Data.Entities
         public string SEOTitle { get; set; }
         public string SEOAlias { get; set; }
         public Language Language { get; set; }
+        public Post Post { get; set; }
     }
 }

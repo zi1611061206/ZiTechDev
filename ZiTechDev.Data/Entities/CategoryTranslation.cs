@@ -16,5 +16,6 @@ namespace ZiTechDev.Data.Entities
         public string Content { get; set; }
         public int LanguageId { get; set; }
         public Language Language { get; set; }
+        public Category Category { get; set; }
     }
 }

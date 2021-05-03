@@ -36,6 +36,9 @@ namespace ZiTechDev.Data.Configs
             builder.HasOne(l => l.Language)
                 .WithMany(c => c.CategoryTranslations)
                 .HasForeignKey(fk => fk.LanguageId);
+            builder.HasOne(c => c.Category)
+                .WithMany(ct => ct.CategoryTranslations)
+                .HasForeignKey(fk => fk.CategoryId);
         }
     }
 }

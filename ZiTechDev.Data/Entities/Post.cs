@@ -19,5 +19,6 @@ namespace ZiTechDev.Data.Entities
         public byte[] Thumbnail { get; set; }
         public List<Comment> Comments { get; set; }
         public Category Category { get; set; }
+        public List<PostTranslation> PostTranslations { get; set; }
     }
 }

@@ -33,6 +33,9 @@ namespace ZiTechDev.Data.Configs
             builder.HasOne(l => l.Language)
                 .WithMany(p => p.PostTranslations)
                 .HasForeignKey(fk => fk.LanguageId);
+            builder.HasOne(p => p.Post)
+                .WithMany(pt => pt.PostTranslations)
+                .HasForeignKey(fk => fk.PostId);
         }
     }
 }
