@@ -29,6 +29,9 @@ namespace ZiTechDev.Data.Configs
             builder.HasOne(c => c.Category)
                 .WithMany(p => p.Posts)
                 .HasForeignKey(fk => fk.CategoryId);
+            builder.HasOne(u => u.AppUser)
+                .WithMany(p => p.Posts)
+                .HasForeignKey(fk => fk.UserId);
         }
     }
 }

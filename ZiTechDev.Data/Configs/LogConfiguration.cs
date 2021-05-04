@@ -18,6 +18,9 @@ namespace ZiTechDev.Data.Configs
             builder.HasOne(a => a.Activity)
                 .WithMany(l => l.Logs)
                 .HasForeignKey(fk => fk.ActivityId);
+            builder.HasOne(u => u.AppUser)
+                .WithMany(l => l.Logs)
+                .HasForeignKey(fk => fk.UserId);
         }
     }
 }

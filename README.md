@@ -10,3 +10,4 @@
 	 + Microsoft.EntityFrameworkCore.SqlServer 5.0.5
 	 + Microsoft.EntityFrameworkCore.Design 5.0.5
 	 + Microsoft.EntityFrameworkCore.Tools 5.0.5
+	 + Microsoft.AspNetCore.Identity.EntityFrameworkCore 5.0.5

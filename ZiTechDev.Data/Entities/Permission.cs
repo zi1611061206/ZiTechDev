@@ -6,8 +6,13 @@ namespace ZiTechDev.Data.Entities
 {
     public class Permission
     {
-        public int RoleId { get; set; }
+        public int Id { get; set; }
+        public Guid RoleId { get; set; }
         public int FunctionId { get; set; }
-        public int ActionId { get; set; }
+        public int ActivityId { get; set; }
+
+        public AppRole AppRole { get; set; }
+        public Function Function { get; set; }
+        public Activity Activity { get; set; }
     }
 }

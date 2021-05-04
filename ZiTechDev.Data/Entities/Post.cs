@@ -10,7 +10,7 @@ namespace ZiTechDev.Data.Entities
         public int Id { get; set; }
         public DateTime CreatedDate { get; set; }
         public DateTime? LastModify { get; set; }
-        public int UserId { get; set; }
+        public Guid UserId { get; set; }
         public int ViewCount { get; set; }
         public int LikeCount { get; set; }
         public int SharedCount { get; set; }
@@ -20,5 +20,6 @@ namespace ZiTechDev.Data.Entities
         public List<Comment> Comments { get; set; }
         public Category Category { get; set; }
         public List<PostTranslation> PostTranslations { get; set; }
+        public AppUser AppUser { get; set; }
     }
 }
