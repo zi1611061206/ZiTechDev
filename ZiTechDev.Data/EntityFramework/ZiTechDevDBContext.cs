@@ -12,6 +12,10 @@ namespace ZiTechDev.Data.EntityFramework
 {
     public class ZiTechDevDBContext : IdentityDbContext<AppUser, AppRole, Guid>
     {
+        public ZiTechDevDBContext(DbContextOptions options) : base(options)
+        {
+        }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfiguration(new ActivityConfiguration());
@@ -34,7 +38,6 @@ namespace ZiTechDev.Data.EntityFramework
             modelBuilder.Entity<IdentityUserRole<Guid>>().ToTable("AppUserRoles").HasKey(x=>new { x.UserId, x.RoleId });
             modelBuilder.Entity<IdentityUserLogin<Guid>>().ToTable("AppUserLogins").HasKey(x => x.UserId);
             modelBuilder.Entity<IdentityUserToken<Guid>>().ToTable("AppUserTokens").HasKey(x => x.UserId);
-            //base.OnModelCreating(modelBuilder);
         }
         public DbSet<Activity> Activities { get; set; }
         public DbSet<Category> Categories { get; set; }

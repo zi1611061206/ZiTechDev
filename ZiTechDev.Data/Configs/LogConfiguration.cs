@@ -13,6 +13,8 @@ namespace ZiTechDev.Data.Configs
         {
             builder.ToTable("Logs");
             builder.HasKey(x => x.Id);
+            builder.Property(x => x.Id)
+                .UseIdentityColumn(1, 1);
             builder.Property(x => x.ActionTime)
                 .HasDefaultValueSql("getdate()");
             builder.HasOne(a => a.Activity)

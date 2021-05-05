@@ -13,12 +13,11 @@ namespace ZiTechDev.Data.Configs
         {
             builder.ToTable("Permissions");
             builder.HasKey(x => x.Id);
+            builder.Property(x => x.Id)
+                .UseIdentityColumn(1, 1);
             builder.HasOne(r => r.AppRole)
                 .WithMany(p => p.Permissions)
                 .HasForeignKey(fk => fk.RoleId);
-            builder.HasOne(f => f.Function)
-                .WithMany(p => p.Permissions)
-                .HasForeignKey(fk => fk.FunctionId);
             builder.HasOne(a => a.Activity)
                 .WithMany(p => p.Permissions)
                 .HasForeignKey(fk => fk.ActivityId);

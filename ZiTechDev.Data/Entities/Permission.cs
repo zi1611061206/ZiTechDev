@@ -12,7 +12,6 @@ namespace ZiTechDev.Data.Entities
         public int ActivityId { get; set; }
 
         public AppRole AppRole { get; set; }
-        public Function Function { get; set; }
         public Activity Activity { get; set; }
     }
 }
