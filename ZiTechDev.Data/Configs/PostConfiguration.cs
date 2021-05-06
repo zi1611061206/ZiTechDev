@@ -18,6 +18,8 @@ namespace ZiTechDev.Data.Configs
                 .UseIdentityColumn(1, 1);
             builder.Property(x => x.CreatedDate)
                 .HasDefaultValueSql("getdate()");
+            builder.Property(x => x.LastModify)
+                .IsRequired(false);
             builder.Property(x => x.ViewCount)
                 .HasDefaultValue(0);
             builder.Property(x => x.LikeCount)

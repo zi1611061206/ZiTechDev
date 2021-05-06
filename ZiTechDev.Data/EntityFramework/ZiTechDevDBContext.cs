@@ -7,6 +7,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using ZiTechDev.Data.Configs;
 using ZiTechDev.Data.Entities;
+using ZiTechDev.Data.Extensions;
 
 namespace ZiTechDev.Data.EntityFramework
 {
@@ -38,6 +39,8 @@ namespace ZiTechDev.Data.EntityFramework
             modelBuilder.Entity<IdentityUserRole<Guid>>().ToTable("AppUserRoles").HasKey(x=>new { x.UserId, x.RoleId });
             modelBuilder.Entity<IdentityUserLogin<Guid>>().ToTable("AppUserLogins").HasKey(x => x.UserId);
             modelBuilder.Entity<IdentityUserToken<Guid>>().ToTable("AppUserTokens").HasKey(x => x.UserId);
+
+            modelBuilder.Seed();
         }
         public DbSet<Activity> Activities { get; set; }
         public DbSet<Category> Categories { get; set; }

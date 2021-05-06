@@ -19,10 +19,6 @@ namespace ZiTechDev.Data.Configs
                 .IsRequired(true)
                 .HasMaxLength(50)
                 .IsUnicode(true);
-            builder.Property(x => x.Description)
-                .IsRequired(false)
-                .HasMaxLength(500)
-                .IsUnicode(true);
             builder.Property(x => x.SEODescription)
                 .IsRequired(false)
                 .IsUnicode(false);
@@ -32,6 +28,9 @@ namespace ZiTechDev.Data.Configs
             builder.Property(x => x.SEOAlias)
                 .IsRequired(false)
                 .IsUnicode(false);
+            builder.Property(x => x.Content)
+                .IsRequired(true)
+                .IsUnicode();
             builder.HasOne(l => l.Language)
                 .WithMany(p => p.PostTranslations)
                 .HasForeignKey(fk => fk.LanguageId);

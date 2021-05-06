@@ -23,6 +23,8 @@ namespace ZiTechDev.Data.Configs
                 .IsUnicode(true);
             builder.Property(x => x.LikeCount)
                 .HasDefaultValue(0);
+            builder.Property(x => x.LastModify)
+                .IsRequired(false);
             builder.Property(x => x.ParentId)
                 .IsRequired(false);
             builder.HasOne(p => p.Post)

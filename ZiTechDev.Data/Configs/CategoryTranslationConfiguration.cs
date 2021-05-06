@@ -19,13 +19,6 @@ namespace ZiTechDev.Data.Configs
                 .IsRequired(true)
                 .HasMaxLength(50)
                 .IsUnicode(true);
-            builder.Property(x => x.Description)
-                .IsRequired(false)
-                .HasMaxLength(500)
-                .IsUnicode(true);
-            builder.Property(x => x.Content)
-                .IsRequired(true)
-                .IsUnicode();
             builder.Property(x => x.SEODescription)
                 .IsRequired(false)
                 .IsUnicode(false);
