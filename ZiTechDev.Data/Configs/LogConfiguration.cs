@@ -12,9 +12,7 @@ namespace ZiTechDev.Data.Configs
         public void Configure(EntityTypeBuilder<Log> builder)
         {
             builder.ToTable("Logs");
-            builder.HasKey(x => x.Id);
-            builder.Property(x => x.Id)
-                .UseIdentityColumn(1, 1);
+            builder.HasKey(x => new { x.ActivityId, x.UserId });
             builder.Property(x => x.ActionTime)
                 .HasDefaultValueSql("getdate()");
             builder.HasOne(a => a.Activity)

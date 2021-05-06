@@ -30,6 +30,7 @@ namespace ZiTechDev.Data.EntityFramework
             modelBuilder.ApplyConfiguration(new LogConfiguration());
             modelBuilder.ApplyConfiguration(new PermissionConfiguration());
             modelBuilder.ApplyConfiguration(new PostConfiguration());
+            modelBuilder.ApplyConfiguration(new PostGalleryConfiguration());
             modelBuilder.ApplyConfiguration(new PostTranslationConfiguration());
             modelBuilder.ApplyConfiguration(new SettingConfiguration());
 
@@ -46,12 +47,13 @@ namespace ZiTechDev.Data.EntityFramework
         public DbSet<Category> Categories { get; set; }
         public DbSet<CategoryTranslation> CategoryTranslations { get; set; }
         public DbSet<Comment> Comments { get; set; }
-        public DbSet<Setting> Settings { get; set; }
         public DbSet<Function> Functions { get; set; }
         public DbSet<Language> Languages { get; set; }
         public DbSet<Log> Logs { get; set; }
         public DbSet<Permission> Permissions { get; set; }
         public DbSet<Post> Posts { get; set; }
+        public DbSet<PostGallery> PostGalleries { get; set; }
         public DbSet<PostTranslation> PostTranslations { get; set; }
+        public DbSet<Setting> Settings { get; set; }
     }
 }

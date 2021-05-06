@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -11,9 +12,131 @@ namespace ZiTechDev.Data.Extensions
     {
         public static void Seed(this ModelBuilder modelBuilder)
         {
+            var hasher = new PasswordHasher<AppUser>();
+            Guid AdminId = new Guid("B2D8F0BA-64D4-448D-92D7-D300465D0337");
+            Guid ModId = new Guid("A2E0CA3E-1A80-4554-9389-0EC66AB7A259");
+            Guid UserId = new Guid("2D2A1CDD-D4A5-4AE4-9F26-F2FA1BEDD6AE");
+            modelBuilder.Entity<AppUser>().HasData(
+                new AppUser()
+                {
+                    Id = AdminId,
+                    FirstName = "Nguyễn",
+                    MiddleName = "Ngọc",
+                    LastName = "Hiếu",
+                    DisplayName = "Zi_Admin",
+                    DateOfBirth = new DateTime(1998, 02, 05, 0, 0, 0, DateTimeKind.Utc),
+                    LastAccess = DateTime.Now,
+                    DateOfJoin = DateTime.Now,
+
+                    LockoutEnd = null,
+                    TwoFactorEnabled = true,
+                    PhoneNumberConfirmed = true,
+                    PhoneNumber = "(+84) 943 144 178",
+                    ConcurrencyStamp = string.Empty,
+                    SecurityStamp = string.Empty,
+                    PasswordHash = hasher.HashPassword(null, "Hh201998016@"),
+                    EmailConfirmed = true,
+                    NormalizedEmail = "zitech.dev@gmail.com",
+                    Email = "ZITECH.DEV@GMAIL.COM",
+                    NormalizedUserName = "admin",
+                    UserName = "ADMIN",
+                    LockoutEnabled = false,
+                    AccessFailedCount = 0
+                },
+                new AppUser()
+                {
+                    Id = ModId,
+                    FirstName = "Nguyễn",
+                    MiddleName = "Ngọc",
+                    LastName = "Hiếu",
+                    DisplayName = "Zi_Mod",
+                    DateOfBirth = new DateTime(1998, 02, 05, 0, 0, 0, DateTimeKind.Utc),
+                    LastAccess = DateTime.Now,
+                    DateOfJoin = DateTime.Now,
+
+                    LockoutEnd = null,
+                    TwoFactorEnabled = true,
+                    PhoneNumberConfirmed = true,
+                    PhoneNumber = "(+84) 943 144 178",
+                    ConcurrencyStamp = string.Empty,
+                    SecurityStamp = string.Empty,
+                    PasswordHash = hasher.HashPassword(null, "Hh201998016@"),
+                    EmailConfirmed = true,
+                    NormalizedEmail = "zitech.dev@gmail.com",
+                    Email = "ZITECH.DEV@GMAIL.COM",
+                    NormalizedUserName = "mod",
+                    UserName = "MOD",
+                    LockoutEnabled = false,
+                    AccessFailedCount = 0
+                },
+                new AppUser()
+                {
+                    Id = UserId,
+                    FirstName = "Nguyễn",
+                    MiddleName = "Ngọc",
+                    LastName = "Hiếu",
+                    DisplayName = "Zi_User",
+                    DateOfBirth = new DateTime(1998, 02, 05, 0, 0, 0, DateTimeKind.Utc),
+                    LastAccess = DateTime.Now,
+                    DateOfJoin = DateTime.Now,
+
+                    LockoutEnd = null,
+                    TwoFactorEnabled = true,
+                    PhoneNumberConfirmed = true,
+                    PhoneNumber = "(+84) 943 144 178",
+                    ConcurrencyStamp = string.Empty,
+                    SecurityStamp = string.Empty,
+                    PasswordHash = hasher.HashPassword(null, "Hh201998016@"),
+                    EmailConfirmed = true,
+                    NormalizedEmail = "zitech.dev@gmail.com",
+                    Email = "ZITECH.DEV@GMAIL.COM",
+                    NormalizedUserName = "user",
+                    UserName = "User",
+                    LockoutEnabled = false,
+                    AccessFailedCount = 0
+                }
+                );
+            Guid RoleAdminId = new Guid("105E57D3-188C-40BA-9409-358F55415061");
+            Guid RoleModId = new Guid("0A6A76DB-E350-43BB-B023-74BE2AE4BE2C");
+            Guid RoleUserId = new Guid("6185636E-7EDC-4826-99B9-C862727DE029");
+            modelBuilder.Entity<AppRole>().HasData(
+                new AppRole()
+                {
+                    Id = RoleAdminId,
+                    Name = "ADMIN",
+                    NormalizedName = "admin",
+                    ConcurrencyStamp = string.Empty,
+                    Description = "Administrator role"
+                },
+                new AppRole()
+                {
+                    Id = RoleModId,
+                    Name = "MOD",
+                    NormalizedName = "mod",
+                    ConcurrencyStamp = string.Empty,
+                    Description = "Modifier role"
+                },
+                new AppRole()
+                {
+                    Id = RoleUserId,
+                    Name = "USER",
+                    NormalizedName = "user",
+                    ConcurrencyStamp = string.Empty,
+                    Description = "User role"
+                }
+                );
+            modelBuilder.Entity<IdentityUserRole<Guid>>().HasData(
+                new IdentityUserRole<Guid>() { RoleId = RoleAdminId, UserId = AdminId },
+                new IdentityUserRole<Guid>() { RoleId = RoleModId, UserId = AdminId },
+                new IdentityUserRole<Guid>() { RoleId = RoleUserId, UserId = AdminId },
+                new IdentityUserRole<Guid>() { RoleId = RoleModId, UserId = ModId },
+                new IdentityUserRole<Guid>() { RoleId = RoleUserId, UserId = ModId },
+                new IdentityUserRole<Guid>() { RoleId = RoleUserId, UserId = UserId }
+                );
+
             modelBuilder.Entity<Language>().HasData(
                 new Language() { Id = "vi-VN", Name = "Tiếng Việt", IsDefault = Default.Yes },
-                new Language() { Id = "en-US", Name = "Tiếng Anh" , IsDefault = Default.No }
+                new Language() { Id = "en-US", Name = "Tiếng Anh", IsDefault = Default.No }
                 );
             modelBuilder.Entity<Setting>().HasData(
                 new Setting() { Key = "HomeTitle", Value = "ZiTechDev - HomePage", Type = ConfigType.String },
@@ -24,10 +147,10 @@ namespace ZiTechDev.Data.Extensions
                 new Setting() { Key = "CommentOfPage", Value = "10", Type = ConfigType.Int }
                 );
             modelBuilder.Entity<Category>().HasData(
-                new Category() { Id = 1, ParentId = null },
-                new Category() { Id = 2, ParentId = null },
-                new Category() { Id = 3, ParentId = null },
-                new Category() { Id = 4, ParentId = null }
+                new Category() { Id = 1, ParentId = null, SortedOrder = 1 },
+                new Category() { Id = 2, ParentId = null, SortedOrder = 2 },
+                new Category() { Id = 3, ParentId = null, SortedOrder = 3 },
+                new Category() { Id = 4, ParentId = null, SortedOrder = 4 }
                 );
             modelBuilder.Entity<CategoryTranslation>().HasData(
                 new CategoryTranslation()
@@ -85,7 +208,7 @@ namespace ZiTechDev.Data.Extensions
                     Id = 6,
                     CategoryId = 3,
                     LanguageId = "en-US",
-                    Name = "Web Application",
+                    Name = "Mobile Application",
                     SEODescription = "Articles on programming on mobile devices such as smartphones, tablets, smart watches, smart TVs, smart cars ...",
                     SEOTitle = "Application for mobile devices",
                     SEOAlias = "mobile-application"
@@ -108,7 +231,7 @@ namespace ZiTechDev.Data.Extensions
                     Name = "academics",
                     SEODescription = "Articles about: artificial intelligence, blockchain, big data, internet of things ...",
                     SEOTitle = "Research & practice 4.0 technologies",
-                    SEOAlias = "academics"
+                    SEOAlias = "Academics"
                 }
                 );
             modelBuilder.Entity<Post>().HasData(
@@ -121,9 +244,9 @@ namespace ZiTechDev.Data.Extensions
                     LikeCount = 0,
                     SharedCount = 0,
                     Status = PostStatus.Published,
-                    Thumbnail = null, 
+                    Thumbnail = null,
                     CategoryId = 1,
-                    UserId = new Guid()
+                    UserId = AdminId
                 },
                 new Post()
                 {
@@ -136,7 +259,7 @@ namespace ZiTechDev.Data.Extensions
                     Status = PostStatus.Pending,
                     Thumbnail = null,
                     CategoryId = 2,
-                    UserId = new Guid()
+                    UserId = AdminId
                 },
                 new Post()
                 {
@@ -149,7 +272,7 @@ namespace ZiTechDev.Data.Extensions
                     Status = PostStatus.Hidden,
                     Thumbnail = null,
                     CategoryId = 3,
-                    UserId = new Guid()
+                    UserId = AdminId
                 }
                 );
             modelBuilder.Entity<PostTranslation>().HasData(
@@ -217,7 +340,7 @@ namespace ZiTechDev.Data.Extensions
             modelBuilder.Entity<Comment>().HasData(
                 new Comment()
                 {
-                    Id = 1, 
+                    Id = 1,
                     PostId = 1,
                     Time = DateTime.Now,
                     Content = "Bình luận 1",
@@ -277,11 +400,11 @@ namespace ZiTechDev.Data.Extensions
                 }
                 );
             modelBuilder.Entity<Function>().HasData(
-                new Function() { Id = 1, Name = "Admin", Description="Tất cả các tác vụ có trong ứng dụng", Url="/ziadmin/", ParentId = null },
-                new Function() { Id = 2, Name = "Mod", Description="Các tác vụ về viết, duyệt, đăng bài và kiểm duyệt người dùng ...", Url="/zimod/", ParentId = 1 },
-                new Function() { Id = 3, Name = "PostMod", Description="Các tác vụ về viết, duyệt, đăng bài ...", Url="/zimod/postmod/", ParentId = 2 },
-                new Function() { Id = 4, Name = "UserMod", Description="Các tác vụ về lọc, kiểm duyệt người dùng ...", Url="/zimod/usermod/", ParentId = 2 },
-                new Function() { Id = 5, Name = "User", Description="Các tác vụ đọc, bình luận, like, share, đăng ký thành viên, gửi phản hồi ... ", Url="/ziuser/", ParentId = null }
+                new Function() { Id = 1, Name = "Admin", Description = "Tất cả các tác vụ có trong ứng dụng", Url = "/ziadmin/", ParentId = null },
+                new Function() { Id = 2, Name = "Mod", Description = "Các tác vụ về viết, duyệt, đăng bài và kiểm duyệt người dùng ...", Url = "/zimod/", ParentId = 1 },
+                new Function() { Id = 3, Name = "PostMod", Description = "Các tác vụ về viết, duyệt, đăng bài ...", Url = "/zimod/postmod/", ParentId = 2 },
+                new Function() { Id = 4, Name = "UserMod", Description = "Các tác vụ về lọc, kiểm duyệt người dùng ...", Url = "/zimod/usermod/", ParentId = 2 },
+                new Function() { Id = 5, Name = "User", Description = "Các tác vụ đọc, bình luận, like, share, đăng ký thành viên, gửi phản hồi ... ", Url = "/ziuser/", ParentId = null }
                 );
             modelBuilder.Entity<Activity>().HasData(
                 new Activity() { Id = 1, Name = "AdminLogin", Description = "Đăng nhập vào trang quản trị", FunctionId = 1 },
@@ -291,7 +414,16 @@ namespace ZiTechDev.Data.Extensions
                 new Activity() { Id = 5, Name = "UserRegister", Description = "Đăng ký tài khoản người dùng", FunctionId = 3 }
                 );
             modelBuilder.Entity<Log>().HasData(
-                new Log() { Id = 1, ActivityId = 1, ActionTime = DateTime.Now, UserId = new Guid() }
+                new Log() { ActivityId = 1, UserId = AdminId, ActionTime = DateTime.Now }
+                );
+            modelBuilder.Entity<Permission>().HasData(
+                new Permission() { RoleId = RoleAdminId, ActivityId = 1 },
+                new Permission() { RoleId = RoleAdminId, ActivityId = 2 },
+                new Permission() { RoleId = RoleUserId, ActivityId = 3 },
+                new Permission() { RoleId = RoleUserId, ActivityId = 4 },
+                new Permission() { RoleId = RoleUserId, ActivityId = 5 },
+                new Permission() { RoleId = RoleModId, ActivityId = 3 },
+                new Permission() { RoleId = RoleModId, ActivityId = 4 }
                 );
         }
     }

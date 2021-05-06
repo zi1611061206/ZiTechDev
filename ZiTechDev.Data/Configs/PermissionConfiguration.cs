@@ -12,9 +12,7 @@ namespace ZiTechDev.Data.Configs
         public void Configure(EntityTypeBuilder<Permission> builder)
         {
             builder.ToTable("Permissions");
-            builder.HasKey(x => x.Id);
-            builder.Property(x => x.Id)
-                .UseIdentityColumn(1, 1);
+            builder.HasKey(x => new { x.RoleId, x.ActivityId});
             builder.HasOne(r => r.AppRole)
                 .WithMany(p => p.Permissions)
                 .HasForeignKey(fk => fk.RoleId);

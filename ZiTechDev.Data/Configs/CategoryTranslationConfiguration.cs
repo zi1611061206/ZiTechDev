@@ -20,11 +20,13 @@ namespace ZiTechDev.Data.Configs
                 .HasMaxLength(50)
                 .IsUnicode(true);
             builder.Property(x => x.SEODescription)
-                .IsRequired(false)
-                .IsUnicode(false);
+                .IsRequired(true)
+                .HasMaxLength(500)
+                .IsUnicode(true);
             builder.Property(x => x.SEOTitle)
-                .IsRequired(false)
-                .IsUnicode(false);
+                .IsRequired(true)
+                .HasMaxLength(50)
+                .IsUnicode(true);
             builder.Property(x => x.SEOAlias)
                 .IsRequired(false)
                 .IsUnicode(false);

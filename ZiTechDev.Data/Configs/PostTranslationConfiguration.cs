@@ -15,16 +15,14 @@ namespace ZiTechDev.Data.Configs
             builder.HasKey(x => x.Id);
             builder.Property(x => x.Id)
                 .UseIdentityColumn(1, 1);
-            builder.Property(x => x.Title)
+            builder.Property(x => x.SEODescription)
+                .IsRequired(true)
+                .HasMaxLength(500)
+                .IsUnicode(true);
+            builder.Property(x => x.SEOTitle)
                 .IsRequired(true)
                 .HasMaxLength(50)
                 .IsUnicode(true);
-            builder.Property(x => x.SEODescription)
-                .IsRequired(false)
-                .IsUnicode(false);
-            builder.Property(x => x.SEOTitle)
-                .IsRequired(false)
-                .IsUnicode(false);
             builder.Property(x => x.SEOAlias)
                 .IsRequired(false)
                 .IsUnicode(false);

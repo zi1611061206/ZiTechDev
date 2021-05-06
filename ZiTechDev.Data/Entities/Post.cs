@@ -21,5 +21,6 @@ namespace ZiTechDev.Data.Entities
         public Category Category { get; set; }
         public List<PostTranslation> PostTranslations { get; set; }
         public AppUser AppUser { get; set; }
+        public List<PostGallery> PostGalleries { get; set; }
     }
 }

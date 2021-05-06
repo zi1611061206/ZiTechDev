@@ -8,7 +8,6 @@ namespace ZiTechDev.Data.Entities
     {
         public int Id { get; set; }
         public int PostId { get; set; }
-        public string Title { get; set; }
         public string LanguageId { get; set; }
         public string SEODescription { get; set; }
         public string SEOTitle { get; set; }

@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace ZiTechDev.Data.Migrations
 {
-    public partial class Initial : Migration
+    public partial class Sample1 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -83,7 +83,8 @@ namespace ZiTechDev.Data.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ParentId = table.Column<int>(type: "int", nullable: true)
+                    ParentId = table.Column<int>(type: "int", nullable: true),
+                    SortedOrder = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -97,7 +98,7 @@ namespace ZiTechDev.Data.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Desciption = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
+                    Description = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
                     Url = table.Column<string>(type: "varchar(max)", unicode: false, nullable: true),
                     ParentId = table.Column<int>(type: "int", nullable: true)
                 },
@@ -110,8 +111,7 @@ namespace ZiTechDev.Data.Migrations
                 name: "Languages",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
                     Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     IsDefault = table.Column<int>(type: "int", nullable: false, defaultValue: 1)
                 },
@@ -209,12 +209,10 @@ namespace ZiTechDev.Data.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     CategoryId = table.Column<int>(type: "int", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
-                    SEODescription = table.Column<string>(type: "varchar(max)", unicode: false, nullable: true),
-                    SEOTitle = table.Column<string>(type: "varchar(max)", unicode: false, nullable: true),
+                    SEODescription = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
+                    SEOTitle = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     SEOAlias = table.Column<string>(type: "varchar(max)", unicode: false, nullable: true),
-                    Content = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    LanguageId = table.Column<int>(type: "int", nullable: false)
+                    LanguageId = table.Column<string>(type: "nvarchar(10)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -230,7 +228,7 @@ namespace ZiTechDev.Data.Migrations
                         column: x => x.LanguageId,
                         principalTable: "Languages",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -270,15 +268,13 @@ namespace ZiTechDev.Data.Migrations
                 name: "Logs",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
                     ActivityId = table.Column<int>(type: "int", nullable: false),
-                    ActionTime = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "getdate()"),
-                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ActionTime = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "getdate()")
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Logs", x => x.Id);
+                    table.PrimaryKey("PK_Logs", x => new { x.ActivityId, x.UserId });
                     table.ForeignKey(
                         name: "FK_Logs_Activities_ActivityId",
                         column: x => x.ActivityId,
@@ -297,15 +293,12 @@ namespace ZiTechDev.Data.Migrations
                 name: "Permissions",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
                     RoleId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    FunctionId = table.Column<int>(type: "int", nullable: false),
                     ActivityId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Permissions", x => x.Id);
+                    table.PrimaryKey("PK_Permissions", x => new { x.RoleId, x.ActivityId });
                     table.ForeignKey(
                         name: "FK_Permissions_Activities_ActivityId",
                         column: x => x.ActivityId,
@@ -345,18 +338,39 @@ namespace ZiTechDev.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "PostGalleries",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Caption = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
+                    Path = table.Column<string>(type: "varchar(max)", unicode: false, nullable: true),
+                    EncodeString = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
+                    PostId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PostGalleries", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_PostGalleries_Posts_PostId",
+                        column: x => x.PostId,
+                        principalTable: "Posts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "PostTranslations",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     PostId = table.Column<int>(type: "int", nullable: false),
-                    Title = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
-                    LanguageId = table.Column<int>(type: "int", nullable: false),
-                    SEODescription = table.Column<string>(type: "varchar(max)", unicode: false, nullable: true),
-                    SEOTitle = table.Column<string>(type: "varchar(max)", unicode: false, nullable: true),
-                    SEOAlias = table.Column<string>(type: "varchar(max)", unicode: false, nullable: true)
+                    LanguageId = table.Column<string>(type: "nvarchar(10)", nullable: true),
+                    SEODescription = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
+                    SEOTitle = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    SEOAlias = table.Column<string>(type: "varchar(max)", unicode: false, nullable: true),
+                    Content = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -366,13 +380,190 @@ namespace ZiTechDev.Data.Migrations
                         column: x => x.LanguageId,
                         principalTable: "Languages",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_PostTranslations_Posts_PostId",
                         column: x => x.PostId,
                         principalTable: "Posts",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.InsertData(
+                table: "AppUserRoles",
+                columns: new[] { "RoleId", "UserId" },
+                values: new object[,]
+                {
+                    { new Guid("105e57d3-188c-40ba-9409-358f55415061"), new Guid("b2d8f0ba-64d4-448d-92d7-d300465d0337") },
+                    { new Guid("0a6a76db-e350-43bb-b023-74be2ae4be2c"), new Guid("b2d8f0ba-64d4-448d-92d7-d300465d0337") },
+                    { new Guid("6185636e-7edc-4826-99b9-c862727de029"), new Guid("b2d8f0ba-64d4-448d-92d7-d300465d0337") },
+                    { new Guid("0a6a76db-e350-43bb-b023-74be2ae4be2c"), new Guid("a2e0ca3e-1a80-4554-9389-0ec66ab7a259") },
+                    { new Guid("6185636e-7edc-4826-99b9-c862727de029"), new Guid("a2e0ca3e-1a80-4554-9389-0ec66ab7a259") },
+                    { new Guid("6185636e-7edc-4826-99b9-c862727de029"), new Guid("2d2a1cdd-d4a5-4ae4-9f26-f2fa1bedd6ae") }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Categories",
+                columns: new[] { "Id", "ParentId", "SortedOrder" },
+                values: new object[,]
+                {
+                    { 4, null, 4 },
+                    { 2, null, 2 },
+                    { 1, null, 1 },
+                    { 3, null, 3 }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Functions",
+                columns: new[] { "Id", "Description", "Name", "ParentId", "Url" },
+                values: new object[,]
+                {
+                    { 4, "Các tác vụ về lọc, kiểm duyệt người dùng ...", "UserMod", 2, "/zimod/usermod/" },
+                    { 1, "Tất cả các tác vụ có trong ứng dụng", "Admin", null, "/ziadmin/" },
+                    { 2, "Các tác vụ về viết, duyệt, đăng bài và kiểm duyệt người dùng ...", "Mod", 1, "/zimod/" },
+                    { 3, "Các tác vụ về viết, duyệt, đăng bài ...", "PostMod", 2, "/zimod/postmod/" },
+                    { 5, "Các tác vụ đọc, bình luận, like, share, đăng ký thành viên, gửi phản hồi ... ", "User", null, "/ziuser/" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Languages",
+                columns: new[] { "Id", "Name" },
+                values: new object[] { "vi-VN", "Tiếng Việt" });
+
+            migrationBuilder.InsertData(
+                table: "Languages",
+                columns: new[] { "Id", "IsDefault", "Name" },
+                values: new object[] { "en-US", 1, "Tiếng Anh" });
+
+            migrationBuilder.InsertData(
+                table: "Roles",
+                columns: new[] { "Id", "ConcurrencyStamp", "Description", "Name", "NormalizedName" },
+                values: new object[,]
+                {
+                    { new Guid("6185636e-7edc-4826-99b9-c862727de029"), "", "User role", "USER", "user" },
+                    { new Guid("0a6a76db-e350-43bb-b023-74be2ae4be2c"), "", "Modifier role", "MOD", "mod" },
+                    { new Guid("105e57d3-188c-40ba-9409-358f55415061"), "", "Administrator role", "ADMIN", "admin" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Settings",
+                columns: new[] { "Key", "Type", "Value" },
+                values: new object[,]
+                {
+                    { "MaxCommentLevel", 1, "2" },
+                    { "ContactTitle", 0, "ZiTechDev - Contact" },
+                    { "AboutTitle", 0, "ZiTechDev - About" },
+                    { "CommentOfPage", 1, "10" },
+                    { "PostOfPage", 1, "12" },
+                    { "HomeTitle", 0, "ZiTechDev - HomePage" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Users",
+                columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "DateOfBirth", "DateOfJoin", "DisplayName", "Email", "EmailConfirmed", "FirstName", "LastAccess", "LastName", "LockoutEnabled", "LockoutEnd", "MiddleName", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
+                values: new object[,]
+                {
+                    { new Guid("b2d8f0ba-64d4-448d-92d7-d300465d0337"), 0, "", new DateTime(1998, 2, 5, 0, 0, 0, 0, DateTimeKind.Utc), new DateTime(2021, 5, 7, 3, 13, 16, 306, DateTimeKind.Local).AddTicks(6656), "Zi_Admin", "ZITECH.DEV@GMAIL.COM", true, "Nguyễn", new DateTime(2021, 5, 7, 3, 13, 16, 305, DateTimeKind.Local).AddTicks(8894), "Hiếu", false, null, "Ngọc", "zitech.dev@gmail.com", "admin", "AQAAAAEAACcQAAAAEMUTiLf0T7u7jdg6uHUUjpKfkLXVlI5TyCJHX/aEoPG0/aLL10SUz9w5T5kuiYJtKg==", "(+84) 943 144 178", true, "", true, "ADMIN" },
+                    { new Guid("2d2a1cdd-d4a5-4ae4-9f26-f2fa1bedd6ae"), 0, "", new DateTime(1998, 2, 5, 0, 0, 0, 0, DateTimeKind.Utc), new DateTime(2021, 5, 7, 3, 13, 16, 326, DateTimeKind.Local).AddTicks(6742), "Zi_User", "ZITECH.DEV@GMAIL.COM", true, "Nguyễn", new DateTime(2021, 5, 7, 3, 13, 16, 326, DateTimeKind.Local).AddTicks(6739), "Hiếu", false, null, "Ngọc", "zitech.dev@gmail.com", "user", "AQAAAAEAACcQAAAAENCl9rIERffJacMGo5iR4IIowXVsmF5lb6tpRR1TUcwTvdv4ftdk0zQ0o22Mzgy9Iw==", "(+84) 943 144 178", true, "", true, "User" },
+                    { new Guid("a2e0ca3e-1a80-4554-9389-0ec66ab7a259"), 0, "", new DateTime(1998, 2, 5, 0, 0, 0, 0, DateTimeKind.Utc), new DateTime(2021, 5, 7, 3, 13, 16, 320, DateTimeKind.Local).AddTicks(7566), "Zi_Mod", "ZITECH.DEV@GMAIL.COM", true, "Nguyễn", new DateTime(2021, 5, 7, 3, 13, 16, 320, DateTimeKind.Local).AddTicks(7547), "Hiếu", false, null, "Ngọc", "zitech.dev@gmail.com", "mod", "AQAAAAEAACcQAAAAEH/D762XG59U/xd1A+W8BQz2RN2t0Xn60pysiMKhpRSybarxjHJhOjf9GAc0naNXyg==", "(+84) 943 144 178", true, "", true, "MOD" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Activities",
+                columns: new[] { "Id", "Description", "FunctionId", "Name" },
+                values: new object[,]
+                {
+                    { 1, "Đăng nhập vào trang quản trị", 1, "AdminLogin" },
+                    { 2, "Đăng xuất khỏi tài khoản quản trị", 1, "AdminLogout" },
+                    { 3, "Đăng nhập vào trang người dùng", 3, "UserLogin" },
+                    { 4, "Đăng xuất tài khoản người dùng", 3, "UserLogout" },
+                    { 5, "Đăng ký tài khoản người dùng", 3, "UserRegister" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "CategoryTranslations",
+                columns: new[] { "Id", "CategoryId", "LanguageId", "Name", "SEOAlias", "SEODescription", "SEOTitle" },
+                values: new object[,]
+                {
+                    { 1, 1, "vi-VN", "Ứng dụng Desktop", "ung-dung-desktop", "Những bài viết về các ứng dụng trên máy tính để bàn, laptop ...", "Ứng dụng dành cho máy tính để bàn, laptop" },
+                    { 3, 2, "vi-VN", "Ứng dụng Web", "ung-dung-web", "Những bài viết về lập trình web, ứng dụng trực tuyến, đám mây, trình duyệt web ...", "Ứng dụng dành cho nền tảng website & internet" },
+                    { 5, 3, "vi-VN", "Ứng dụng đi động", "ung-dung-di-dong", "Những bài viết về lập trình trên thiết bị di dộng như: điện thoại thông minh, máy tính bảng, đồng hồ thông minh, TV thông minh, Ô tô thông minh ...", "Ứng dụng dành cho thiết bị di động" },
+                    { 7, 4, "vi-VN", "Các học thuật", "cac-hoc-thuat", "Những bài viết về: trí tuệ nhân tạo, chuỗi khối, dữ liệu lớn, internet vạn vật ...", "Nghiên cứu & thực hành các công nghệ 4.0" },
+                    { 2, 1, "en-US", "Desktop Application", "desktop-application", "Articles about applications on desktop computers, laptops ...", "Application for computer, laptop" },
+                    { 4, 2, "en-US", "Web Application", "web-application", "Articles about web programming, online applications, cloud, web browser ...", "Application for website & internet platform" },
+                    { 6, 3, "en-US", "Mobile Application", "mobile-application", "Articles on programming on mobile devices such as smartphones, tablets, smart watches, smart TVs, smart cars ...", "Application for mobile devices" },
+                    { 8, 4, "en-US", "academics", "Academics", "Articles about: artificial intelligence, blockchain, big data, internet of things ...", "Research & practice 4.0 technologies" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Posts",
+                columns: new[] { "Id", "CategoryId", "CreatedDate", "LastModify", "Status", "Thumbnail", "UserId" },
+                values: new object[] { 1, 1, new DateTime(2021, 5, 7, 3, 13, 16, 334, DateTimeKind.Local).AddTicks(9217), null, 1, null, new Guid("b2d8f0ba-64d4-448d-92d7-d300465d0337") });
+
+            migrationBuilder.InsertData(
+                table: "Posts",
+                columns: new[] { "Id", "CategoryId", "CreatedDate", "LastModify", "Thumbnail", "UserId" },
+                values: new object[] { 2, 2, new DateTime(2021, 5, 7, 3, 13, 16, 335, DateTimeKind.Local).AddTicks(3050), null, null, new Guid("b2d8f0ba-64d4-448d-92d7-d300465d0337") });
+
+            migrationBuilder.InsertData(
+                table: "Posts",
+                columns: new[] { "Id", "CategoryId", "CreatedDate", "LastModify", "Status", "Thumbnail", "UserId" },
+                values: new object[] { 3, 3, new DateTime(2021, 5, 7, 3, 13, 16, 335, DateTimeKind.Local).AddTicks(3172), null, 2, null, new Guid("b2d8f0ba-64d4-448d-92d7-d300465d0337") });
+
+            migrationBuilder.InsertData(
+                table: "Comments",
+                columns: new[] { "Id", "Content", "LastModify", "ParentId", "PostId", "Time" },
+                values: new object[,]
+                {
+                    { 1, "Bình luận 1", null, null, 1, new DateTime(2021, 5, 7, 3, 13, 16, 335, DateTimeKind.Local).AddTicks(7663) },
+                    { 2, "Bình luận 2", null, null, 1, new DateTime(2021, 5, 7, 3, 13, 16, 335, DateTimeKind.Local).AddTicks(9643) }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Comments",
+                columns: new[] { "Id", "Content", "LastModify", "LikeCount", "ParentId", "PostId", "Time" },
+                values: new object[] { 4, "Bình luận con 1", null, 5, 1, 1, new DateTime(2021, 5, 7, 3, 13, 16, 335, DateTimeKind.Local).AddTicks(9734) });
+
+            migrationBuilder.InsertData(
+                table: "Comments",
+                columns: new[] { "Id", "Content", "LastModify", "ParentId", "PostId", "Time" },
+                values: new object[,]
+                {
+                    { 5, "Bình luận con 2", null, 1, 1, new DateTime(2021, 5, 7, 3, 13, 16, 335, DateTimeKind.Local).AddTicks(9736) },
+                    { 6, "Bình luận con con 5", null, 5, 1, new DateTime(2021, 5, 7, 3, 13, 16, 335, DateTimeKind.Local).AddTicks(9738) },
+                    { 3, "Bình luận 3", null, null, 2, new DateTime(2021, 5, 7, 3, 13, 16, 335, DateTimeKind.Local).AddTicks(9732) }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Logs",
+                columns: new[] { "ActivityId", "UserId", "ActionTime" },
+                values: new object[] { 1, new Guid("b2d8f0ba-64d4-448d-92d7-d300465d0337"), new DateTime(2021, 5, 7, 3, 13, 16, 336, DateTimeKind.Local).AddTicks(5561) });
+
+            migrationBuilder.InsertData(
+                table: "Permissions",
+                columns: new[] { "ActivityId", "RoleId" },
+                values: new object[,]
+                {
+                    { 4, new Guid("6185636e-7edc-4826-99b9-c862727de029") },
+                    { 3, new Guid("0a6a76db-e350-43bb-b023-74be2ae4be2c") },
+                    { 3, new Guid("6185636e-7edc-4826-99b9-c862727de029") },
+                    { 2, new Guid("105e57d3-188c-40ba-9409-358f55415061") },
+                    { 1, new Guid("105e57d3-188c-40ba-9409-358f55415061") },
+                    { 5, new Guid("6185636e-7edc-4826-99b9-c862727de029") },
+                    { 4, new Guid("0a6a76db-e350-43bb-b023-74be2ae4be2c") }
+                });
+
+            migrationBuilder.InsertData(
+                table: "PostTranslations",
+                columns: new[] { "Id", "Content", "LanguageId", "PostId", "SEOAlias", "SEODescription", "SEOTitle" },
+                values: new object[,]
+                {
+                    { 5, "Nội dung", "vi-VN", 3, "tieu-de", "Mô tả", "Tiêu đề" },
+                    { 3, "Nội dung", "vi-VN", 2, "tieu-de", "Mô tả", "Tiêu đề" },
+                    { 2, "Content", "en-US", 1, "description", "Description", "Title" },
+                    { 1, "Nội dung", "vi-VN", 1, "tieu-de", "Mô tả", "Tiêu đề" },
+                    { 6, "Content", "en-US", 3, "description", "Description", "Title" },
+                    { 4, "Content", "en-US", 2, "description", "Description", "Title" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -396,11 +587,6 @@ namespace ZiTechDev.Data.Migrations
                 column: "PostId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Logs_ActivityId",
-                table: "Logs",
-                column: "ActivityId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Logs_UserId",
                 table: "Logs",
                 column: "UserId");
@@ -411,9 +597,9 @@ namespace ZiTechDev.Data.Migrations
                 column: "ActivityId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Permissions_RoleId",
-                table: "Permissions",
-                column: "RoleId");
+                name: "IX_PostGalleries_PostId",
+                table: "PostGalleries",
+                column: "PostId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Posts_CategoryId",
@@ -464,6 +650,9 @@ namespace ZiTechDev.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "Permissions");
+
+            migrationBuilder.DropTable(
+                name: "PostGalleries");
 
             migrationBuilder.DropTable(
                 name: "PostTranslations");
