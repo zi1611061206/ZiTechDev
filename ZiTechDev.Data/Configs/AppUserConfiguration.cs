@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using ZiTechDev.Data.Entities;
+using ZiTechDev.Data.Enums;
 
 namespace ZiTechDev.Data.Configs
 {
@@ -30,6 +31,9 @@ namespace ZiTechDev.Data.Configs
                 .IsUnicode(true);
             builder.Property(x => x.DateOfBirth)
                 .IsRequired(true);
+            builder.Property(x => x.Gender)
+                .IsRequired(true)
+                .HasDefaultValue(GenderType.Male);
             builder.Property(x => x.LastAccess)
                 .IsRequired(false);
             builder.Property(x => x.DateOfJoin)

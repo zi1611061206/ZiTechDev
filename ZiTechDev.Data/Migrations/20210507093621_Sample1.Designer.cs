@@ -10,7 +10,7 @@ using ZiTechDev.Data.EntityFramework;
 namespace ZiTechDev.Data.Migrations
 {
     [DbContext(typeof(ZiTechDevDBContext))]
-    [Migration("20210506201317_Sample1")]
+    [Migration("20210507093621_Sample1")]
     partial class Sample1
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -303,6 +303,11 @@ namespace ZiTechDev.Data.Migrations
                         .IsUnicode(true)
                         .HasColumnType("nvarchar(20)");
 
+                    b.Property<int>("Gender")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0);
+
                     b.Property<DateTime?>("LastAccess")
                         .HasColumnType("datetime2");
 
@@ -358,18 +363,19 @@ namespace ZiTechDev.Data.Migrations
                             AccessFailedCount = 0,
                             ConcurrencyStamp = "",
                             DateOfBirth = new DateTime(1998, 2, 5, 0, 0, 0, 0, DateTimeKind.Utc),
-                            DateOfJoin = new DateTime(2021, 5, 7, 3, 13, 16, 306, DateTimeKind.Local).AddTicks(6656),
+                            DateOfJoin = new DateTime(2021, 5, 7, 16, 36, 20, 75, DateTimeKind.Local).AddTicks(9140),
                             DisplayName = "Zi_Admin",
                             Email = "ZITECH.DEV@GMAIL.COM",
                             EmailConfirmed = true,
                             FirstName = "Nguyễn",
-                            LastAccess = new DateTime(2021, 5, 7, 3, 13, 16, 305, DateTimeKind.Local).AddTicks(8894),
+                            Gender = 0,
+                            LastAccess = new DateTime(2021, 5, 7, 16, 36, 20, 73, DateTimeKind.Local).AddTicks(8565),
                             LastName = "Hiếu",
                             LockoutEnabled = false,
                             MiddleName = "Ngọc",
                             NormalizedEmail = "zitech.dev@gmail.com",
                             NormalizedUserName = "admin",
-                            PasswordHash = "AQAAAAEAACcQAAAAEMUTiLf0T7u7jdg6uHUUjpKfkLXVlI5TyCJHX/aEoPG0/aLL10SUz9w5T5kuiYJtKg==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEGqOSPxvI79aFtIGQQcbSVY5uQ9T4c2zVnIVhZ0BOOn4bGDCDiarj7V03HNXdDR1tQ==",
                             PhoneNumber = "(+84) 943 144 178",
                             PhoneNumberConfirmed = true,
                             SecurityStamp = "",
@@ -382,18 +388,19 @@ namespace ZiTechDev.Data.Migrations
                             AccessFailedCount = 0,
                             ConcurrencyStamp = "",
                             DateOfBirth = new DateTime(1998, 2, 5, 0, 0, 0, 0, DateTimeKind.Utc),
-                            DateOfJoin = new DateTime(2021, 5, 7, 3, 13, 16, 320, DateTimeKind.Local).AddTicks(7566),
+                            DateOfJoin = new DateTime(2021, 5, 7, 16, 36, 20, 110, DateTimeKind.Local).AddTicks(8754),
                             DisplayName = "Zi_Mod",
                             Email = "ZITECH.DEV@GMAIL.COM",
                             EmailConfirmed = true,
                             FirstName = "Nguyễn",
-                            LastAccess = new DateTime(2021, 5, 7, 3, 13, 16, 320, DateTimeKind.Local).AddTicks(7547),
+                            Gender = 0,
+                            LastAccess = new DateTime(2021, 5, 7, 16, 36, 20, 110, DateTimeKind.Local).AddTicks(8724),
                             LastName = "Hiếu",
                             LockoutEnabled = false,
                             MiddleName = "Ngọc",
                             NormalizedEmail = "zitech.dev@gmail.com",
                             NormalizedUserName = "mod",
-                            PasswordHash = "AQAAAAEAACcQAAAAEH/D762XG59U/xd1A+W8BQz2RN2t0Xn60pysiMKhpRSybarxjHJhOjf9GAc0naNXyg==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEAQOdwWSSZR1IFj+MxgFpIJS/FyFUAL5Y40MmLaYiw0dKMy0aboP11JxckxlpImTYA==",
                             PhoneNumber = "(+84) 943 144 178",
                             PhoneNumberConfirmed = true,
                             SecurityStamp = "",
@@ -406,18 +413,19 @@ namespace ZiTechDev.Data.Migrations
                             AccessFailedCount = 0,
                             ConcurrencyStamp = "",
                             DateOfBirth = new DateTime(1998, 2, 5, 0, 0, 0, 0, DateTimeKind.Utc),
-                            DateOfJoin = new DateTime(2021, 5, 7, 3, 13, 16, 326, DateTimeKind.Local).AddTicks(6742),
+                            DateOfJoin = new DateTime(2021, 5, 7, 16, 36, 20, 125, DateTimeKind.Local).AddTicks(1579),
                             DisplayName = "Zi_User",
                             Email = "ZITECH.DEV@GMAIL.COM",
                             EmailConfirmed = true,
                             FirstName = "Nguyễn",
-                            LastAccess = new DateTime(2021, 5, 7, 3, 13, 16, 326, DateTimeKind.Local).AddTicks(6739),
+                            Gender = 0,
+                            LastAccess = new DateTime(2021, 5, 7, 16, 36, 20, 125, DateTimeKind.Local).AddTicks(1555),
                             LastName = "Hiếu",
                             LockoutEnabled = false,
                             MiddleName = "Ngọc",
                             NormalizedEmail = "zitech.dev@gmail.com",
                             NormalizedUserName = "user",
-                            PasswordHash = "AQAAAAEAACcQAAAAENCl9rIERffJacMGo5iR4IIowXVsmF5lb6tpRR1TUcwTvdv4ftdk0zQ0o22Mzgy9Iw==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEPhfIruwKqVlheUTv73/PAbJB+3ZwZuQ0fDemCr+XWkBCEEnRMg3j20BPFnmDbyA0g==",
                             PhoneNumber = "(+84) 943 144 178",
                             PhoneNumberConfirmed = true,
                             SecurityStamp = "",
@@ -438,7 +446,7 @@ namespace ZiTechDev.Data.Migrations
                     b.Property<int?>("ParentId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("SortedOrder")
+                    b.Property<int?>("SortOrder")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -449,22 +457,22 @@ namespace ZiTechDev.Data.Migrations
                         new
                         {
                             Id = 1,
-                            SortedOrder = 1
+                            SortOrder = 1
                         },
                         new
                         {
                             Id = 2,
-                            SortedOrder = 2
+                            SortOrder = 2
                         },
                         new
                         {
                             Id = 3,
-                            SortedOrder = 3
+                            SortOrder = 3
                         },
                         new
                         {
                             Id = 4,
-                            SortedOrder = 4
+                            SortOrder = 4
                         });
                 });
 
@@ -643,7 +651,7 @@ namespace ZiTechDev.Data.Migrations
                             Content = "Bình luận 1",
                             LikeCount = 0,
                             PostId = 1,
-                            Time = new DateTime(2021, 5, 7, 3, 13, 16, 335, DateTimeKind.Local).AddTicks(7663)
+                            Time = new DateTime(2021, 5, 7, 16, 36, 20, 142, DateTimeKind.Local).AddTicks(2472)
                         },
                         new
                         {
@@ -651,7 +659,7 @@ namespace ZiTechDev.Data.Migrations
                             Content = "Bình luận 2",
                             LikeCount = 0,
                             PostId = 1,
-                            Time = new DateTime(2021, 5, 7, 3, 13, 16, 335, DateTimeKind.Local).AddTicks(9643)
+                            Time = new DateTime(2021, 5, 7, 16, 36, 20, 142, DateTimeKind.Local).AddTicks(5909)
                         },
                         new
                         {
@@ -659,7 +667,7 @@ namespace ZiTechDev.Data.Migrations
                             Content = "Bình luận 3",
                             LikeCount = 0,
                             PostId = 2,
-                            Time = new DateTime(2021, 5, 7, 3, 13, 16, 335, DateTimeKind.Local).AddTicks(9732)
+                            Time = new DateTime(2021, 5, 7, 16, 36, 20, 142, DateTimeKind.Local).AddTicks(6012)
                         },
                         new
                         {
@@ -668,7 +676,7 @@ namespace ZiTechDev.Data.Migrations
                             LikeCount = 5,
                             ParentId = 1,
                             PostId = 1,
-                            Time = new DateTime(2021, 5, 7, 3, 13, 16, 335, DateTimeKind.Local).AddTicks(9734)
+                            Time = new DateTime(2021, 5, 7, 16, 36, 20, 142, DateTimeKind.Local).AddTicks(6016)
                         },
                         new
                         {
@@ -677,7 +685,7 @@ namespace ZiTechDev.Data.Migrations
                             LikeCount = 0,
                             ParentId = 1,
                             PostId = 1,
-                            Time = new DateTime(2021, 5, 7, 3, 13, 16, 335, DateTimeKind.Local).AddTicks(9736)
+                            Time = new DateTime(2021, 5, 7, 16, 36, 20, 142, DateTimeKind.Local).AddTicks(6019)
                         },
                         new
                         {
@@ -686,7 +694,7 @@ namespace ZiTechDev.Data.Migrations
                             LikeCount = 0,
                             ParentId = 5,
                             PostId = 1,
-                            Time = new DateTime(2021, 5, 7, 3, 13, 16, 335, DateTimeKind.Local).AddTicks(9738)
+                            Time = new DateTime(2021, 5, 7, 16, 36, 20, 142, DateTimeKind.Local).AddTicks(6022)
                         });
                 });
 
@@ -768,10 +776,10 @@ namespace ZiTechDev.Data.Migrations
                         .HasMaxLength(10)
                         .HasColumnType("nvarchar(10)");
 
-                    b.Property<int>("IsDefault")
+                    b.Property<bool>("IsDefault")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasDefaultValue(1);
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -787,13 +795,13 @@ namespace ZiTechDev.Data.Migrations
                         new
                         {
                             Id = "vi-VN",
-                            IsDefault = 0,
+                            IsDefault = true,
                             Name = "Tiếng Việt"
                         },
                         new
                         {
                             Id = "en-US",
-                            IsDefault = 1,
+                            IsDefault = false,
                             Name = "Tiếng Anh"
                         });
                 });
@@ -822,7 +830,7 @@ namespace ZiTechDev.Data.Migrations
                         {
                             ActivityId = 1,
                             UserId = new Guid("b2d8f0ba-64d4-448d-92d7-d300465d0337"),
-                            ActionTime = new DateTime(2021, 5, 7, 3, 13, 16, 336, DateTimeKind.Local).AddTicks(5561)
+                            ActionTime = new DateTime(2021, 5, 7, 16, 36, 20, 144, DateTimeKind.Local).AddTicks(3551)
                         });
                 });
 
@@ -937,7 +945,7 @@ namespace ZiTechDev.Data.Migrations
                         {
                             Id = 1,
                             CategoryId = 1,
-                            CreatedDate = new DateTime(2021, 5, 7, 3, 13, 16, 334, DateTimeKind.Local).AddTicks(9217),
+                            CreatedDate = new DateTime(2021, 5, 7, 16, 36, 20, 140, DateTimeKind.Local).AddTicks(2730),
                             LikeCount = 0,
                             SharedCount = 0,
                             Status = 1,
@@ -948,7 +956,7 @@ namespace ZiTechDev.Data.Migrations
                         {
                             Id = 2,
                             CategoryId = 2,
-                            CreatedDate = new DateTime(2021, 5, 7, 3, 13, 16, 335, DateTimeKind.Local).AddTicks(3050),
+                            CreatedDate = new DateTime(2021, 5, 7, 16, 36, 20, 141, DateTimeKind.Local).AddTicks(947),
                             LikeCount = 0,
                             SharedCount = 0,
                             Status = 0,
@@ -959,7 +967,7 @@ namespace ZiTechDev.Data.Migrations
                         {
                             Id = 3,
                             CategoryId = 3,
-                            CreatedDate = new DateTime(2021, 5, 7, 3, 13, 16, 335, DateTimeKind.Local).AddTicks(3172),
+                            CreatedDate = new DateTime(2021, 5, 7, 16, 36, 20, 141, DateTimeKind.Local).AddTicks(1164),
                             LikeCount = 0,
                             SharedCount = 0,
                             Status = 2,
@@ -983,8 +991,23 @@ namespace ZiTechDev.Data.Migrations
                         .IsUnicode(true)
                         .HasColumnType("nvarchar(500)");
 
+                    b.Property<DateTime>("CreatedDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("getdate()");
+
                     b.Property<byte[]>("EncodeString")
                         .HasColumnType("varbinary(max)");
+
+                    b.Property<double?>("FileSize")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("float")
+                        .HasDefaultValue(0.0);
+
+                    b.Property<bool>("IsThumbnail")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
 
                     b.Property<string>("Path")
                         .IsUnicode(false)
@@ -992,6 +1015,11 @@ namespace ZiTechDev.Data.Migrations
 
                     b.Property<int>("PostId")
                         .HasColumnType("int");
+
+                    b.Property<int?>("SortOrder")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0);
 
                     b.HasKey("Id");
 

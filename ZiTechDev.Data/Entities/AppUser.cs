@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using ZiTechDev.Data.Enums;
 
 namespace ZiTechDev.Data.Entities
 {
@@ -14,6 +15,7 @@ namespace ZiTechDev.Data.Entities
         public DateTime DateOfBirth { get; set; }
         public DateTime? LastAccess { get; set; }
         public DateTime DateOfJoin { get; set; }
+        public GenderType Gender { get; set; }
 
         public List<Log> Logs { get; set; }
         public List<Post> Posts { get; set; }
