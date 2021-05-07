@@ -11,5 +11,10 @@ namespace ZiTechDev.BackendAPI.Controllers
     [ApiController]
     public class ActivityController : ControllerBase
     {
+        [HttpGet]
+        public async Task<IActionResult> Get()
+        {
+            return Ok("ok");
+        }
     }
 }

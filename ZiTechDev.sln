@@ -14,7 +14,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ZiTechDev.Business", "ZiTec
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZiTechDev.BackendAPI", "ZiTechDev.BackendAPI\ZiTechDev.BackendAPI.csproj", "{3E9AAED5-C2B5-44DC-A8CD-63492B50C821}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZiTechDev.Common", "ZiTechDev.Common\ZiTechDev.Common.csproj", "{9B676E37-DF18-4798-AFE0-91A98F60D746}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZiTechDev.Common", "ZiTechDev.Common\ZiTechDev.Common.csproj", "{6A91C814-F57B-470F-B3BF-7918ADF8C401}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -34,10 +34,10 @@ Global
 		{3E9AAED5-C2B5-44DC-A8CD-63492B50C821}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3E9AAED5-C2B5-44DC-A8CD-63492B50C821}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3E9AAED5-C2B5-44DC-A8CD-63492B50C821}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9B676E37-DF18-4798-AFE0-91A98F60D746}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9B676E37-DF18-4798-AFE0-91A98F60D746}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9B676E37-DF18-4798-AFE0-91A98F60D746}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9B676E37-DF18-4798-AFE0-91A98F60D746}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6A91C814-F57B-470F-B3BF-7918ADF8C401}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6A91C814-F57B-470F-B3BF-7918ADF8C401}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6A91C814-F57B-470F-B3BF-7918ADF8C401}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6A91C814-F57B-470F-B3BF-7918ADF8C401}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
