@@ -5,7 +5,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
     <Folder Include="Engines\Translator\" />
+    <Folder Include="Validations\" />
     <Folder Include="Repositories\" />
   </ItemGroup>
 
