@@ -30,7 +30,8 @@ namespace ZiTechDev.Business.Services
                 FunctionId = request.FunctionId
             };
             _context.Activities.Add(activity);
-            return await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
+            return activity.Id;
         }
 
         public async Task<int> Update(ActivityUpdateRequest request)
