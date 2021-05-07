@@ -27,6 +27,7 @@ namespace ZiTechDev.Data.Extensions
                     DateOfBirth = new DateTime(1998, 02, 05, 0, 0, 0, DateTimeKind.Utc),
                     LastAccess = DateTime.Now,
                     DateOfJoin = DateTime.Now,
+                    Gender = GenderType.Male,
 
                     LockoutEnd = null,
                     TwoFactorEnabled = true,
@@ -53,6 +54,7 @@ namespace ZiTechDev.Data.Extensions
                     DateOfBirth = new DateTime(1998, 02, 05, 0, 0, 0, DateTimeKind.Utc),
                     LastAccess = DateTime.Now,
                     DateOfJoin = DateTime.Now,
+                    Gender = GenderType.Male,
 
                     LockoutEnd = null,
                     TwoFactorEnabled = true,
@@ -79,6 +81,7 @@ namespace ZiTechDev.Data.Extensions
                     DateOfBirth = new DateTime(1998, 02, 05, 0, 0, 0, DateTimeKind.Utc),
                     LastAccess = DateTime.Now,
                     DateOfJoin = DateTime.Now,
+                    Gender = GenderType.Male,
 
                     LockoutEnd = null,
                     TwoFactorEnabled = true,
@@ -135,8 +138,8 @@ namespace ZiTechDev.Data.Extensions
                 );
 
             modelBuilder.Entity<Language>().HasData(
-                new Language() { Id = "vi-VN", Name = "Tiếng Việt", IsDefault = Default.Yes },
-                new Language() { Id = "en-US", Name = "Tiếng Anh", IsDefault = Default.No }
+                new Language() { Id = "vi-VN", Name = "Tiếng Việt", IsDefault = true },
+                new Language() { Id = "en-US", Name = "Tiếng Anh", IsDefault = false }
                 );
             modelBuilder.Entity<Setting>().HasData(
                 new Setting() { Key = "HomeTitle", Value = "ZiTechDev - HomePage", Type = ConfigType.String },
@@ -147,10 +150,10 @@ namespace ZiTechDev.Data.Extensions
                 new Setting() { Key = "CommentOfPage", Value = "10", Type = ConfigType.Int }
                 );
             modelBuilder.Entity<Category>().HasData(
-                new Category() { Id = 1, ParentId = null, SortedOrder = 1 },
-                new Category() { Id = 2, ParentId = null, SortedOrder = 2 },
-                new Category() { Id = 3, ParentId = null, SortedOrder = 3 },
-                new Category() { Id = 4, ParentId = null, SortedOrder = 4 }
+                new Category() { Id = 1, ParentId = null, SortOrder = 1 },
+                new Category() { Id = 2, ParentId = null, SortOrder = 2 },
+                new Category() { Id = 3, ParentId = null, SortOrder = 3 },
+                new Category() { Id = 4, ParentId = null, SortOrder = 4 }
                 );
             modelBuilder.Entity<CategoryTranslation>().HasData(
                 new CategoryTranslation()

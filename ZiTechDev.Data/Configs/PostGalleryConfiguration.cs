@@ -22,6 +22,14 @@ namespace ZiTechDev.Data.Configs
             builder.Property(x => x.Path)
                 .IsRequired(false)
                 .IsUnicode(false);
+            builder.Property(x => x.CreatedDate)
+                .HasDefaultValueSql("getdate()");
+            builder.Property(x => x.IsThumbnail)
+                .HasDefaultValue(false);
+            builder.Property(x => x.FileSize)
+                .HasDefaultValue(0.0);
+            builder.Property(x => x.SortOrder)
+                .HasDefaultValue(0);
             builder.Property(x => x.EncodeString)
                 .IsRequired(false);
             builder.HasOne(p => p.Post)

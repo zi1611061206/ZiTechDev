@@ -9,7 +9,7 @@ namespace ZiTechDev.Data.Entities
     {
         public string Id { get; set; }
         public string Name { get; set; }
-        public Default IsDefault { get; set; }
+        public bool IsDefault { get; set; }
         public List<CategoryTranslation> CategoryTranslations { get; set; }
         public List<PostTranslation> PostTranslations { get; set; }
     }

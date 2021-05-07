@@ -4,8 +4,8 @@ using System.Text;
 
 namespace ZiTechDev.Data.Enums
 {
-    public enum Default
+    public enum GenderType
     {
-        Yes, No
+        Male, Female, Other
     }
 }
