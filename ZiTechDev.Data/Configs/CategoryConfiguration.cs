@@ -13,7 +13,7 @@ namespace ZiTechDev.Data.Configs
         {
             builder.ToTable("Categories");
             builder.HasKey(x => x.Id);
-            builder.Property(x => x.SortedOrder)
+            builder.Property(x => x.SortOrder)
                 .IsRequired(false);
             builder.Property(x => x.Id)
                 .UseIdentityColumn(1, 1);

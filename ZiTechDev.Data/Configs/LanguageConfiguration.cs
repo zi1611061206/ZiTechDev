@@ -22,7 +22,8 @@ namespace ZiTechDev.Data.Configs
                 .HasMaxLength(50)
                 .IsUnicode(true);
             builder.Property(x => x.IsDefault)
-                .HasDefaultValue(Default.No);
+                .IsRequired(true)
+                .HasDefaultValue(false);
         }
     }
 }
