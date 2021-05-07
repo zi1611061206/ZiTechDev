@@ -13,9 +13,11 @@ namespace ZiTechDev.Business.Requests.Activity
 
         public ActivityFilter()
         {
+            CurrentPageIndex = 1;
+            PageSize = 10;
             Id = 0;
             Name = null;
-            FunctionIds = null;
+            FunctionIds = new List<int>();
         }
     }
 }

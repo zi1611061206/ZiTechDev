@@ -14,3 +14,5 @@
 	 + Microsoft.Extensions.Configuration 5.0.0
 	 + Microsoft.Extensions.Configuration.FileExtensions 5.0.0
 	 + Microsoft.Extensions.Configuration.Json 5.0.0
+ - BACKEND API
+	 + Swashbuckle.AspNetCore 6.1.4

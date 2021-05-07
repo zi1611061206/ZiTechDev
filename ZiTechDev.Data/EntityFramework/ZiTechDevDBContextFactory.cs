@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using ZiTechDev.Common.Constants;
 
 namespace ZiTechDev.Data.EntityFramework
 {
@@ -17,7 +18,7 @@ namespace ZiTechDev.Data.EntityFramework
                 .AddJsonFile("appsettings.json")
                 .Build();
 
-            var connectionString = configuration.GetConnectionString("ZiTechDevDB");
+            var connectionString = configuration.GetConnectionString(ProjectConstants.ConnectionString);
 
             var optionsBuilder = new DbContextOptionsBuilder<ZiTechDevDBContext>();
             optionsBuilder.UseSqlServer(connectionString);
