@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -13,6 +14,7 @@ using System.Threading.Tasks;
 using ZiTechDev.Business.Interfaces;
 using ZiTechDev.Business.Services;
 using ZiTechDev.Common.Constants;
+using ZiTechDev.Data.Entities;
 using ZiTechDev.Data.EntityFramework;
 
 namespace ZiTechDev.BackendAPI
@@ -31,6 +33,9 @@ namespace ZiTechDev.BackendAPI
         {
             services.AddDbContext<ZiTechDevDBContext>(options => options.UseSqlServer(Configuration.GetConnectionString(ProjectConstants.ConnectionString)));
             services.AddTransient<IActivityService, ActivityService>();
+            services.AddTransient<UserManager<AppUser>, UserManager<AppUser>>();
+            services.AddTransient<SignInManager<AppUser>, SignInManager<AppUser>>();
+            services.AddTransient<RoleManager<AppRole>, RoleManager<AppRole>>();
             services.AddControllersWithViews();
             services.AddSwaggerGen(c =>
             {
