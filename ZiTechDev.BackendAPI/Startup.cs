@@ -9,6 +9,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ZiTechDev.Business.Interfaces;
+using ZiTechDev.Business.Services;
 using ZiTechDev.Common.Constants;
 using ZiTechDev.Data.EntityFramework;
 
@@ -27,6 +29,7 @@ namespace ZiTechDev.BackendAPI
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<ZiTechDevDBContext>(options => options.UseSqlServer(Configuration.GetConnectionString(ProjectConstants.ConnectionString)));
+            services.AddTransient<IActivityService, ActivityService>();
             services.AddControllersWithViews();
         }
 
