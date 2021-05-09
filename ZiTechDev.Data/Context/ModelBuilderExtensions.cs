@@ -6,9 +6,9 @@ using System.Text;
 using ZiTechDev.Data.Entities;
 using ZiTechDev.Data.Enums;
 
-namespace ZiTechDev.Data.Extensions
+namespace ZiTechDev.Data.Context
 {
-    public static class ModelBuilderExtensionscs
+    public static class ModelBuilderExtensions
     {
         public static void Seed(this ModelBuilder modelBuilder)
         {

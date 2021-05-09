@@ -468,9 +468,9 @@ namespace ZiTechDev.Data.Migrations
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "DateOfBirth", "DateOfJoin", "DisplayName", "Email", "EmailConfirmed", "FirstName", "LastAccess", "LastName", "LockoutEnabled", "LockoutEnd", "MiddleName", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
                 values: new object[,]
                 {
-                    { new Guid("b2d8f0ba-64d4-448d-92d7-d300465d0337"), 0, "", new DateTime(1998, 2, 5, 0, 0, 0, 0, DateTimeKind.Utc), new DateTime(2021, 5, 7, 16, 36, 20, 75, DateTimeKind.Local).AddTicks(9140), "Zi_Admin", "ZITECH.DEV@GMAIL.COM", true, "Nguyễn", new DateTime(2021, 5, 7, 16, 36, 20, 73, DateTimeKind.Local).AddTicks(8565), "Hiếu", false, null, "Ngọc", "zitech.dev@gmail.com", "admin", "AQAAAAEAACcQAAAAEGqOSPxvI79aFtIGQQcbSVY5uQ9T4c2zVnIVhZ0BOOn4bGDCDiarj7V03HNXdDR1tQ==", "(+84) 943 144 178", true, "", true, "ADMIN" },
-                    { new Guid("2d2a1cdd-d4a5-4ae4-9f26-f2fa1bedd6ae"), 0, "", new DateTime(1998, 2, 5, 0, 0, 0, 0, DateTimeKind.Utc), new DateTime(2021, 5, 7, 16, 36, 20, 125, DateTimeKind.Local).AddTicks(1579), "Zi_User", "ZITECH.DEV@GMAIL.COM", true, "Nguyễn", new DateTime(2021, 5, 7, 16, 36, 20, 125, DateTimeKind.Local).AddTicks(1555), "Hiếu", false, null, "Ngọc", "zitech.dev@gmail.com", "user", "AQAAAAEAACcQAAAAEPhfIruwKqVlheUTv73/PAbJB+3ZwZuQ0fDemCr+XWkBCEEnRMg3j20BPFnmDbyA0g==", "(+84) 943 144 178", true, "", true, "User" },
-                    { new Guid("a2e0ca3e-1a80-4554-9389-0ec66ab7a259"), 0, "", new DateTime(1998, 2, 5, 0, 0, 0, 0, DateTimeKind.Utc), new DateTime(2021, 5, 7, 16, 36, 20, 110, DateTimeKind.Local).AddTicks(8754), "Zi_Mod", "ZITECH.DEV@GMAIL.COM", true, "Nguyễn", new DateTime(2021, 5, 7, 16, 36, 20, 110, DateTimeKind.Local).AddTicks(8724), "Hiếu", false, null, "Ngọc", "zitech.dev@gmail.com", "mod", "AQAAAAEAACcQAAAAEAQOdwWSSZR1IFj+MxgFpIJS/FyFUAL5Y40MmLaYiw0dKMy0aboP11JxckxlpImTYA==", "(+84) 943 144 178", true, "", true, "MOD" }
+                    { new Guid("b2d8f0ba-64d4-448d-92d7-d300465d0337"), 0, "", new DateTime(1998, 2, 5, 0, 0, 0, 0, DateTimeKind.Utc), new DateTime(2021, 5, 9, 3, 53, 28, 937, DateTimeKind.Local).AddTicks(5001), "Zi_Admin", "ZITECH.DEV@GMAIL.COM", true, "Nguyễn", new DateTime(2021, 5, 9, 3, 53, 28, 936, DateTimeKind.Local).AddTicks(3261), "Hiếu", false, null, "Ngọc", "zitech.dev@gmail.com", "admin", "AQAAAAEAACcQAAAAEMIRQcAsv5wvWo0Y6TOrBLXYLVPQvePLbMyFYuCVyt6ia+i97lT2ifThDLpdKGzr+w==", "(+84) 943 144 178", true, "", true, "ADMIN" },
+                    { new Guid("2d2a1cdd-d4a5-4ae4-9f26-f2fa1bedd6ae"), 0, "", new DateTime(1998, 2, 5, 0, 0, 0, 0, DateTimeKind.Utc), new DateTime(2021, 5, 9, 3, 53, 28, 959, DateTimeKind.Local).AddTicks(1414), "Zi_User", "ZITECH.DEV@GMAIL.COM", true, "Nguyễn", new DateTime(2021, 5, 9, 3, 53, 28, 959, DateTimeKind.Local).AddTicks(1405), "Hiếu", false, null, "Ngọc", "zitech.dev@gmail.com", "user", "AQAAAAEAACcQAAAAEIUTo/TCTWk+tep6nXiM1z20hubPIP/DHUAXhmxPjsKk2cV92dhyhvSUF5WbYp4xiw==", "(+84) 943 144 178", true, "", true, "User" },
+                    { new Guid("a2e0ca3e-1a80-4554-9389-0ec66ab7a259"), 0, "", new DateTime(1998, 2, 5, 0, 0, 0, 0, DateTimeKind.Utc), new DateTime(2021, 5, 9, 3, 53, 28, 952, DateTimeKind.Local).AddTicks(5353), "Zi_Mod", "ZITECH.DEV@GMAIL.COM", true, "Nguyễn", new DateTime(2021, 5, 9, 3, 53, 28, 952, DateTimeKind.Local).AddTicks(5328), "Hiếu", false, null, "Ngọc", "zitech.dev@gmail.com", "mod", "AQAAAAEAACcQAAAAEKYD8YSMqSAVu1USCYD66oDAFSJbsGP0wFJfvlqEPi4FUo1Qx5rGcwfflKonH8G+Sw==", "(+84) 943 144 178", true, "", true, "MOD" }
                 });
 
             migrationBuilder.InsertData(
@@ -503,46 +503,46 @@ namespace ZiTechDev.Data.Migrations
             migrationBuilder.InsertData(
                 table: "Posts",
                 columns: new[] { "Id", "CategoryId", "CreatedDate", "LastModify", "Status", "Thumbnail", "UserId" },
-                values: new object[] { 1, 1, new DateTime(2021, 5, 7, 16, 36, 20, 140, DateTimeKind.Local).AddTicks(2730), null, 1, null, new Guid("b2d8f0ba-64d4-448d-92d7-d300465d0337") });
+                values: new object[] { 1, 1, new DateTime(2021, 5, 9, 3, 53, 28, 967, DateTimeKind.Local).AddTicks(4902), null, 1, null, new Guid("b2d8f0ba-64d4-448d-92d7-d300465d0337") });
 
             migrationBuilder.InsertData(
                 table: "Posts",
                 columns: new[] { "Id", "CategoryId", "CreatedDate", "LastModify", "Thumbnail", "UserId" },
-                values: new object[] { 2, 2, new DateTime(2021, 5, 7, 16, 36, 20, 141, DateTimeKind.Local).AddTicks(947), null, null, new Guid("b2d8f0ba-64d4-448d-92d7-d300465d0337") });
+                values: new object[] { 2, 2, new DateTime(2021, 5, 9, 3, 53, 28, 967, DateTimeKind.Local).AddTicks(8369), null, null, new Guid("b2d8f0ba-64d4-448d-92d7-d300465d0337") });
 
             migrationBuilder.InsertData(
                 table: "Posts",
                 columns: new[] { "Id", "CategoryId", "CreatedDate", "LastModify", "Status", "Thumbnail", "UserId" },
-                values: new object[] { 3, 3, new DateTime(2021, 5, 7, 16, 36, 20, 141, DateTimeKind.Local).AddTicks(1164), null, 2, null, new Guid("b2d8f0ba-64d4-448d-92d7-d300465d0337") });
+                values: new object[] { 3, 3, new DateTime(2021, 5, 9, 3, 53, 28, 967, DateTimeKind.Local).AddTicks(8478), null, 2, null, new Guid("b2d8f0ba-64d4-448d-92d7-d300465d0337") });
 
             migrationBuilder.InsertData(
                 table: "Comments",
                 columns: new[] { "Id", "Content", "LastModify", "ParentId", "PostId", "Time" },
                 values: new object[,]
                 {
-                    { 1, "Bình luận 1", null, null, 1, new DateTime(2021, 5, 7, 16, 36, 20, 142, DateTimeKind.Local).AddTicks(2472) },
-                    { 2, "Bình luận 2", null, null, 1, new DateTime(2021, 5, 7, 16, 36, 20, 142, DateTimeKind.Local).AddTicks(5909) }
+                    { 1, "Bình luận 1", null, null, 1, new DateTime(2021, 5, 9, 3, 53, 28, 968, DateTimeKind.Local).AddTicks(2831) },
+                    { 2, "Bình luận 2", null, null, 1, new DateTime(2021, 5, 9, 3, 53, 28, 968, DateTimeKind.Local).AddTicks(4741) }
                 });
 
             migrationBuilder.InsertData(
                 table: "Comments",
                 columns: new[] { "Id", "Content", "LastModify", "LikeCount", "ParentId", "PostId", "Time" },
-                values: new object[] { 4, "Bình luận con 1", null, 5, 1, 1, new DateTime(2021, 5, 7, 16, 36, 20, 142, DateTimeKind.Local).AddTicks(6016) });
+                values: new object[] { 4, "Bình luận con 1", null, 5, 1, 1, new DateTime(2021, 5, 9, 3, 53, 28, 968, DateTimeKind.Local).AddTicks(4829) });
 
             migrationBuilder.InsertData(
                 table: "Comments",
                 columns: new[] { "Id", "Content", "LastModify", "ParentId", "PostId", "Time" },
                 values: new object[,]
                 {
-                    { 5, "Bình luận con 2", null, 1, 1, new DateTime(2021, 5, 7, 16, 36, 20, 142, DateTimeKind.Local).AddTicks(6019) },
-                    { 6, "Bình luận con con 5", null, 5, 1, new DateTime(2021, 5, 7, 16, 36, 20, 142, DateTimeKind.Local).AddTicks(6022) },
-                    { 3, "Bình luận 3", null, null, 2, new DateTime(2021, 5, 7, 16, 36, 20, 142, DateTimeKind.Local).AddTicks(6012) }
+                    { 5, "Bình luận con 2", null, 1, 1, new DateTime(2021, 5, 9, 3, 53, 28, 968, DateTimeKind.Local).AddTicks(4831) },
+                    { 6, "Bình luận con con 5", null, 5, 1, new DateTime(2021, 5, 9, 3, 53, 28, 968, DateTimeKind.Local).AddTicks(4832) },
+                    { 3, "Bình luận 3", null, null, 2, new DateTime(2021, 5, 9, 3, 53, 28, 968, DateTimeKind.Local).AddTicks(4826) }
                 });
 
             migrationBuilder.InsertData(
                 table: "Logs",
                 columns: new[] { "ActivityId", "UserId", "ActionTime" },
-                values: new object[] { 1, new Guid("b2d8f0ba-64d4-448d-92d7-d300465d0337"), new DateTime(2021, 5, 7, 16, 36, 20, 144, DateTimeKind.Local).AddTicks(3551) });
+                values: new object[] { 1, new Guid("b2d8f0ba-64d4-448d-92d7-d300465d0337"), new DateTime(2021, 5, 9, 3, 53, 28, 969, DateTimeKind.Local).AddTicks(468) });
 
             migrationBuilder.InsertData(
                 table: "Permissions",

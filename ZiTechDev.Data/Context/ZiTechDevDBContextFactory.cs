@@ -7,7 +7,7 @@ using System.IO;
 using System.Text;
 using ZiTechDev.Common.Constants;
 
-namespace ZiTechDev.Data.EntityFramework
+namespace ZiTechDev.Data.Context
 {
     public class ZiTechDevDBContextFactory : IDesignTimeDbContextFactory<ZiTechDevDBContext>
     {

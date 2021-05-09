@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -11,6 +12,7 @@ namespace ZiTechDev.BackendAPI.Controllers
 {
     [Route("api/[controller]")] // https://host:port/api/activity
     [ApiController]
+    [Authorize(Roles ="ADMIN")]
     public class ActivitiesController : ControllerBase
     {
         private readonly IActivityService _activityService;
@@ -20,14 +22,14 @@ namespace ZiTechDev.BackendAPI.Controllers
             _activityService = activityService;
         }
 
-        [HttpGet]
+        [HttpGet("")]
         public async Task<IActionResult> Get([FromQuery] ActivityFilter filter)
         {
             var activity = await _activityService.GetAll(filter);
             return Ok(activity);
         }
 
-        [HttpPost]
+        [HttpPost("create")]
         public async Task<IActionResult> Create([FromForm] ActivityCreateRequest request)
         {
             if (!ModelState.IsValid)
@@ -42,7 +44,7 @@ namespace ZiTechDev.BackendAPI.Controllers
             return Ok(activityId);
         }
 
-        [HttpPut]
+        [HttpPut("update")]
         public async Task<IActionResult> Update([FromForm] ActivityUpdateRequest request)
         {
             if (!ModelState.IsValid)
@@ -57,7 +59,7 @@ namespace ZiTechDev.BackendAPI.Controllers
             return Ok();
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("delete/{id}")]
         public async Task<IActionResult> Delete(int id)
         {
             var affectedResult = await _activityService.Delete(id);

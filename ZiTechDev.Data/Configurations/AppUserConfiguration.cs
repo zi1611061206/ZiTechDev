@@ -6,7 +6,7 @@ using System.Text;
 using ZiTechDev.Data.Entities;
 using ZiTechDev.Data.Enums;
 
-namespace ZiTechDev.Data.Configs
+namespace ZiTechDev.Data.Configurations
 {
     public class AppUserConfiguration : IEntityTypeConfiguration<AppUser>
     {

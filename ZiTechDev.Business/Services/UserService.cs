@@ -29,7 +29,7 @@ namespace ZiTechDev.Business.Services
 
         public async Task<string> Authenticate(LoginRequest request)
         {
-            var user = await _userManager.FindByNameAsync(request.Username);
+            var user = await _userManager.FindByNameAsync(request.UserName);
             if (user == null)
             {
                 return null;
@@ -79,6 +79,31 @@ namespace ZiTechDev.Business.Services
                 return true;
             }
             return false;
+        }
+
+        public async Task<bool> IsExistedUserName(string userName)
+        {
+            var user = await _userManager.FindByNameAsync(userName);
+            if (user == null)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        public async Task<bool> IsMatchedUser(string userName, string password, bool rememberMe)
+        {
+            var user = await _userManager.FindByNameAsync(userName);
+            if (user == null)
+            {
+                return false;
+            }
+            var result = await _signInManager.PasswordSignInAsync(user, password, rememberMe, true);
+            if (!result.Succeeded)
+            {
+                return false;
+            }
+            return true;
         }
     }
 }

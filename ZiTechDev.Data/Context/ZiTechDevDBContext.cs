@@ -5,11 +5,10 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
-using ZiTechDev.Data.Configs;
+using ZiTechDev.Data.Configurations;
 using ZiTechDev.Data.Entities;
-using ZiTechDev.Data.Extensions;
 
-namespace ZiTechDev.Data.EntityFramework
+namespace ZiTechDev.Data.Context
 {
     public class ZiTechDevDBContext : IdentityDbContext<AppUser, AppRole, Guid>
     {
@@ -37,7 +36,7 @@ namespace ZiTechDev.Data.EntityFramework
             modelBuilder.Entity<IdentityUserClaim<Guid>>().ToTable("AppUserClaims");
             modelBuilder.Entity<IdentityRoleClaim<Guid>>().ToTable("AppRoleClaims");
 
-            modelBuilder.Entity<IdentityUserRole<Guid>>().ToTable("AppUserRoles").HasKey(x=>new { x.UserId, x.RoleId });
+            modelBuilder.Entity<IdentityUserRole<Guid>>().ToTable("AppUserRoles").HasKey(x => new { x.UserId, x.RoleId });
             modelBuilder.Entity<IdentityUserLogin<Guid>>().ToTable("AppUserLogins").HasKey(x => x.UserId);
             modelBuilder.Entity<IdentityUserToken<Guid>>().ToTable("AppUserTokens").HasKey(x => x.UserId);
 
