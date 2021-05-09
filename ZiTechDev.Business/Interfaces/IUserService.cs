@@ -10,5 +10,7 @@ namespace ZiTechDev.Business.Interfaces
     {
         Task<string> Authenticate(LoginRequest request);
         Task<bool> NewUser(UserCreateRequest request);
+        Task<bool> IsExistedUserName(string userName);
+        Task<bool> IsMatchedUser(string userName, string password, bool rememberMe);
     }
 }

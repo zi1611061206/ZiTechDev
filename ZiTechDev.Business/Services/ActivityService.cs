@@ -7,9 +7,9 @@ using ZiTechDev.Business.Engines.Paginition;
 using ZiTechDev.Business.Interfaces;
 using ZiTechDev.Business.Requests.Activity;
 using ZiTechDev.Data.Entities;
-using ZiTechDev.Data.EntityFramework;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using ZiTechDev.Data.Context;
 
 namespace ZiTechDev.Business.Services
 {

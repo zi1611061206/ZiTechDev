@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Text;
 using ZiTechDev.Data.Entities;
 
-namespace ZiTechDev.Data.Configs
+namespace ZiTechDev.Data.Configurations
 {
     public class CommentConfiguration : IEntityTypeConfiguration<Comment>
     {

@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using ZiTechDev.Data.EntityFramework;
+using ZiTechDev.Data.Context;
 
 namespace ZiTechDev.Data.Migrations
 {
@@ -361,19 +361,19 @@ namespace ZiTechDev.Data.Migrations
                             AccessFailedCount = 0,
                             ConcurrencyStamp = "",
                             DateOfBirth = new DateTime(1998, 2, 5, 0, 0, 0, 0, DateTimeKind.Utc),
-                            DateOfJoin = new DateTime(2021, 5, 7, 16, 36, 20, 75, DateTimeKind.Local).AddTicks(9140),
+                            DateOfJoin = new DateTime(2021, 5, 9, 3, 53, 28, 937, DateTimeKind.Local).AddTicks(5001),
                             DisplayName = "Zi_Admin",
                             Email = "ZITECH.DEV@GMAIL.COM",
                             EmailConfirmed = true,
                             FirstName = "Nguyễn",
                             Gender = 0,
-                            LastAccess = new DateTime(2021, 5, 7, 16, 36, 20, 73, DateTimeKind.Local).AddTicks(8565),
+                            LastAccess = new DateTime(2021, 5, 9, 3, 53, 28, 936, DateTimeKind.Local).AddTicks(3261),
                             LastName = "Hiếu",
                             LockoutEnabled = false,
                             MiddleName = "Ngọc",
                             NormalizedEmail = "zitech.dev@gmail.com",
                             NormalizedUserName = "admin",
-                            PasswordHash = "AQAAAAEAACcQAAAAEGqOSPxvI79aFtIGQQcbSVY5uQ9T4c2zVnIVhZ0BOOn4bGDCDiarj7V03HNXdDR1tQ==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEMIRQcAsv5wvWo0Y6TOrBLXYLVPQvePLbMyFYuCVyt6ia+i97lT2ifThDLpdKGzr+w==",
                             PhoneNumber = "(+84) 943 144 178",
                             PhoneNumberConfirmed = true,
                             SecurityStamp = "",
@@ -386,19 +386,19 @@ namespace ZiTechDev.Data.Migrations
                             AccessFailedCount = 0,
                             ConcurrencyStamp = "",
                             DateOfBirth = new DateTime(1998, 2, 5, 0, 0, 0, 0, DateTimeKind.Utc),
-                            DateOfJoin = new DateTime(2021, 5, 7, 16, 36, 20, 110, DateTimeKind.Local).AddTicks(8754),
+                            DateOfJoin = new DateTime(2021, 5, 9, 3, 53, 28, 952, DateTimeKind.Local).AddTicks(5353),
                             DisplayName = "Zi_Mod",
                             Email = "ZITECH.DEV@GMAIL.COM",
                             EmailConfirmed = true,
                             FirstName = "Nguyễn",
                             Gender = 0,
-                            LastAccess = new DateTime(2021, 5, 7, 16, 36, 20, 110, DateTimeKind.Local).AddTicks(8724),
+                            LastAccess = new DateTime(2021, 5, 9, 3, 53, 28, 952, DateTimeKind.Local).AddTicks(5328),
                             LastName = "Hiếu",
                             LockoutEnabled = false,
                             MiddleName = "Ngọc",
                             NormalizedEmail = "zitech.dev@gmail.com",
                             NormalizedUserName = "mod",
-                            PasswordHash = "AQAAAAEAACcQAAAAEAQOdwWSSZR1IFj+MxgFpIJS/FyFUAL5Y40MmLaYiw0dKMy0aboP11JxckxlpImTYA==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEKYD8YSMqSAVu1USCYD66oDAFSJbsGP0wFJfvlqEPi4FUo1Qx5rGcwfflKonH8G+Sw==",
                             PhoneNumber = "(+84) 943 144 178",
                             PhoneNumberConfirmed = true,
                             SecurityStamp = "",
@@ -411,19 +411,19 @@ namespace ZiTechDev.Data.Migrations
                             AccessFailedCount = 0,
                             ConcurrencyStamp = "",
                             DateOfBirth = new DateTime(1998, 2, 5, 0, 0, 0, 0, DateTimeKind.Utc),
-                            DateOfJoin = new DateTime(2021, 5, 7, 16, 36, 20, 125, DateTimeKind.Local).AddTicks(1579),
+                            DateOfJoin = new DateTime(2021, 5, 9, 3, 53, 28, 959, DateTimeKind.Local).AddTicks(1414),
                             DisplayName = "Zi_User",
                             Email = "ZITECH.DEV@GMAIL.COM",
                             EmailConfirmed = true,
                             FirstName = "Nguyễn",
                             Gender = 0,
-                            LastAccess = new DateTime(2021, 5, 7, 16, 36, 20, 125, DateTimeKind.Local).AddTicks(1555),
+                            LastAccess = new DateTime(2021, 5, 9, 3, 53, 28, 959, DateTimeKind.Local).AddTicks(1405),
                             LastName = "Hiếu",
                             LockoutEnabled = false,
                             MiddleName = "Ngọc",
                             NormalizedEmail = "zitech.dev@gmail.com",
                             NormalizedUserName = "user",
-                            PasswordHash = "AQAAAAEAACcQAAAAEPhfIruwKqVlheUTv73/PAbJB+3ZwZuQ0fDemCr+XWkBCEEnRMg3j20BPFnmDbyA0g==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEIUTo/TCTWk+tep6nXiM1z20hubPIP/DHUAXhmxPjsKk2cV92dhyhvSUF5WbYp4xiw==",
                             PhoneNumber = "(+84) 943 144 178",
                             PhoneNumberConfirmed = true,
                             SecurityStamp = "",
@@ -649,7 +649,7 @@ namespace ZiTechDev.Data.Migrations
                             Content = "Bình luận 1",
                             LikeCount = 0,
                             PostId = 1,
-                            Time = new DateTime(2021, 5, 7, 16, 36, 20, 142, DateTimeKind.Local).AddTicks(2472)
+                            Time = new DateTime(2021, 5, 9, 3, 53, 28, 968, DateTimeKind.Local).AddTicks(2831)
                         },
                         new
                         {
@@ -657,7 +657,7 @@ namespace ZiTechDev.Data.Migrations
                             Content = "Bình luận 2",
                             LikeCount = 0,
                             PostId = 1,
-                            Time = new DateTime(2021, 5, 7, 16, 36, 20, 142, DateTimeKind.Local).AddTicks(5909)
+                            Time = new DateTime(2021, 5, 9, 3, 53, 28, 968, DateTimeKind.Local).AddTicks(4741)
                         },
                         new
                         {
@@ -665,7 +665,7 @@ namespace ZiTechDev.Data.Migrations
                             Content = "Bình luận 3",
                             LikeCount = 0,
                             PostId = 2,
-                            Time = new DateTime(2021, 5, 7, 16, 36, 20, 142, DateTimeKind.Local).AddTicks(6012)
+                            Time = new DateTime(2021, 5, 9, 3, 53, 28, 968, DateTimeKind.Local).AddTicks(4826)
                         },
                         new
                         {
@@ -674,7 +674,7 @@ namespace ZiTechDev.Data.Migrations
                             LikeCount = 5,
                             ParentId = 1,
                             PostId = 1,
-                            Time = new DateTime(2021, 5, 7, 16, 36, 20, 142, DateTimeKind.Local).AddTicks(6016)
+                            Time = new DateTime(2021, 5, 9, 3, 53, 28, 968, DateTimeKind.Local).AddTicks(4829)
                         },
                         new
                         {
@@ -683,7 +683,7 @@ namespace ZiTechDev.Data.Migrations
                             LikeCount = 0,
                             ParentId = 1,
                             PostId = 1,
-                            Time = new DateTime(2021, 5, 7, 16, 36, 20, 142, DateTimeKind.Local).AddTicks(6019)
+                            Time = new DateTime(2021, 5, 9, 3, 53, 28, 968, DateTimeKind.Local).AddTicks(4831)
                         },
                         new
                         {
@@ -692,7 +692,7 @@ namespace ZiTechDev.Data.Migrations
                             LikeCount = 0,
                             ParentId = 5,
                             PostId = 1,
-                            Time = new DateTime(2021, 5, 7, 16, 36, 20, 142, DateTimeKind.Local).AddTicks(6022)
+                            Time = new DateTime(2021, 5, 9, 3, 53, 28, 968, DateTimeKind.Local).AddTicks(4832)
                         });
                 });
 
@@ -828,7 +828,7 @@ namespace ZiTechDev.Data.Migrations
                         {
                             ActivityId = 1,
                             UserId = new Guid("b2d8f0ba-64d4-448d-92d7-d300465d0337"),
-                            ActionTime = new DateTime(2021, 5, 7, 16, 36, 20, 144, DateTimeKind.Local).AddTicks(3551)
+                            ActionTime = new DateTime(2021, 5, 9, 3, 53, 28, 969, DateTimeKind.Local).AddTicks(468)
                         });
                 });
 
@@ -943,7 +943,7 @@ namespace ZiTechDev.Data.Migrations
                         {
                             Id = 1,
                             CategoryId = 1,
-                            CreatedDate = new DateTime(2021, 5, 7, 16, 36, 20, 140, DateTimeKind.Local).AddTicks(2730),
+                            CreatedDate = new DateTime(2021, 5, 9, 3, 53, 28, 967, DateTimeKind.Local).AddTicks(4902),
                             LikeCount = 0,
                             SharedCount = 0,
                             Status = 1,
@@ -954,7 +954,7 @@ namespace ZiTechDev.Data.Migrations
                         {
                             Id = 2,
                             CategoryId = 2,
-                            CreatedDate = new DateTime(2021, 5, 7, 16, 36, 20, 141, DateTimeKind.Local).AddTicks(947),
+                            CreatedDate = new DateTime(2021, 5, 9, 3, 53, 28, 967, DateTimeKind.Local).AddTicks(8369),
                             LikeCount = 0,
                             SharedCount = 0,
                             Status = 0,
@@ -965,7 +965,7 @@ namespace ZiTechDev.Data.Migrations
                         {
                             Id = 3,
                             CategoryId = 3,
-                            CreatedDate = new DateTime(2021, 5, 7, 16, 36, 20, 141, DateTimeKind.Local).AddTicks(1164),
+                            CreatedDate = new DateTime(2021, 5, 9, 3, 53, 28, 967, DateTimeKind.Local).AddTicks(8478),
                             LikeCount = 0,
                             SharedCount = 0,
                             Status = 2,
