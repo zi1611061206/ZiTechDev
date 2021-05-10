@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace ZiTechDev.Business.Validations.User
+namespace ZiTechDev.Business.Validations.Auth
 {
     public static class RuleBuilderExtensions
     {

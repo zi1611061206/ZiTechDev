@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace ZiTechDev.Business.Requests.User
+namespace ZiTechDev.Business.Requests.Auth
 {
     public class LoginRequest
     {

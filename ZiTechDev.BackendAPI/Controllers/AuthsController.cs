@@ -6,17 +6,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ZiTechDev.Business.Interfaces;
-using ZiTechDev.Business.Requests.User;
+using ZiTechDev.Business.Requests.Auth;
 
 namespace ZiTechDev.BackendAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "ADMIN, MOD")]
-    public class UsersController : ControllerBase
+    [Authorize]
+    public class AuthsController : ControllerBase
     {
-        private readonly IUserService _userService;
-        public UsersController(IUserService userService)
+        private readonly IAuthService _userService;
+        public AuthsController(IAuthService userService)
         {
             _userService = userService;
         }
@@ -29,7 +29,7 @@ namespace ZiTechDev.BackendAPI.Controllers
             {
                 return BadRequest(ModelState);
             }
-            var tokenResult = await _userService.Authenticate(request);
+            var tokenResult = await _userService.Login(request);
             if (string.IsNullOrEmpty(tokenResult))
             {
                 return BadRequest("Username or password is incorrect");
@@ -39,13 +39,13 @@ namespace ZiTechDev.BackendAPI.Controllers
 
         [HttpPost("register")]
         [AllowAnonymous]
-        public async Task<IActionResult> Register([FromForm] UserCreateRequest request)
+        public async Task<IActionResult> Register([FromForm] RegisterRequest request)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            var result = await _userService.NewUser(request);
+            var result = await _userService.Register(request);
             if (!result)
             {
                 return BadRequest("Register is unsucessful");
