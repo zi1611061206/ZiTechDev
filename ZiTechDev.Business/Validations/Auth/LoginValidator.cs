@@ -3,17 +3,15 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using ZiTechDev.Business.Interfaces;
-using ZiTechDev.Business.Requests.User;
-using ZiTechDev.Business.Services;
-using ZiTechDev.Data.Context;
+using ZiTechDev.Business.Requests.Auth;
 
-namespace ZiTechDev.Business.Validations.User
+namespace ZiTechDev.Business.Validations.Auth
 {
     public class LoginValidator : AbstractValidator<LoginRequest>
     {
-        private readonly IUserService _userService;
+        private readonly IAuthService _userService;
 
-        public LoginValidator(IUserService userService)
+        public LoginValidator(IAuthService userService)
         {
             _userService = userService;
             CascadeMode = CascadeMode.Stop;

@@ -10,9 +10,9 @@ using ZiTechDev.Business.Requests.Activity;
 
 namespace ZiTechDev.BackendAPI.Controllers
 {
-    [Route("api/[controller]")] // https://host:port/api/activity
+    [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles ="ADMIN")]
+    [Authorize]
     public class ActivitiesController : ControllerBase
     {
         private readonly IActivityService _activityService;

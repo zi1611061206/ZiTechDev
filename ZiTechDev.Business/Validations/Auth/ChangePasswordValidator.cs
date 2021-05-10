@@ -2,9 +2,9 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using ZiTechDev.Business.Requests.User;
+using ZiTechDev.Business.Requests.Auth;
 
-namespace ZiTechDev.Business.Validations.User
+namespace ZiTechDev.Business.Validations.Auth
 {
     public class ChangePasswordValidator : AbstractValidator<ChangePasswordRequest>
     {
@@ -18,7 +18,7 @@ namespace ZiTechDev.Business.Validations.User
                 .Matches(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$").WithMessage("Password must be at least 8 characters, at least 1 uppercase, 1 lowercase, 1 number and 1 special character");
             RuleFor(x => x.PasswordConfirmation)
                 .NotEmpty().WithMessage("Confirm Password is required")
-                .Equal(x=>x.NewPassword).WithMessage("Confirmation Password is not match");
+                .Equal(x => x.NewPassword).WithMessage("Confirmation Password is not match");
         }
     }
 }
