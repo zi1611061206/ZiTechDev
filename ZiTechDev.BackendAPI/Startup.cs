@@ -1,6 +1,7 @@
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -18,9 +19,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using ZiTechDev.Business.Interfaces;
 using ZiTechDev.Business.Requests.Activity;
+using ZiTechDev.Business.Requests.Auth;
 using ZiTechDev.Business.Requests.User;
 using ZiTechDev.Business.Services;
 using ZiTechDev.Business.Validations.Activity;
+using ZiTechDev.Business.Validations.Auth;
 using ZiTechDev.Business.Validations.User;
 using ZiTechDev.Common.Constants;
 using ZiTechDev.Data.Context;
@@ -47,6 +50,7 @@ namespace ZiTechDev.BackendAPI
             services.AddIdentity<AppUser, AppRole>().AddEntityFrameworkStores<ZiTechDevDBContext>().AddDefaultTokenProviders();
             
             services.AddTransient<IActivityService, ActivityService>();
+            services.AddTransient<IAuthService, AuthService>();
             services.AddTransient<IUserService, UserService>();
 
             services.AddTransient<UserManager<AppUser>, UserManager<AppUser>>();
@@ -54,6 +58,7 @@ namespace ZiTechDev.BackendAPI
             services.AddTransient<RoleManager<AppRole>, RoleManager<AppRole>>();
 
             services.AddTransient<IValidator<LoginRequest>, LoginValidator>();
+            services.AddTransient<IValidator<RegisterRequest>, RegisterValidator>();
             services.AddTransient<IValidator<ChangePasswordRequest>, ChangePasswordValidator>();
             services.AddTransient<IValidator<UserCreateRequest>, UserCreateValidator>();
             services.AddTransient<IValidator<UserUpdateRequest>, UserUpdateValidator>();
@@ -101,7 +106,7 @@ namespace ZiTechDev.BackendAPI
             services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme; 
             }).AddJwtBearer(options =>
             {
                 options.RequireHttpsMetadata = false;
@@ -117,6 +122,11 @@ namespace ZiTechDev.BackendAPI
                     ClockSkew = System.TimeSpan.Zero,
                     IssuerSigningKey = new SymmetricSecurityKey(secretKeyBytes)
                 };
+            }); 
+
+            services.AddAuthorization(options =>
+            {
+                options.FallbackPolicy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
             });
         }
 
