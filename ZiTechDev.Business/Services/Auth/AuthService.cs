@@ -8,11 +8,10 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using ZiTechDev.Business.Engines.Exceptions;
-using ZiTechDev.Business.Interfaces;
 using ZiTechDev.Business.Requests.Auth;
 using ZiTechDev.Data.Entities;
 
-namespace ZiTechDev.Business.Services
+namespace ZiTechDev.Business.Services.Auth
 {
     public class AuthService : IAuthService
     {
@@ -44,7 +43,8 @@ namespace ZiTechDev.Business.Services
             var claims = new[]
             {
                 new Claim(ClaimTypes.Email, user.Email),
-                new Claim(ClaimTypes.GivenName, user.FirstName),
+                new Claim(ClaimTypes.GivenName, user.DisplayName),
+                new Claim(ClaimTypes.Name, user.UserName),
                 new Claim(ClaimTypes.Role, string.Join(";", roles))
             };
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Tokens:Key"]));
@@ -56,7 +56,7 @@ namespace ZiTechDev.Business.Services
                 expires: DateTime.Now.AddHours(3),
                 signingCredentials: creds
                 );
-            return  new JwtSecurityTokenHandler().WriteToken(token);
+            return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
         public async Task<bool> Register(RegisterRequest request)

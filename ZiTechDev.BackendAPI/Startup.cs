@@ -17,11 +17,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using ZiTechDev.Business.Interfaces;
 using ZiTechDev.Business.Requests.Activity;
 using ZiTechDev.Business.Requests.Auth;
 using ZiTechDev.Business.Requests.User;
-using ZiTechDev.Business.Services;
+using ZiTechDev.Business.Services.Activities;
+using ZiTechDev.Business.Services.Auth;
+using ZiTechDev.Business.Services.User;
 using ZiTechDev.Business.Validations.Activity;
 using ZiTechDev.Business.Validations.Auth;
 using ZiTechDev.Business.Validations.User;
@@ -57,15 +58,7 @@ namespace ZiTechDev.BackendAPI
             services.AddTransient<SignInManager<AppUser>, SignInManager<AppUser>>();
             services.AddTransient<RoleManager<AppRole>, RoleManager<AppRole>>();
 
-            services.AddTransient<IValidator<LoginRequest>, LoginValidator>();
-            services.AddTransient<IValidator<RegisterRequest>, RegisterValidator>();
-            services.AddTransient<IValidator<ChangePasswordRequest>, ChangePasswordValidator>();
-            services.AddTransient<IValidator<UserCreateRequest>, UserCreateValidator>();
-            services.AddTransient<IValidator<UserUpdateRequest>, UserUpdateValidator>();
-            services.AddTransient<IValidator<ActivityCreateRequest>, ActivityCreateValidator>();
-            services.AddTransient<IValidator<ActivityUpdateRequest>, ActivityUpdateValidator>();
-
-            services.AddControllers().AddFluentValidation();
+            services.AddControllers().AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<LoginValidator>());
 
             services.AddSwaggerGen(c =>
             {

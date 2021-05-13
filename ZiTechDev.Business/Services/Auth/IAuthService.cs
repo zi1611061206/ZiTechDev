@@ -4,7 +4,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ZiTechDev.Business.Requests.Auth;
 
-namespace ZiTechDev.Business.Interfaces
+namespace ZiTechDev.Business.Services.Auth
 {
     public interface IAuthService
     {

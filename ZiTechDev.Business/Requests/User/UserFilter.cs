@@ -19,6 +19,8 @@ namespace ZiTechDev.Business.Requests.User
 
         public UserFilter()
         {
+            CurrentPageIndex = 1;
+            PageSize = 10;
             FullName = null;
             UserName = null;
             DisplayName = null;

@@ -1,10 +1,21 @@
 ﻿# ASP.NET CORE 3.1 project from ZiTechDev
+## TOOLS
+ - Microsoft Visual Studio Community 2019 16.9.3
+ - SQL Server Management Studio 2019 15.0.18369.0
+## FRAMEWORKS
+ - Microsoft .NET Framework 4.8.04084
 ## TECHNOLOGIES
  - ASP.NET CORE 3.1 (MVC)
+ - Jquery 3.5.1
+ - Bootstrap 4.6.0
+## TEMPLATES
+ - Start Bootstrap - SB Admin v6.0.3 (https://startbootstrap.com/template/sb-admin)
 ## SOLUTION STRUCTURE
+ - COMMON
  - DATA
  - BUSINESS
- - WEBAPP
+ - BACKENDAPI
+ - ADMINSITE
 ## PAKAGES
  - DATA:
 	 + Microsoft.EntityFrameworkCore.SqlServer 5.0.5
@@ -19,25 +30,7 @@
  - BACKEND API
 	 + Swashbuckle.AspNetCore 6.1.4
 	 + Microsoft.AspNetCore.Authentication.JwtBearer 5.0.5
-## DEVELOPMENT PROCESS
- - DATA - Class Library: (Sử dụng Fluent API thay cho Data Annotation)
-	 + Cài đặt các gói cần thiết cho EntityFrameworkCore
-	 + Cài đặt các gói cần thiết cho IdentityServer
-	 + Tạo các Enums cho các thuộc tính options của thực thể (Ngoại trừ boolean options)
-	 + Cấu hình ZiTechDevDbContext kế thừa IdentityDbContext, tạo constructure, ghi đề phương thức OnModelCreating
-	 + Tạo các lớp thực thể (Entities Class) mô tả các thuộc tính (Attributes) đối tượng trừ các khoắ ngoại (ForeignKeys)
-	 + Tạo các lớp thực thể liên quan IdentityServer: Users, Roles => UserRoles, UserLogins, UserTokens, UserClaims, RoleClaims
-	 + Khai báo các thực thể trong ZiTechDevDbContext với DbSet<>
-	 + Tạo các lớp cấu hình (Configurations Class) mô tả các tính chất (Properties) của thực thể tương ứng trừ các khóa ngoại: ToTable(), IsRequired(), IsUnicode(), HasKey(), HasMaxLength(), HasDefaultValue(), HasDefaultSqlValue(), UseIdentityColumn()...
-	 + Thêm các thuộc tính khóa ngoại: OneToOne, OneToMany, ManyToMany
-	 + Cấu hình quan hệ cho các thuộc tính khóa ngoại: HasOne(), WithMany(), WithOne(), HasForeignKey()...
-	 + Áp dụng các cấu hình trong phương thức OnModelCreating (ZiTechDevDbContext)
-	 + Tạo dữ liệu mẫu (Seeding Data) theo tuần tự trong ModelBuilderExtensions
-	 + Áp dụng ModelBuilderExtensions vào phương thức OnModelCreating (ZiTechDevDbContext)
-	 + Cài đặt các gói cần thiết cho ExtensionsConfiguration
-	 + Tạo appsettings.json thêm dữ liệu về ConnectionString, đặt KeyName trong ProjectConstants (Common) nhằm thông nhất và tái sử dụng
-	 + Cấu hình ZiTechDevDBContextFactory đọc file appsettings.json lấy ConnectionString và nạp vào ZiTechDevDbContext
-	 + Tools -> Nuget Pakage Manager -> Pakage Manager Console
-	 + Nhập Add-Migration <name> tạo Migration Class -> Kiểm tra lại phương thức Up()
-	 + Nhập update-database để tạo cơ sở dữ liệu
-	 + Fix bug nếu có
+ - ADMIN SITE
+	 + Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation 3.1.12
+	 + FluentValidation.AspNetCore 10.1.0
+	 + Microsoft.Aspnetcore.Session 2.2.0

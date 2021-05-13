@@ -5,8 +5,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using ZiTechDev.Business.Interfaces;
 using ZiTechDev.Business.Requests.Activity;
+using ZiTechDev.Business.Services.Activities;
 
 namespace ZiTechDev.BackendAPI.Controllers
 {

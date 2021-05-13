@@ -2,8 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using ZiTechDev.Business.Interfaces;
 using ZiTechDev.Business.Requests.User;
+using ZiTechDev.Business.Services.User;
 using ZiTechDev.Business.Validations.Auth;
 
 namespace ZiTechDev.Business.Validations.User

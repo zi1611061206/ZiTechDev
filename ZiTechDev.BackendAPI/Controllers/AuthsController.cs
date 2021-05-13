@@ -5,8 +5,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using ZiTechDev.Business.Interfaces;
 using ZiTechDev.Business.Requests.Auth;
+using ZiTechDev.Business.Services.Auth;
 
 namespace ZiTechDev.BackendAPI.Controllers
 {
@@ -15,37 +15,37 @@ namespace ZiTechDev.BackendAPI.Controllers
     [Authorize]
     public class AuthsController : ControllerBase
     {
-        private readonly IAuthService _userService;
-        public AuthsController(IAuthService userService)
+        private readonly IAuthService _authService;
+        public AuthsController(IAuthService authService)
         {
-            _userService = userService;
+            _authService = authService;
         }
 
         [HttpPost("login")]
         [AllowAnonymous]
-        public async Task<IActionResult> Login([FromForm]LoginRequest request)
+        public async Task<IActionResult> Login([FromBody]LoginRequest request)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            var tokenResult = await _userService.Login(request);
+            var tokenResult = await _authService.Login(request);
             if (string.IsNullOrEmpty(tokenResult))
             {
                 return BadRequest("Username or password is incorrect");
             }
-            return Ok(new { token = tokenResult });
+            return Ok(tokenResult);
         }
 
         [HttpPost("register")]
         [AllowAnonymous]
-        public async Task<IActionResult> Register([FromForm] RegisterRequest request)
+        public async Task<IActionResult> Register([FromBody] RegisterRequest request)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            var result = await _userService.Register(request);
+            var result = await _authService.Register(request);
             if (!result)
             {
                 return BadRequest("Register is unsucessful");

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using ZiTechDev.Business.Engines.Paginition;
 using ZiTechDev.Business.Requests.Activity;
 
-namespace ZiTechDev.Business.Interfaces
+namespace ZiTechDev.Business.Services.Activities
 {
     public interface IActivityService
     {

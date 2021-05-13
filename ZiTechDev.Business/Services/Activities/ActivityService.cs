@@ -4,18 +4,18 @@ using System.Text;
 using System.Threading.Tasks;
 using ZiTechDev.Business.Engines.Exceptions;
 using ZiTechDev.Business.Engines.Paginition;
-using ZiTechDev.Business.Interfaces;
 using ZiTechDev.Business.Requests.Activity;
 using ZiTechDev.Data.Entities;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using ZiTechDev.Data.Context;
 
-namespace ZiTechDev.Business.Services
+namespace ZiTechDev.Business.Services.Activities
 {
     public class ActivityService : IActivityService
     {
         private readonly ZiTechDevDBContext _context;
+
         public ActivityService(ZiTechDevDBContext context)
         {
             _context = context;
@@ -75,8 +75,8 @@ namespace ZiTechDev.Business.Services
                 query = query.Where(x => filter.FunctionIds.Contains(x.FunctionId));
             }
             var data = await query.Skip((filter.CurrentPageIndex - 1) * filter.PageSize)
-                .Take(filter.PageSize)
-                .Select(x=> new ActivityViewModel()
+                .Take(filter.PageSize).OrderBy(d => d.Id)
+                .Select(x => new ActivityViewModel()
                 {
                     Id = x.Id,
                     Name = x.Name,

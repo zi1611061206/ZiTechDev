@@ -1,0 +1,126 @@
+﻿@using ZiTechDev.Business.Requests.User;
+@using ZiTechDev.Business.Engines.Paginition;
+@using ZiTechDev.Data.Enums;
+@{
+    ViewData["Title"] = "Người dùng";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    PaginitionEngines<UserViewModel> users = ViewData["Users"] as PaginitionEngines<UserViewModel>;
+    UserFilter filter = ViewData["Filter"] as UserFilter;
+    GenderSelector cbGender = ViewData["CbGender"] as GenderSelector;
+}
+
+<div class="container-fluid">
+    <h1 class="mt-4">Danh sách thành viên</h1>
+    <div class="card mb-4 bg-light">
+        <div class="card-body">
+            <button type="button" class="btn-sm btn-primary m-1"><i class="fa fa-plus"></i></button>
+            <button type="button" class="btn-sm btn-secondary m-1" onclick="btnFilterClick()"><i class="fa fa-filter"></i></button>
+            <form id="filterForm" hidden class="row" asp-controller="user" asp-action="" method="post">
+                <div class="form-group col-md-2 col-md-offset-1">
+                    <label class="small mb-1">Họ tên</label>
+                    <input class="form-control py-2" type="text" placeholder="VD: Nguyễn Văn Anh" asp-for="@filter.FullName" />
+                </div>
+                <div class="form-group col-md-2">
+                    <label class="small mb-1">Tên đăng nhập</label>
+                    <input class="form-control py-2" type="text" placeholder="VD: ZiTechDev" asp-for="@filter.UserName" />
+                </div>
+                <div class="form-group col-md-2">
+                    <label class="small mb-1">Tên hiển thị</label>
+                    <input class="form-control py-2" type="text" placeholder="VD: Anh Nguyễn" asp-for="@filter.DisplayName" />
+                </div>
+                <div class="form-group col-md-2">
+                    <label class="small mb-1">SĐT</label>
+                    <input class="form-control py-2" type="text" placeholder="VD: 0912345678" asp-for="@filter.PhoneNumber" />
+                </div>
+                <div class="form-group col-md-2">
+                    <label class="small mb-1">Email</label>
+                    <input class="form-control py-2" type="text" placeholder="VD: nva@gmail.com" asp-for="@filter.Email" />
+                </div>
+                <div class="form-group col-md-2">
+                    <label class="small mb-1">Giới tính</label>
+                    <select id="genders" class="form-control py-2" asp-for="@filter.Gender" asp-items="@(new SelectList(cbGender.Items,"Id","GenderName"))"></select>
+                </div>
+                <div class="form-group col-md-5">
+                    <label class="small mb-1">Ngày sinh từ</label>
+                    <input class="form-control py-2" type="datetime-local" asp-for="@filter.FromDOB">
+                </div>
+                <div class="form-group col-md-5">
+                    <label class="small mb-1">Đến ngày</label>
+                    <input class="form-control py-2" type="datetime-local" asp-for="@filter.ToDOB">
+                </div>
+
+                <div class="form-group col-md-2">
+                    <button class="form-control btn btn-success w-100 h-100" type="submit" onclick="btnFilterClick()">Áp dụng</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="card mb-4 bg-light">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th class="text-center">Mã</th>
+                            <th class="text-center">Họ Tên</th>
+                            <th class="text-center">Tên hiển thị</th>
+                            <th class="text-center">Tên người dùng</th>
+                            <th class="text-center">Giới tính</th>
+                            <th class="text-center">SĐT</th>
+                            <th class="text-center">Email</th>
+                            <th class="text-center">Ngày sinh</th>
+                            <th class="text-center">Ngày đăng ký</th>
+                            <th class="text-center">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in users.Item)
+                        {
+                            <tr>
+                                @{
+                                    string fullId = item.Id.ToString();
+                                    string id = fullId.Length > 13 ? fullId.Substring(0, 9) + "..." : fullId;
+                                    string fullName = item.FirstName + " " + item.MiddleName + " " + item.LastName;
+                                    string bod = item.DateOfBirth.ToString("dd/MM/yyyy");
+                                    string doj = item.DateOfJoin.ToString("dd/MM/yyyy");
+                                    string sex = "";
+                                    if (item.Gender == GenderType.Male) sex = "Nam";
+                                    else if (item.Gender == GenderType.Female) sex = "Nữ";
+                                    else sex = "Khác";
+                                }
+                                <td class="limitContent" data-content="@item.Id">@Html.DisplayFor(modelItem => id)</td>
+                                <td>@Html.DisplayFor(modelItem => fullName)</td>
+                                <td>@Html.DisplayFor(modelItem => item.DisplayName)</td>
+                                <td>@Html.DisplayFor(modelItem => item.UserName)</td>
+                                <td>@Html.DisplayFor(modelItem => sex)</td>
+                                <td>@Html.DisplayFor(modelItem => item.PhoneNumber)</td>
+                                <td>@Html.DisplayFor(modelItem => item.Email)</td>
+                                <td>@Html.DisplayFor(modelItem => bod)</td>
+                                <td>@Html.DisplayFor(modelItem => doj)</td>
+                                <td class="text-center w-25">
+                                    <button type="button" class="btn-sm btn-info m-1"><i class="fa fa-book"></i></button>
+                                    <button type="button" class="btn-sm btn-warning m-1"><i class="fa fa-pen"></i></button>
+                                    <button type="button" class="btn-sm btn-danger m-1"><i class="fa fa-trash"></i></button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="/js/users/index.js" defer></script>
+
+<script>
+    $('#genders option[value=@filter.Gender]').attr('selected', 'selected');
+    function btnFilterClick() {
+        if (document.getElementById("filterForm").hidden) {
+            document.getElementById("filterForm").hidden = false;
+        } else {
+            document.getElementById("filterForm").hidden = true;
+        }
+    }
+</script>
