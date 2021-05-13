@@ -14,6 +14,7 @@ namespace ZiTechDev.AdminSite.ApiClientServices.User
     public class UserApiClient : IUserApiClient
     {
         private readonly IHttpClientFactory _httpClientFactory;
+
         public UserApiClient(IHttpClientFactory httpClientFactory)
         {
             _httpClientFactory = httpClientFactory;
@@ -26,23 +27,21 @@ namespace ZiTechDev.AdminSite.ApiClientServices.User
 
             var content = JsonConvert.SerializeObject(filter);
             var httpContent = new StringContent(content, Encoding.UTF8, "application/json");
-            var response = await client.PostAsync("api/users", httpContent);
-
-            //var response = await client.GetAsync($"/api/users?" +
-            //    $"currentPageIndex={filter.CurrentPageIndex}&" +
-            //    $"pageSize={filter.PageSize}&" +
-            //    $"fullName={filter.FullName}&" +
-            //    $"userName={filter.UserName}&" +
-            //    $"displayName={filter.DisplayName}&" +
-            //    $"phoneNumber={filter.PhoneNumber}&" +
-            //    $"email={filter.Email}&" +
-            //    $"gender={filter.Gender}&" +
-            //    $"fromDOB={filter.FromDOB}&" +
-            //    $"toDOB={filter.ToDOB}");
-
+            var response = await client.PostAsync("/api/users/", httpContent);
             var body = await response.Content.ReadAsStringAsync();
             var user = JsonConvert.DeserializeObject<PaginitionEngines<UserViewModel>>(body);
             return user;
+        }
+
+        public async Task<bool> Create(UserCreateRequest request)
+        {
+            var client = _httpClientFactory.CreateClient("zitechdev");
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", request.BearerToken);
+
+            var content = JsonConvert.SerializeObject(request);
+            var httpContent = new StringContent(content, Encoding.UTF8, "application/json");
+            var response = await client.PostAsync("api/users/create", httpContent);
+            return response.IsSuccessStatusCode;
         }
     }
 }

@@ -14,6 +14,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ZiTechDev.AdminSite.ApiClientServices.Auth;
 using ZiTechDev.Business.Requests.Auth;
+using ZiTechDev.Business.Requests.User;
 
 namespace ZiTechDev.AdminSite.Controllers
 {
@@ -29,11 +30,6 @@ namespace ZiTechDev.AdminSite.Controllers
             _configuration = configuration;
         }
 
-        public IActionResult Index()
-        {
-            return View();
-        }
-
         [HttpGet]
         public async Task<IActionResult> Login()
         {
@@ -46,9 +42,10 @@ namespace ZiTechDev.AdminSite.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return View(ModelState);
+                return View(request);
             }
             var token = await _authApiClient.Login(request);
+            //Nếu sai thông tin đăng nhập -> token = null -> ...
             var principal = ValidateToken(token);
             var authProperties = new AuthenticationProperties()
             {

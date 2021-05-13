@@ -13,7 +13,7 @@
 </head>
 <body class="sb-nav-fixed">
     <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
-        <a class="navbar-brand" href="/">ZiTechDev</a>
+        <a class="navbar-brand" href="/Home">ZiTechDev</a>
         <button class="btn btn-link btn-sm order-1 order-lg-0" id="sidebarToggle" href="#!"><i class="fas fa-bars"></i></button>
         <!-- Navbar Search-->
         <form class="d-none d-md-inline-block form-inline ml-auto mr-0 mr-md-3 my-2 my-md-0">
@@ -29,9 +29,9 @@
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" id="userDropdown" href="#!" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-user fa-fw"></i>@User.Identity.Name</a>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
-                    <a class="dropdown-item" href="/auth/profile/">Hồ sơ</a>
+                    <a class="dropdown-item" href="/Auth/Profile/">Hồ sơ</a>
                     <div class="dropdown-divider"></div>
-                    <form asp-controller="auth" asp-action="logout" method="post">
+                    <form asp-controller="Auth" asp-action="Logout" method="post">
                         <button type="submit" class="dropdown-item">Đăng xuất</button>
                     </form>
                 </div>
@@ -43,12 +43,6 @@
             <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
                 <div class="sb-sidenav-menu">
                     <div class="nav">
-                        <!-- Lõi -->
-                        <div class="sb-sidenav-menu-heading">Lõi</div>
-                        <a class="nav-link" href="/">
-                            <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
-                            Trung tâm
-                        </a>
                         <!-- Quản lý -->
                         <div class="sb-sidenav-menu-heading">Quản lý</div>
                         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseSystem" aria-expanded="false" aria-controls="collapseLayouts">
@@ -58,11 +52,11 @@
                         </a>
                         <div class="collapse" id="collapseSystem" aria-labelledby="headingOne" data-parent="#sidenavAccordion">
                             <nav class="sb-sidenav-menu-nested nav">
-                                <a class="nav-link" href="/activities">Hoạt động</a>
-                                <a class="nav-link" href="/functions">Hàm</a>
-                                <a class="nav-link" href="/languages">Ngôn ngữ</a>
-                                <a class="nav-link" href="/logs">Lịch sử hoạt động</a>
-                                <a class="nav-link" href="/settings">Cài đặt</a>
+                                <a class="nav-link" href="/ActivitiesAdministrator">Hoạt động</a>
+                                <a class="nav-link" href="/FunctionsAdministrator">Hàm</a>
+                                <a class="nav-link" href="/LanguagesAdministrator">Ngôn ngữ</a>
+                                <a class="nav-link" href="/LogsAdministrator">Lịch sử hoạt động</a>
+                                <a class="nav-link" href="/SettingsAdministrator">Cài đặt</a>
                             </nav>
                         </div>
                         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUser" aria-expanded="false" aria-controls="collapseLayouts">
@@ -72,9 +66,9 @@
                         </a>
                         <div class="collapse" id="collapseUser" aria-labelledby="headingOne" data-parent="#sidenavAccordion">
                             <nav class="sb-sidenav-menu-nested nav">
-                                <a class="nav-link" href="/user">Thành viên</a>
-                                <a class="nav-link" href="/roles">Vai trò</a>
-                                <a class="nav-link" href="/permissions">Quyền</a>
+                                <a class="nav-link" href="/UsersAdministrator">Thành viên</a>
+                                <a class="nav-link" href="/RolesAdministrator">Vai trò</a>
+                                <a class="nav-link" href="/PermissionsAdministrator">Quyền</a>
                             </nav>
                         </div>
                         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseContent" aria-expanded="false" aria-controls="collapseLayouts">
@@ -84,9 +78,9 @@
                         </a>
                         <div class="collapse" id="collapseContent" aria-labelledby="headingOne" data-parent="#sidenavAccordion">
                             <nav class="sb-sidenav-menu-nested nav">
-                                <a class="nav-link" href="/categories">Chuyên mục</a>
-                                <a class="nav-link" href="/posts">Bài viết</a>
-                                <a class="nav-link" href="/comments">Bình luận</a>
+                                <a class="nav-link" href="/CategoriesAdministrator">Chuyên mục</a>
+                                <a class="nav-link" href="/PostsAdministrator">Bài viết</a>
+                                <a class="nav-link" href="/CommentsAdministrator">Bình luận</a>
                             </nav>
                         </div>
                         <!-- Giao diện -->
@@ -115,9 +109,9 @@
                                 </a>
                                 <div class="collapse" id="pagesCollapseAuth" aria-labelledby="headingOne" data-parent="#sidenavAccordionPages">
                                     <nav class="sb-sidenav-menu-nested nav">
-                                        <a class="nav-link" href="/auth/login">Đăng nhập</a>
-                                        <a class="nav-link" href="/auth/register">Đăng ký</a>
-                                        <a class="nav-link" href="/auth/forgotpassword">Quên mật khẩu</a>
+                                        <a class="nav-link" href="/Auth/Login">Đăng nhập</a>
+                                        <a class="nav-link" href="/Auth/Register">Đăng ký</a>
+                                        <a class="nav-link" href="/Auth/ForgotPassword">Quên mật khẩu</a>
                                     </nav>
                                 </div>
                                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#pagesCollapseError" aria-expanded="false" aria-controls="pagesCollapseError">

@@ -63,6 +63,10 @@ namespace ZiTechDev.Business.Services.User
         public async Task<PaginitionEngines<UserViewModel>> GetAll(UserFilter filter)
         {
             var query = _userManager.Users;
+            if (!string.IsNullOrEmpty(filter.Id))
+            {
+                query = query.Where(x => (x.Id.ToString()).Contains(filter.Id));
+            }
             if (!string.IsNullOrEmpty(filter.FullName))
             {
                 query = query.Where(x => (x.FirstName + " " + x.MiddleName + " " + x.LastName).Contains(filter.FullName));
@@ -88,6 +92,7 @@ namespace ZiTechDev.Business.Services.User
                 query = query.Where(x => (int)x.Gender == filter.Gender);
             }
             query = query.Where(x => x.DateOfBirth > filter.FromDOB && x.DateOfBirth < filter.ToDOB);
+            query = query.Where(x => x.DateOfJoin > filter.FromDOJ && x.DateOfJoin < filter.ToDOJ);
 
             var data = await query.Skip((filter.CurrentPageIndex - 1) * filter.PageSize)
                 .Take(filter.PageSize).OrderByDescending(d=>d.DateOfJoin)

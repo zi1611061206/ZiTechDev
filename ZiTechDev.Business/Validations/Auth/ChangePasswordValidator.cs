@@ -12,13 +12,13 @@ namespace ZiTechDev.Business.Validations.Auth
         {
             CascadeMode = CascadeMode.Stop;
             RuleFor(x => x.OldPassword)
-                .NotEmpty().WithMessage("Old Password is required");
+                .NotEmpty().WithMessage("Trường thông tin này là bắt buộc");
             RuleFor(x => x.NewPassword)
-                .NotEmpty().WithMessage("New Password is required")
+                .NotEmpty().WithMessage("Trường thông tin này là bắt buộc")
                 .Matches(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$").WithMessage("Password must be at least 8 characters, at least 1 uppercase, 1 lowercase, 1 number and 1 special character");
             RuleFor(x => x.PasswordConfirmation)
-                .NotEmpty().WithMessage("Confirm Password is required")
-                .Equal(x => x.NewPassword).WithMessage("Confirmation Password is not match");
+                .NotEmpty().WithMessage("Trường thông tin này là bắt buộc")
+                .Equal(x => x.NewPassword).WithMessage("Mật khẩu xác nhận không khớp");
         }
     }
 }

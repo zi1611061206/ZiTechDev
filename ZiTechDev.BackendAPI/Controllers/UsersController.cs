@@ -29,7 +29,7 @@ namespace ZiTechDev.BackendAPI.Controllers
         }
 
         [HttpPost("create")]
-        public async Task<IActionResult> Create([FromForm] UserCreateRequest request)
+        public async Task<IActionResult> Create([FromBody] UserCreateRequest request)
         {
             if (!ModelState.IsValid)
             {
@@ -44,7 +44,7 @@ namespace ZiTechDev.BackendAPI.Controllers
         }
 
         [HttpPut("update")]
-        public async Task<IActionResult> Update([FromForm] UserUpdateRequest request)
+        public async Task<IActionResult> Update([FromBody] UserUpdateRequest request)
         {
             if (!ModelState.IsValid)
             {
