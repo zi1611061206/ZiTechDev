@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
-using ZiTechDev.Business.Engines.Exceptions;
 using ZiTechDev.Business.Engines.Paginition;
 using ZiTechDev.Business.Requests.Activity;
 using ZiTechDev.Data.Entities;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using ZiTechDev.Data.Context;
+using ZiTechDev.Business.Engines.CustomResult;
 
 namespace ZiTechDev.Business.Services.Activities
 {
@@ -21,8 +21,15 @@ namespace ZiTechDev.Business.Services.Activities
             _context = context;
         }
 
-        public async Task<int> Create(ActivityCreateRequest request)
+        public async Task<ApiResult<int>> Create(ActivityCreateRequest request)
         {
+            var query = from a in _context.Activities select a;
+            var data = query.Where(x => x.Name.Equals(request.Name) && x.FunctionId == request.FunctionId).ToList();
+            if(data.Count > 0)
+            {
+                return new Failed<int>("Tên hành động đã tồn tại trong cùng hàm");
+            }
+
             var activity = new Activity()
             {
                 Name = request.Name,
@@ -30,36 +37,71 @@ namespace ZiTechDev.Business.Services.Activities
                 FunctionId = request.FunctionId
             };
             _context.Activities.Add(activity);
-            await _context.SaveChangesAsync();
-            return activity.Id;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch(Exception e)
+            {
+                return new Failed<int>("Lưu thất bại với lỗi: " + e.Message);
+            }
+            return new Successed<int>(activity.Id);
         }
 
-        public async Task<int> Update(ActivityUpdateRequest request)
+        public async Task<ApiResult<int>> Update(ActivityUpdateRequest request)
         {
+            var query = from a in _context.Activities select a;
+            var data = query.Where(x => x.Name.Equals(request.Name) && x.FunctionId == request.FunctionId).ToList();
+            if (data.Count > 0)
+            {
+                return new Failed<int>("Tên hành động đã tồn tại trong cùng hàm");
+            }
             var activity = await _context.Activities.FindAsync(request.Id);
             if (activity == null)
             {
-                throw new ExceptionEngines($"Can not find with ID: {request.Id}");
+                return new Failed<int>("Không thể tìm thấy hành động có mã: " + request.Id);
             }
+
             activity.Name = request.Name;
             activity.Description = request.Description;
             activity.FunctionId = request.FunctionId;
             _context.Activities.Update(activity);
-            return await _context.SaveChangesAsync();
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                return new Failed<int>("Lưu thất bại với lỗi: " + e.Message);
+            }
+            return new Successed<int>(activity.Id);
         }
 
-        public async Task<int> Delete(int activityId)
+        public async Task<ApiResult<int>> Delete(int activityId)
         {
             var activity = await _context.Activities.FindAsync(activityId);
             if (activity == null)
             {
-                throw new ExceptionEngines($"Can not find with ID: {activityId}");
+                return new Failed<int>("Không thể tìm thấy hành động có mã: " + activityId);
             }
+
             _context.Activities.Remove(activity);
-            return await _context.SaveChangesAsync();
+
+            int result;
+            try
+            {
+                result = await _context.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                return new Failed<int>("Xóa thất bại với lỗi: " + e.Message);
+            }
+            return new Successed<int>(result);
         }
 
-        public async Task<PaginitionEngines<ActivityViewModel>> GetAll(ActivityFilter filter)
+        public async Task<ApiResult<PaginitionEngines<ActivityViewModel>>> GetAll(ActivityFilter filter)
         {
             var query = from a in _context.Activities select a;
             if (filter.Id != 0)
@@ -88,7 +130,7 @@ namespace ZiTechDev.Business.Services.Activities
                 TotalRecord = await query.CountAsync(),
                 Item = data
             };
-            return result;
+            return new Successed<PaginitionEngines<ActivityViewModel>>(result);
         }
     }
 }

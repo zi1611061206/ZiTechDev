@@ -7,7 +7,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
-using ZiTechDev.Business.Engines.Exceptions;
+using ZiTechDev.Business.Engines.CustomResult;
 using ZiTechDev.Business.Requests.Auth;
 using ZiTechDev.Data.Entities;
 
@@ -26,25 +26,24 @@ namespace ZiTechDev.Business.Services.Auth
             _config = config;
         }
 
-        public async Task<string> Login(LoginRequest request)
+        public async Task<ApiResult<string>> Login(LoginRequest request)
         {
             var user = await _userManager.FindByNameAsync(request.UserName);
             if (user == null)
             {
-                return null;
+                return new Failed<string>("Người dùng không tồn tại");
             }
             var result = await _signInManager.PasswordSignInAsync(user, request.Password, request.RememberMe, true);
             if (!result.Succeeded)
             {
-                return null;
+                return new Failed<string>("Mật khẩu đăng nhập không đúng");
             }
 
             var roles = _userManager.GetRolesAsync(user);
             var claims = new[]
             {
                 new Claim(ClaimTypes.Email, user.Email),
-                new Claim(ClaimTypes.GivenName, user.DisplayName),
-                new Claim(ClaimTypes.Name, user.UserName),
+                new Claim(ClaimTypes.Name, user.DisplayName),
                 new Claim(ClaimTypes.Role, string.Join(";", roles))
             };
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Tokens:Key"]));
@@ -56,11 +55,17 @@ namespace ZiTechDev.Business.Services.Auth
                 expires: DateTime.Now.AddHours(3),
                 signingCredentials: creds
                 );
-            return new JwtSecurityTokenHandler().WriteToken(token);
+
+            return new Successed<string>(new JwtSecurityTokenHandler().WriteToken(token));
         }
 
-        public async Task<bool> Register(RegisterRequest request)
+        public async Task<ApiResult<string>> Register(RegisterRequest request)
         {
+            if(await _userManager.FindByNameAsync(request.UserName) != null)
+            {
+                return new Failed<string>("Tên đăng nhập đã tồn tại");
+            }
+
             var user = new AppUser()
             {
                 FirstName = request.FirstName,
@@ -73,37 +78,18 @@ namespace ZiTechDev.Business.Services.Auth
                 Email = request.Email,
                 UserName = request.UserName
             };
+
+            if (await _userManager.FindByEmailAsync(request.Email) != null && _userManager.IsEmailConfirmedAsync(user).Result)
+            {
+                return new Failed<string>("Địa chỉ email đã được đăng ký và xác thực");
+            }
+
             var result = await _userManager.CreateAsync(user, request.Password);
-            if (result.Succeeded)
-            {
-                return true;
-            }
-            return false;
-        }
-
-        public async Task<bool> IsExistedUserName(string userName)
-        {
-            var user = await _userManager.FindByNameAsync(userName);
-            if (user == null)
-            {
-                return false;
-            }
-            return true;
-        }
-
-        public async Task<bool> IsMatchedUser(string userName, string password, bool rememberMe)
-        {
-            var user = await _userManager.FindByNameAsync(userName);
-            if (user == null)
-            {
-                return false;
-            }
-            var result = await _signInManager.PasswordSignInAsync(user, password, rememberMe, true);
             if (!result.Succeeded)
             {
-                return false;
+                return new Failed<string>("Đăng ký thất bại");
             }
-            return true;
+            return new Successed<string>(user.Id.ToString());
         }
     }
 }

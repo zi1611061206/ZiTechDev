@@ -29,12 +29,12 @@ namespace ZiTechDev.BackendAPI.Controllers
             {
                 return BadRequest(ModelState);
             }
-            var tokenResult = await _authService.Login(request);
-            if (string.IsNullOrEmpty(tokenResult))
+            var result = await _authService.Login(request);
+            if (!result.IsSuccessed)
             {
-                return BadRequest("Username or password is incorrect");
+                return BadRequest(result.Message);
             }
-            return Ok(tokenResult);
+            return Ok(result.ReturnedObject);
         }
 
         [HttpPost("register")]
@@ -46,11 +46,11 @@ namespace ZiTechDev.BackendAPI.Controllers
                 return BadRequest(ModelState);
             }
             var result = await _authService.Register(request);
-            if (!result)
+            if (!result.IsSuccessed)
             {
-                return BadRequest("Register is unsucessful");
+                return BadRequest(result.Message);
             }
-            return Ok();
+            return Ok(result.ReturnedObject);
         }
     }
 }

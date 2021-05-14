@@ -24,8 +24,8 @@ namespace ZiTechDev.BackendAPI.Controllers
         [HttpPost("")]
         public async Task<IActionResult> Get([FromBody] UserFilter filter)
         {
-            var user = await _userService.GetAll(filter);
-            return Ok(user);
+            var result = await _userService.GetAll(filter);
+            return Ok(result.ReturnedObject);
         }
 
         [HttpPost("create")]
@@ -35,12 +35,12 @@ namespace ZiTechDev.BackendAPI.Controllers
             {
                 return BadRequest(ModelState);
             }
-            var userId = await _userService.Create(request);
-            if (string.IsNullOrEmpty(userId))
+            var result = await _userService.Create(request);
+            if (!result.IsSuccessed)
             {
-                return BadRequest();
+                return BadRequest(result.Message);
             }
-            return Ok(userId);
+            return Ok(result.ReturnedObject);
         }
 
         [HttpPut("update")]
@@ -51,22 +51,22 @@ namespace ZiTechDev.BackendAPI.Controllers
                 return BadRequest(ModelState);
             }
             var result = await _userService.Update(request);
-            if (!result)
+            if (!result.IsSuccessed)
             {
-                return BadRequest();
+                return BadRequest(result.Message);
             }
-            return Ok();
+            return Ok(result.ReturnedObject);
         }
 
         [HttpDelete("delete/{id}")]
         public async Task<IActionResult> Delete(string id)
         {
             var result = await _userService.Delete(id);
-            if (!result)
+            if (!result.IsSuccessed)
             {
-                return BadRequest();
+                return BadRequest(result.Message);
             }
-            return Ok();
+            return Ok(result.ReturnedObject);
         }
     }
 }

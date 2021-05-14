@@ -22,7 +22,7 @@
                 <button type="submit" class="btn-sm btn-primary m-1"><i class="fa fa-plus"></i></button>
                 <button type="button" class="btn-sm btn-secondary m-1" onclick="btnFilterClick()"><i class="fa fa-filter"></i></button>
             </form>
-            
+
             <form id="filterForm" hidden class="row" asp-controller="UsersAdministrator" asp-action="Index" method="post">
                 <div class="form-group col-md-2 col-md-offset-1">
                     <label class="small mb-1" asp-for="@filter.Id"></label>
@@ -75,6 +75,7 @@
             </form>
         </div>
     </div>
+
     <div class="card mb-4 bg-light">
         <div class="card-body">
             <div class="table-responsive">
@@ -131,15 +132,4 @@
     </div>
 </div>
 
-<script src="/js/users/index.js" defer></script>
-
-<script>
-    $('#genders option[value=@filter.Gender]').attr('selected', 'selected');
-    function btnFilterClick() {
-        if (document.getElementById("filterForm").hidden) {
-            document.getElementById("filterForm").hidden = false;
-        } else {
-            document.getElementById("filterForm").hidden = true;
-        }
-    }
-</script>
+<script src="/js/UsersAdministrator/index.js" defer></script>

@@ -30,6 +30,7 @@ namespace ZiTechDev.AdminSite.Controllers
             _configuration = configuration;
         }
 
+        //Get
         [HttpGet]
         public async Task<IActionResult> Login()
         {
@@ -37,6 +38,7 @@ namespace ZiTechDev.AdminSite.Controllers
             return View();
         }
 
+        //Post
         [HttpPost]
         public async Task<IActionResult> Login(LoginRequest request)
         {
@@ -57,6 +59,14 @@ namespace ZiTechDev.AdminSite.Controllers
             return RedirectToAction("index", "home");
         }
 
+        [HttpPost]
+        public async Task<IActionResult> Logout()
+        {
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            HttpContext.Session.Remove("Token");
+            return RedirectToAction("login", "auth");
+        }
+
         private ClaimsPrincipal ValidateToken(string jwtToken)
         {
             IdentityModelEventSource.ShowPII = true;
@@ -69,14 +79,6 @@ namespace ZiTechDev.AdminSite.Controllers
             };
             ClaimsPrincipal principal = new JwtSecurityTokenHandler().ValidateToken(jwtToken, parameters, out SecurityToken validatedToken);
             return principal;
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Logout()
-        {
-            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            HttpContext.Session.Remove("Token");
-            return RedirectToAction("login", "auth");
         }
     }
 }

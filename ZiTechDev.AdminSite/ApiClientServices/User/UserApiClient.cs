@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -42,6 +43,6 @@ namespace ZiTechDev.AdminSite.ApiClientServices.User
             var httpContent = new StringContent(content, Encoding.UTF8, "application/json");
             var response = await client.PostAsync("api/users/create", httpContent);
             return response.IsSuccessStatusCode;
-        }
+        } 
     }
 }

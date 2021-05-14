@@ -12,6 +12,7 @@ namespace ZiTechDev.AdminSite.ApiClientServices.Auth
     public class AuthApiClient : IAuthApiClient
     {
         private readonly IHttpClientFactory _httpClientFactory;
+
         public AuthApiClient(IHttpClientFactory httpClientFactory)
         {
             _httpClientFactory = httpClientFactory;

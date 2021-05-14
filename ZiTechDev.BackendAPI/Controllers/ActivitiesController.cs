@@ -25,8 +25,8 @@ namespace ZiTechDev.BackendAPI.Controllers
         [HttpGet("")]
         public async Task<IActionResult> Get([FromQuery] ActivityFilter filter)
         {
-            var activity = await _activityService.GetAll(filter);
-            return Ok(activity);
+            var result = await _activityService.GetAll(filter);
+            return Ok(result.ReturnedObject);
         }
 
         [HttpPost("create")]
@@ -36,12 +36,12 @@ namespace ZiTechDev.BackendAPI.Controllers
             {
                 return BadRequest(ModelState);
             }
-            var activityId = await _activityService.Create(request);
-            if (activityId == 0)
+            var result = await _activityService.Create(request);
+            if (!result.IsSuccessed)
             {
-                return BadRequest();
+                return BadRequest(result.Message);
             }
-            return Ok(activityId);
+            return Ok(result.ReturnedObject);
         }
 
         [HttpPut("update")]
@@ -51,23 +51,23 @@ namespace ZiTechDev.BackendAPI.Controllers
             {
                 return BadRequest(ModelState);
             }
-            var affectedResult = await _activityService.Update(request);
-            if (affectedResult == 0)
+            var result = await _activityService.Update(request);
+            if (!result.IsSuccessed)
             {
-                return BadRequest();
+                return BadRequest(result.Message);
             }
-            return Ok();
+            return Ok(result.ReturnedObject);
         }
 
         [HttpDelete("delete/{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var affectedResult = await _activityService.Delete(id);
-            if (affectedResult == 0)
+            var result = await _activityService.Delete(id);
+            if (!result.IsSuccessed)
             {
-                return BadRequest();
+                return BadRequest(result.Message);
             }
-            return Ok();
+            return Ok(result.ReturnedObject);
         }
     }
 }

@@ -20,6 +20,7 @@ namespace ZiTechDev.AdminSite.Controllers
             _userApiClient = userApiClient;
         }
 
+        //Get
         [HttpGet]
         public async Task<IActionResult> Index()
         {
@@ -46,6 +47,13 @@ namespace ZiTechDev.AdminSite.Controllers
             return View();
         }
 
+        [HttpGet]
+        public IActionResult Create()
+        {
+            return View();
+        }
+        
+        //Post
         [HttpPost]
         public async Task<IActionResult> Index(UserFilter filter)
         {
@@ -66,12 +74,6 @@ namespace ZiTechDev.AdminSite.Controllers
                 }
             };
             ViewData["CbGender"] = cb;
-            return View();
-        }
-
-        [HttpGet]
-        public IActionResult Create()
-        {
             return View();
         }
 

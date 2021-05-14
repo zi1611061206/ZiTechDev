@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ZiTechDev.Business.Engines.Exceptions;
+using ZiTechDev.Business.Engines.CustomResult;
 using ZiTechDev.Business.Engines.Paginition;
 using ZiTechDev.Business.Requests.User;
 using ZiTechDev.Data.Entities;
@@ -15,52 +15,13 @@ namespace ZiTechDev.Business.Services.User
     public class UserService : IUserService
     {
         private readonly UserManager<AppUser> _userManager;
-        private readonly SignInManager<AppUser> _signInManager;
 
-        public UserService(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager)
+        public UserService(UserManager<AppUser> userManager)
         {
             _userManager = userManager;
-            _signInManager = signInManager;
         }
 
-        public async Task<string> Create(UserCreateRequest request)
-        {
-            var user = new AppUser()
-            {
-                FirstName = request.FirstName,
-                MiddleName = request.MiddleName,
-                LastName = request.LastName,
-                DisplayName = request.DisplayName,
-                DateOfBirth = request.DateOfBirth,
-                Gender = request.Gender,
-                PhoneNumber = request.PhoneNumber,
-                Email = request.Email,
-                UserName = request.UserName
-            };
-            var result = await _userManager.CreateAsync(user, request.Password);
-            if (!result.Succeeded)
-            {
-                return null;
-            }
-            return user.Id.ToString();
-        }
-
-        public async Task<bool> Delete(string userId)
-        {
-            var user = await _userManager.FindByIdAsync(userId);
-            if (user == null)
-            {
-                throw new ExceptionEngines($"Can not find with ID: {userId}");
-            }
-            var result = await _userManager.DeleteAsync(user);
-            if (!result.Succeeded)
-            {
-                return false;
-            }
-            return true;
-        }
-
-        public async Task<PaginitionEngines<UserViewModel>> GetAll(UserFilter filter)
+        public async Task<ApiResult<PaginitionEngines<UserViewModel>>> GetAll(UserFilter filter)
         {
             var query = _userManager.Users;
             if (!string.IsNullOrEmpty(filter.Id))
@@ -127,16 +88,50 @@ namespace ZiTechDev.Business.Services.User
                 TotalRecord = await query.CountAsync(),
                 Item = data
             };
-            return result;
+            return new Successed<PaginitionEngines<UserViewModel>>(result);
         }
 
-        public async Task<bool> Update(UserUpdateRequest request)
+        public async Task<ApiResult<string>> Create(UserCreateRequest request)
+        {
+            if (await _userManager.FindByNameAsync(request.UserName) != null)
+            {
+                return new Failed<string>("Tên đăng nhập đã tồn tại");
+            }
+
+            var user = new AppUser()
+            {
+                FirstName = request.FirstName,
+                MiddleName = request.MiddleName,
+                LastName = request.LastName,
+                DisplayName = request.DisplayName,
+                DateOfBirth = request.DateOfBirth,
+                Gender = request.Gender,
+                PhoneNumber = request.PhoneNumber,
+                Email = request.Email,
+                UserName = request.UserName
+            };
+
+            if (await _userManager.FindByEmailAsync(request.Email) != null && _userManager.IsEmailConfirmedAsync(user).Result)
+            {
+                return new Failed<string>("Địa chỉ email đã được đăng ký và xác thực");
+            }
+
+            var result = await _userManager.CreateAsync(user, request.Password);
+            if (!result.Succeeded)
+            {
+                return new Failed<string>("Tạo mới thất bại");
+            }
+            return new Successed<string>(user.Id.ToString());
+        }
+
+        public async Task<ApiResult<string>> Update(UserUpdateRequest request)
         {
             var user = await _userManager.FindByIdAsync(request.Id);
             if (user == null)
             {
-                throw new ExceptionEngines($"Can not find with ID: {request.Id}");
+                return new Failed<string>("Không thể tìm thấy hành động có mã: " + request.Id);
             }
+
             user.FirstName = request.FirstName;
             user.MiddleName = request.MiddleName;
             user.LastName = request.LastName;
@@ -145,37 +140,37 @@ namespace ZiTechDev.Business.Services.User
             user.Email = request.Email;
             user.DateOfBirth = request.DateOfBirth;
             user.Gender = request.Gender;
+
+            var sameMailUser = await _userManager.FindByEmailAsync(request.Email);
+
+            if (!sameMailUser.Id.ToString().Equals(request.Id) && _userManager.IsEmailConfirmedAsync(user).Result)
+            {
+                return new Failed<string>("Địa chỉ email đã được đăng ký và xác thực bởi người dùng khác");
+            }
+
             var result = await _userManager.UpdateAsync(user);
             if (!result.Succeeded)
             {
-                return false;
+                return new Failed<string>("Lưu thất bại");
             }
-            return true;
+            return new Successed<string>(user.Id.ToString());
         }
 
-        public async Task<bool> IsExistedUserName(string userName)
+        public async Task<ApiResult<bool>> Delete(string userId)
         {
-            var user = await _userManager.FindByNameAsync(userName);
+            var user = await _userManager.FindByIdAsync(userId);
             if (user == null)
             {
-                return false;
+                return new Failed<bool>("Không thể tìm thấy người dùng có mã: " + userId);
             }
-            return true;
-        }
 
-        public async Task<bool> IsMatchedUser(string userName, string password, bool rememberMe)
-        {
-            var user = await _userManager.FindByNameAsync(userName);
-            if (user == null)
-            {
-                return false;
-            }
-            var result = await _signInManager.PasswordSignInAsync(user, password, rememberMe, true);
+            var result = await _userManager.DeleteAsync(user);
+
             if (!result.Succeeded)
             {
-                return false;
+                return new Failed<bool>("Xóa thất bại");
             }
-            return true;
+            return new Successed<bool>(true);
         }
     }
 }
