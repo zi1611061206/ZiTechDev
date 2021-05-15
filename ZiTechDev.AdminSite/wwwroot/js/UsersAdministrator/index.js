@@ -16,7 +16,6 @@
 	});
 });
 
-
 function btnFilterClick() {
 	if (document.getElementById("filterForm").hidden) {
 		document.getElementById("filterForm").hidden = false;

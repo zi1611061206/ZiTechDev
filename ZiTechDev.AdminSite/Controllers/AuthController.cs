@@ -30,7 +30,6 @@ namespace ZiTechDev.AdminSite.Controllers
             _configuration = configuration;
         }
 
-        //Get
         [HttpGet]
         public async Task<IActionResult> Login()
         {
@@ -38,7 +37,6 @@ namespace ZiTechDev.AdminSite.Controllers
             return View();
         }
 
-        //Post
         [HttpPost]
         public async Task<IActionResult> Login(LoginRequest request)
         {
@@ -46,17 +44,23 @@ namespace ZiTechDev.AdminSite.Controllers
             {
                 return View(request);
             }
-            var token = await _authApiClient.Login(request);
-            //Nếu sai thông tin đăng nhập -> token = null -> ...
-            var principal = ValidateToken(token);
-            var authProperties = new AuthenticationProperties()
+
+            var result = await _authApiClient.Login(request);
+
+            if (result.IsSuccessed)
             {
-                ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(10),
-                IsPersistent = false
-            };
-            HttpContext.Session.SetString("Token", token);
-            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal, authProperties);
-            return RedirectToAction("index", "home");
+                var principal = ValidateToken(result.ReturnedObject);
+                var authProperties = new AuthenticationProperties()
+                {
+                    ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(10),
+                    IsPersistent = false
+                };
+                HttpContext.Session.SetString("Token", result.ReturnedObject);
+                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal, authProperties);
+                return RedirectToAction("index", "home");
+            }
+            ModelState.AddModelError("", result.Message);
+            return View(request);
         }
 
         [HttpPost]

@@ -21,6 +21,56 @@ namespace ZiTechDev.Business.Services.Activities
             _context = context;
         }
 
+        public async Task<ApiResult<PaginitionEngines<ActivityViewModel>>> Get(ActivityFilter filter)
+        {
+            var query = from a in _context.Activities select a;
+            if (filter.Id != 0)
+            {
+                query = query.Where(x => x.Id == filter.Id);
+            }
+            if (filter.Name != null)
+            {
+                query = query.Where(x => x.Name.Contains(filter.Name));
+            }
+            if (filter.FunctionIds.Count > 0)
+            {
+                query = query.Where(x => filter.FunctionIds.Contains(x.FunctionId));
+            }
+            var data = await query.Skip((filter.CurrentPageIndex - 1) * filter.PageSize)
+                .Take(filter.PageSize).OrderBy(d => d.Id)
+                .Select(x => new ActivityViewModel()
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                    Description = x.Description,
+                    FunctionId = x.FunctionId
+                }).ToListAsync();
+            var result = new PaginitionEngines<ActivityViewModel>()
+            {
+                TotalRecord = await query.CountAsync(),
+                Item = data
+            };
+            return new Successed<PaginitionEngines<ActivityViewModel>>(result);
+        }
+
+        public async Task<ApiResult<ActivityViewModel>> GetById(int activityId)
+        {
+            var activity = await _context.Activities.FindAsync(activityId);
+            if (activity == null)
+            {
+                return new Failed<ActivityViewModel>("Không thể tìm thấy hành động có mã: " + activityId);
+            }
+            var viewModel = new ActivityViewModel()
+            {
+                Id = activity.Id,
+                Name = activity.Name,
+                Description = activity.Description,
+                FunctionId = activity.FunctionId
+                
+            };
+            return new Successed<ActivityViewModel>(viewModel);
+        }
+
         public async Task<ApiResult<int>> Create(ActivityCreateRequest request)
         {
             var query = from a in _context.Activities select a;
@@ -52,7 +102,7 @@ namespace ZiTechDev.Business.Services.Activities
         public async Task<ApiResult<int>> Update(ActivityUpdateRequest request)
         {
             var query = from a in _context.Activities select a;
-            var data = query.Where(x => x.Name.Equals(request.Name) && x.FunctionId == request.FunctionId).ToList();
+            var data = query.Where(x => x.Name.Equals(request.Name) && x.FunctionId == request.FunctionId && x.Id == request.Id).ToList();
             if (data.Count > 0)
             {
                 return new Failed<int>("Tên hành động đã tồn tại trong cùng hàm");
@@ -99,38 +149,6 @@ namespace ZiTechDev.Business.Services.Activities
                 return new Failed<int>("Xóa thất bại với lỗi: " + e.Message);
             }
             return new Successed<int>(result);
-        }
-
-        public async Task<ApiResult<PaginitionEngines<ActivityViewModel>>> GetAll(ActivityFilter filter)
-        {
-            var query = from a in _context.Activities select a;
-            if (filter.Id != 0)
-            {
-                query = query.Where(x => x.Id == filter.Id);
-            }
-            if (filter.Name != null)
-            {
-                query = query.Where(x => x.Name.Contains(filter.Name));
-            }
-            if (filter.FunctionIds.Count > 0)
-            {
-                query = query.Where(x => filter.FunctionIds.Contains(x.FunctionId));
-            }
-            var data = await query.Skip((filter.CurrentPageIndex - 1) * filter.PageSize)
-                .Take(filter.PageSize).OrderBy(d => d.Id)
-                .Select(x => new ActivityViewModel()
-                {
-                    Id = x.Id,
-                    Name = x.Name,
-                    Description = x.Description,
-                    FunctionId = x.FunctionId
-                }).ToListAsync();
-            var result = new PaginitionEngines<ActivityViewModel>()
-            {
-                TotalRecord = await query.CountAsync(),
-                Item = data
-            };
-            return new Successed<PaginitionEngines<ActivityViewModel>>(result);
         }
     }
 }

@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ZiTechDev.Business.Engines.Paginition;
 using ZiTechDev.Business.Requests.User;
 using ZiTechDev.Business.Services.User;
 
@@ -16,6 +17,7 @@ namespace ZiTechDev.BackendAPI.Controllers
     public class UsersController : ControllerBase
     {
         private readonly IUserService _userService;
+
         public UsersController(IUserService userService)
         {
             _userService = userService;
@@ -24,8 +26,19 @@ namespace ZiTechDev.BackendAPI.Controllers
         [HttpPost("")]
         public async Task<IActionResult> Get([FromBody] UserFilter filter)
         {
-            var result = await _userService.GetAll(filter);
-            return Ok(result.ReturnedObject);
+            var result = await _userService.Get(filter);
+            return Ok(result);
+        }
+
+        [HttpGet("{userId}")]
+        public async Task<IActionResult> GetById(Guid userId)
+        {
+            var result = await _userService.GetById(userId);
+            if (result.IsSuccessed)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result.Message);
         }
 
         [HttpPost("create")]
@@ -35,7 +48,9 @@ namespace ZiTechDev.BackendAPI.Controllers
             {
                 return BadRequest(ModelState);
             }
+
             var result = await _userService.Create(request);
+
             if (!result.IsSuccessed)
             {
                 return BadRequest(result.Message);
@@ -43,14 +58,17 @@ namespace ZiTechDev.BackendAPI.Controllers
             return Ok(result.ReturnedObject);
         }
 
-        [HttpPut("update")]
-        public async Task<IActionResult> Update([FromBody] UserUpdateRequest request)
+        [HttpPut("update/{userId}")]
+        public async Task<IActionResult> Update(Guid userId, [FromBody] UserUpdateRequest request)
         {
+            request.Id = userId;
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
+
             var result = await _userService.Update(request);
+
             if (!result.IsSuccessed)
             {
                 return BadRequest(result.Message);
@@ -58,10 +76,10 @@ namespace ZiTechDev.BackendAPI.Controllers
             return Ok(result.ReturnedObject);
         }
 
-        [HttpDelete("delete/{id}")]
-        public async Task<IActionResult> Delete(string id)
+        [HttpDelete("delete/{userId}")]
+        public async Task<IActionResult> Delete(Guid userId)
         {
-            var result = await _userService.Delete(id);
+            var result = await _userService.Delete(userId);
             if (!result.IsSuccessed)
             {
                 return BadRequest(result.Message);

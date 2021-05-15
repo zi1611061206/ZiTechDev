@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
+using ZiTechDev.Business.Engines;
 using ZiTechDev.Data.Enums;
 
 namespace ZiTechDev.Business.Requests.User
@@ -9,7 +10,7 @@ namespace ZiTechDev.Business.Requests.User
     public class UserUpdateRequest
     {
         [Display(Name = "Mã")]
-        public string Id { get; set; }
+        public Guid Id { get; set; }
         [Display(Name = "Họ")]
         public string FirstName { get; set; }
         [Display(Name = "Tên đệm")]

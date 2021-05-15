@@ -22,21 +22,34 @@ namespace ZiTechDev.BackendAPI.Controllers
             _activityService = activityService;
         }
 
-        [HttpGet("")]
-        public async Task<IActionResult> Get([FromQuery] ActivityFilter filter)
+        [HttpPost("")]
+        public async Task<IActionResult> Get([FromBody] ActivityFilter filter)
         {
-            var result = await _activityService.GetAll(filter);
+            var result = await _activityService.Get(filter);
             return Ok(result.ReturnedObject);
+        }
+
+        [HttpGet("{activityId}")]
+        public async Task<IActionResult> GetById(int activityId)
+        {
+            var result = await _activityService.GetById(activityId);
+            if (result.IsSuccessed)
+            {
+                return Ok(result.ReturnedObject);
+            }
+            return BadRequest(result.Message);
         }
 
         [HttpPost("create")]
-        public async Task<IActionResult> Create([FromForm] ActivityCreateRequest request)
+        public async Task<IActionResult> Create([FromBody] ActivityCreateRequest request)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
+
             var result = await _activityService.Create(request);
+
             if (!result.IsSuccessed)
             {
                 return BadRequest(result.Message);
@@ -44,14 +57,17 @@ namespace ZiTechDev.BackendAPI.Controllers
             return Ok(result.ReturnedObject);
         }
 
-        [HttpPut("update")]
-        public async Task<IActionResult> Update([FromForm] ActivityUpdateRequest request)
+        [HttpPut("update/{activityId}")]
+        public async Task<IActionResult> Update(int activityId, [FromBody] ActivityUpdateRequest request)
         {
+            request.Id = activityId;
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
+
             var result = await _activityService.Update(request);
+
             if (!result.IsSuccessed)
             {
                 return BadRequest(result.Message);
@@ -59,10 +75,10 @@ namespace ZiTechDev.BackendAPI.Controllers
             return Ok(result.ReturnedObject);
         }
 
-        [HttpDelete("delete/{id}")]
-        public async Task<IActionResult> Delete(int id)
+        [HttpDelete("delete/{activityId}")]
+        public async Task<IActionResult> Delete(int activityId)
         {
-            var result = await _activityService.Delete(id);
+            var result = await _activityService.Delete(activityId);
             if (!result.IsSuccessed)
             {
                 return BadRequest(result.Message);

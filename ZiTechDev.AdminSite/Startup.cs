@@ -49,6 +49,8 @@ namespace ZiTechDev.AdminSite
                 x.BaseAddress = new Uri("https://localhost:5001/");
             });
 
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
             services.AddTransient<IAuthApiClient, AuthApiClient>();
             services.AddTransient<IUserApiClient, UserApiClient>();
 

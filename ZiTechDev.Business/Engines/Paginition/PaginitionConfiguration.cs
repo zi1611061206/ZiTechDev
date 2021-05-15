@@ -4,9 +4,15 @@ using System.Text;
 
 namespace ZiTechDev.Business.Engines.Paginition
 {
-    public class PaginitionConfiguration : RequestBase
+    public class PaginitionConfiguration
     {
         public int PageSize { get; set; }
         public int CurrentPageIndex { get; set; }
+
+        public PaginitionConfiguration()
+        {
+            PageSize = 10;
+            CurrentPageIndex = 1;
+        }
     }
 }

@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ZiTechDev.Business.Engines.CustomResult;
-using ZiTechDev.Business.Engines.Paginition;
+using ZiTechDev.Business.Engines.Paginition; 
 using ZiTechDev.Business.Requests.User;
 using ZiTechDev.Data.Entities;
 
@@ -21,7 +21,7 @@ namespace ZiTechDev.Business.Services.User
             _userManager = userManager;
         }
 
-        public async Task<ApiResult<PaginitionEngines<UserViewModel>>> GetAll(UserFilter filter)
+        public async Task<ApiResult<PaginitionEngines<UserViewModel>>> Get(UserFilter filter)
         {
             var query = _userManager.Users;
             if (!string.IsNullOrEmpty(filter.Id))
@@ -56,7 +56,7 @@ namespace ZiTechDev.Business.Services.User
             query = query.Where(x => x.DateOfJoin > filter.FromDOJ && x.DateOfJoin < filter.ToDOJ);
 
             var data = await query.Skip((filter.CurrentPageIndex - 1) * filter.PageSize)
-                .Take(filter.PageSize).OrderByDescending(d=>d.DateOfJoin)
+                .Take(filter.PageSize).OrderByDescending(d => d.DateOfJoin)
                 .Select(x => new UserViewModel()
                 {
                     FirstName = x.FirstName,
@@ -89,6 +89,42 @@ namespace ZiTechDev.Business.Services.User
                 Item = data
             };
             return new Successed<PaginitionEngines<UserViewModel>>(result);
+        }
+
+        public async Task<ApiResult<UserViewModel>> GetById(Guid userId)
+        {
+            var user = await _userManager.FindByIdAsync(userId.ToString());
+            if (user == null)
+            {
+                return new Failed<UserViewModel>("Không thể tìm thấy người dùng có mã: " + userId);
+            }
+            var viewModel = new UserViewModel()
+            {
+                FirstName = user.FirstName,
+                MiddleName = user.MiddleName,
+                LastName = user.LastName,
+                DisplayName = user.DisplayName,
+                DateOfBirth = user.DateOfBirth,
+                LastAccess = user.LastAccess,
+                DateOfJoin = user.DateOfJoin,
+                Gender = user.Gender,
+
+                LockoutEnd = user.LockoutEnd,
+                TwoFactorEnabled = user.TwoFactorEnabled,
+                PhoneNumberConfirmed = user.PhoneNumberConfirmed,
+                PhoneNumber = user.PhoneNumber,
+                ConcurrencyStamp = user.ConcurrencyStamp,
+                SecurityStamp = user.SecurityStamp,
+                EmailConfirmed = user.EmailConfirmed,
+                NormalizedEmail = user.NormalizedEmail,
+                Email = user.Email,
+                NormalizedUserName = user.NormalizedUserName,
+                UserName = user.UserName,
+                Id = user.Id,
+                LockoutEnabled = user.LockoutEnabled,
+                AccessFailedCount = user.AccessFailedCount
+            };
+            return new Successed<UserViewModel>(viewModel);
         }
 
         public async Task<ApiResult<string>> Create(UserCreateRequest request)
@@ -126,10 +162,14 @@ namespace ZiTechDev.Business.Services.User
 
         public async Task<ApiResult<string>> Update(UserUpdateRequest request)
         {
-            var user = await _userManager.FindByIdAsync(request.Id);
+            var user = await _userManager.FindByIdAsync(request.Id.ToString());
             if (user == null)
             {
                 return new Failed<string>("Không thể tìm thấy hành động có mã: " + request.Id);
+            }
+            if (await _userManager.Users.AnyAsync(x => x.Email.Equals(request.Email) && x.Id != request.Id && x.EmailConfirmed == true))
+            {
+                return new Failed<string>("Địa chỉ email đã được đăng ký và xác thực bởi người dùng khác");
             }
 
             user.FirstName = request.FirstName;
@@ -141,13 +181,6 @@ namespace ZiTechDev.Business.Services.User
             user.DateOfBirth = request.DateOfBirth;
             user.Gender = request.Gender;
 
-            var sameMailUser = await _userManager.FindByEmailAsync(request.Email);
-
-            if (!sameMailUser.Id.ToString().Equals(request.Id) && _userManager.IsEmailConfirmedAsync(user).Result)
-            {
-                return new Failed<string>("Địa chỉ email đã được đăng ký và xác thực bởi người dùng khác");
-            }
-
             var result = await _userManager.UpdateAsync(user);
             if (!result.Succeeded)
             {
@@ -156,9 +189,9 @@ namespace ZiTechDev.Business.Services.User
             return new Successed<string>(user.Id.ToString());
         }
 
-        public async Task<ApiResult<bool>> Delete(string userId)
+        public async Task<ApiResult<bool>> Delete(Guid userId)
         {
-            var user = await _userManager.FindByIdAsync(userId);
+            var user = await _userManager.FindByIdAsync(userId.ToString());
             if (user == null)
             {
                 return new Failed<bool>("Không thể tìm thấy người dùng có mã: " + userId);

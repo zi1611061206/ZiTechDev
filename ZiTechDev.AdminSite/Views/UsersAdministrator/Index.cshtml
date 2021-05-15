@@ -82,6 +82,7 @@
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                     <thead>
                         <tr>
+                            <th class="text-center">Thao tác</th>
                             <th class="text-center">Mã</th>
                             <th class="text-center">Họ Tên</th>
                             <th class="text-center">Tên hiển thị</th>
@@ -91,7 +92,6 @@
                             <th class="text-center">Email</th>
                             <th class="text-center">Ngày sinh</th>
                             <th class="text-center">Ngày đăng ký</th>
-                            <th class="text-center">Thao tác</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -109,6 +109,11 @@
                                     else if (item.Gender == GenderType.Female) sex = "Nữ";
                                     else sex = "Khác";
                                 }
+                                <td class="text-center w-25">
+                                    <button type="button" class="btn-sm btn-info m-1" onclick="location.href='@Url.Action("Detail", "UsersAdministrator", new { userId = item.Id })'"><i class="fa fa-book"></i></button>
+                                    <button type="button" class="btn-sm btn-warning m-1" onclick="location.href='@Url.Action("Update", "UsersAdministrator", new { userId = item.Id })'"><i class="fa fa-pen"></i></button>
+                                    <button type="button" class="btn-sm btn-danger m-1" onclick="location.href='@Url.Action("Delete", "UsersAdministrator", new { userId = item.Id })'"><i class="fa fa-trash"></i></button>
+                                </td>
                                 <td class="limitContent" data-content="@item.Id">@Html.DisplayFor(modelItem => id)</td>
                                 <td>@Html.DisplayFor(modelItem => fullName)</td>
                                 <td>@Html.DisplayFor(modelItem => item.DisplayName)</td>
@@ -118,11 +123,6 @@
                                 <td>@Html.DisplayFor(modelItem => item.Email)</td>
                                 <td>@Html.DisplayFor(modelItem => bod)</td>
                                 <td>@Html.DisplayFor(modelItem => doj)</td>
-                                <td class="text-center w-25">
-                                    <button type="button" class="btn-sm btn-info m-1"><i class="fa fa-book"></i></button>
-                                    <button type="button" class="btn-sm btn-warning m-1"><i class="fa fa-pen"></i></button>
-                                    <button type="button" class="btn-sm btn-danger m-1"><i class="fa fa-trash"></i></button>
-                                </td>
                             </tr>
                         }
                     </tbody>

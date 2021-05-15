@@ -10,9 +10,10 @@ namespace ZiTechDev.Business.Services.Activities
 {
     public interface IActivityService
     {
+        Task<ApiResult<PaginitionEngines<ActivityViewModel>>> Get(ActivityFilter filter);
+        Task<ApiResult<ActivityViewModel>> GetById(int activityId);
         Task<ApiResult<int>> Create(ActivityCreateRequest request);
         Task<ApiResult<int>> Update(ActivityUpdateRequest request);
         Task<ApiResult<int>> Delete(int activityId);
-        Task<ApiResult<PaginitionEngines<ActivityViewModel>>> GetAll(ActivityFilter filter);
     }
 }

@@ -7,7 +7,7 @@ using ZiTechDev.Data.Enums;
 
 namespace ZiTechDev.Business.Requests.User
 {
-    public class UserCreateRequest : RequestBase
+    public class UserCreateRequest
     {
         [Display(Name = "Họ")]
         public string FirstName { get; set; }

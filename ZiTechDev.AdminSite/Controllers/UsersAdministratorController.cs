@@ -7,6 +7,7 @@ using System.Dynamic;
 using System.Linq;
 using System.Threading.Tasks;
 using ZiTechDev.AdminSite.ApiClientServices.User;
+using ZiTechDev.Business.Engines.Paginition;
 using ZiTechDev.Business.Requests.User;
 
 namespace ZiTechDev.AdminSite.Controllers
@@ -20,19 +21,12 @@ namespace ZiTechDev.AdminSite.Controllers
             _userApiClient = userApiClient;
         }
 
-        //Get
+        // Read
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var session = HttpContext.Session.GetString("Token");
-            var filter = new UserFilter()
-            {
-                BearerToken = session
-            };
-            var data = await _userApiClient.Get(filter);
-            ViewBag.Title = "Danh sách thành viên";
-            ViewData["Users"] = data;
-            ViewData["Filter"] = filter;
+            var filter = new UserFilter();
+            var result = await _userApiClient.Get(filter);
             var cb = new GenderSelector
             {
                 Items = new List<GenderItem>()
@@ -43,26 +37,19 @@ namespace ZiTechDev.AdminSite.Controllers
                     new GenderItem(2, "Giới tính khác")
                 }
             };
+
+            ViewBag.Title = "Danh sách thành viên";
+            ViewData["Users"] = result.ReturnedObject;
+            ViewData["Filter"] = filter;
             ViewData["CbGender"] = cb;
+
             return View();
         }
 
-        [HttpGet]
-        public IActionResult Create()
-        {
-            return View();
-        }
-        
-        //Post
         [HttpPost]
         public async Task<IActionResult> Index(UserFilter filter)
         {
-            var session = HttpContext.Session.GetString("Token");
-            filter.BearerToken = session;
-            var data = await _userApiClient.Get(filter);
-            ViewBag.Title = "Danh sách thành viên";
-            ViewData["Users"] = data;
-            ViewData["Filter"] = filter;
+            var result = await _userApiClient.Get(filter);
             var cb = new GenderSelector
             {
                 Items = new List<GenderItem>()
@@ -73,25 +60,105 @@ namespace ZiTechDev.AdminSite.Controllers
                     new GenderItem(2, "Giới tính khác")
                 }
             };
+
+            ViewBag.Title = "Danh sách thành viên";
+            ViewData["Users"] = result.ReturnedObject;
+            ViewData["Filter"] = filter;
             ViewData["CbGender"] = cb;
+
+            return View();
+        }
+
+        // Create
+        [HttpGet]
+        public IActionResult Create()
+        {
             return View();
         }
 
         [HttpPost]
         public async Task<IActionResult> Create(UserCreateRequest request)
         {
-            var session = HttpContext.Session.GetString("Token");
-            request.BearerToken = session;
             if (!ModelState.IsValid)
             {
                 return View(request);
             }
+
             var result = await _userApiClient.Create(request);
-            if (result)
+
+            if (result.IsSuccessed)
             {
                 return RedirectToAction("Index");
             }
+            ModelState.AddModelError("", result.Message);
             return View(request);
+        }
+
+        // Update
+        [HttpGet]
+        public async Task<IActionResult> Update(string userId)
+        {
+            var result = await _userApiClient.GetById(Guid.Parse(userId));
+            if (result.IsSuccessed)
+            {
+                var user = result.ReturnedObject;
+                var model = new UserUpdateRequest()
+                {
+                    Id = user.Id,
+                    FirstName = user.FirstName,
+                    MiddleName = user.MiddleName,
+                    LastName = user.LastName,
+                    DisplayName = user.DisplayName,
+                    DateOfBirth = user.DateOfBirth,
+                    Gender = user.Gender,
+                    PhoneNumber = user.PhoneNumber,
+                    Email = user.Email
+                };
+                return View(model);
+            }
+            return RedirectToAction("Error", "Home");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Update(UserUpdateRequest request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(request);
+            }
+
+            var result = await _userApiClient.Update(request);
+            if (result.IsSuccessed)
+            {
+                return RedirectToAction("Index");
+            }
+            ModelState.AddModelError("", result.Message);
+            return View(request);
+        }
+
+        // Detail
+        [HttpGet]
+        public async Task<IActionResult> Detail(string userId)
+        {
+            var result = await _userApiClient.GetById(Guid.Parse(userId));
+            if (result.IsSuccessed)
+            {
+                var model = result.ReturnedObject;
+                return View(model);
+            }
+            return RedirectToAction("Error", "Home");
+        }
+
+        // Delete
+        [HttpGet]
+        public async Task<IActionResult> Delete(string userId)
+        {
+            var result = await _userApiClient.Delete(Guid.Parse(userId));
+            if (result.IsSuccessed)
+            {
+                return RedirectToAction("Index");
+            }
+            return RedirectToAction("Error", "Home");
         }
     }
 }
