@@ -8,11 +8,26 @@ namespace ZiTechDev.Business.Engines.Paginition
     {
         public int PageSize { get; set; }
         public int CurrentPageIndex { get; set; }
-
-        public PaginitionConfiguration()
+        public int TotalRecords { get; set; }
+        public int TotalPages
         {
-            PageSize = 10;
-            CurrentPageIndex = 1;
+            get
+            { 
+                return (int)Math.Ceiling((double)TotalRecords / PageSize);
+            }
+        }
+        public int TotalRecordsLastPage
+        {
+            get
+            {
+                return TotalRecords - PageSize * (TotalPages - 1);
+            }
+        }
+
+        public PaginitionConfiguration(int pageSize = 2, int currentPageIndex = 1)
+        {
+            PageSize = pageSize;
+            CurrentPageIndex = currentPageIndex;
         }
     }
 }

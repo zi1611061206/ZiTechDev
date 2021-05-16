@@ -47,7 +47,7 @@ namespace ZiTechDev.Business.Services.Activities
                 }).ToListAsync();
             var result = new PaginitionEngines<ActivityViewModel>()
             {
-                TotalRecord = await query.CountAsync(),
+                TotalRecords = await query.CountAsync(),
                 Item = data
             };
             return new Successed<PaginitionEngines<ActivityViewModel>>(result);

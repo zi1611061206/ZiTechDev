@@ -1,0 +1,56 @@
+﻿@using ZiTechDev.Business.Requests.User;
+@using ZiTechDev.Business.Engines.Paginition;
+@using ZiTechDev.Data.Enums;
+@{
+    PaginitionEngines<UserViewModel> users = ViewData["Users"] as PaginitionEngines<UserViewModel>;
+    GenderSelector cbGender = ViewData["CbGender"] as GenderSelector;
+}
+
+<table class="table table-bordered" width="100%" cellspacing="0">
+    <thead>
+        <tr>
+            <th class="text-center">Thao tác</th>
+            <th class="text-center">Mã</th>
+            <th class="text-center">Họ Tên</th>
+            <th class="text-center">Tên hiển thị</th>
+            <th class="text-center">Tên người dùng</th>
+            <th class="text-center">Giới tính</th>
+            <th class="text-center">SĐT</th>
+            <th class="text-center">Email</th>
+            <th class="text-center">Ngày sinh</th>
+            <th class="text-center">Ngày đăng ký</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in users.Item)
+        {
+            <tr>
+                @{
+                    string fullId = item.Id.ToString();
+                    string id = fullId.Length > 13 ? fullId.Substring(0, 9) + "..." : fullId;
+                    string fullName = item.FirstName + " " + item.MiddleName + " " + item.LastName;
+                    string bod = item.DateOfBirth.ToString("dd/MM/yyyy");
+                    string doj = item.DateOfJoin.ToString("dd/MM/yyyy");
+                    string sex = "";
+                    if (item.Gender == GenderType.Male) sex = "Nam";
+                    else if (item.Gender == GenderType.Female) sex = "Nữ";
+                    else sex = "Khác";
+                }
+                <td class="text-center w-25">
+                    <button type="button" class="btn-sm btn-info m-1" onclick="location.href='@Url.Action("Detail", "UsersAdministrator", new { userId = item.Id })'"><i class="fa fa-book"></i></button>
+                    <button type="button" class="btn-sm btn-warning m-1" onclick="location.href='@Url.Action("Update", "UsersAdministrator", new { userId = item.Id })'"><i class="fa fa-pen"></i></button>
+                    <button type="button" class="btn-sm btn-danger m-1" onclick="location.href='@Url.Action("Delete", "UsersAdministrator", new { userId = item.Id })'"><i class="fa fa-trash"></i></button>
+                </td>
+                <td class="limitContent" data-content="@item.Id">@Html.DisplayFor(modelItem => id)</td>
+                <td>@Html.DisplayFor(modelItem => fullName)</td>
+                <td>@Html.DisplayFor(modelItem => item.DisplayName)</td>
+                <td>@Html.DisplayFor(modelItem => item.UserName)</td>
+                <td>@Html.DisplayFor(modelItem => sex)</td>
+                <td>@Html.DisplayFor(modelItem => item.PhoneNumber)</td>
+                <td>@Html.DisplayFor(modelItem => item.Email)</td>
+                <td>@Html.DisplayFor(modelItem => bod)</td>
+                <td>@Html.DisplayFor(modelItem => doj)</td>
+            </tr>
+        }
+    </tbody>
+</table>

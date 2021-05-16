@@ -24,53 +24,61 @@
             </form>
 
             <form id="filterForm" hidden class="row" asp-controller="UsersAdministrator" asp-action="Index" method="post">
+                <div class="form-group col-md-2 col-md-offset-1" hidden>
+                    <label class="small mb-1" asp-for="@filter.CurrentPageIndex"></label>
+                    <input id="txbPageIndex" class="form-control py-2" type="text" asp-for="@filter.CurrentPageIndex" />
+                </div>
+                <div class="form-group col-md-2 col-md-offset-1" hidden>
+                    <label class="small mb-1" asp-for="@filter.PageSize"></label>
+                    <input id="txbPageSize" class="form-control py-2" type="text" asp-for="@filter.PageSize" />
+                </div>
                 <div class="form-group col-md-2 col-md-offset-1">
                     <label class="small mb-1" asp-for="@filter.Id"></label>
-                    <input class="form-control py-2" type="text" placeholder="VD: 98BCFFA5-07F7-4544-9B87-1CE105E26E63" asp-for="@filter.Id" />
+                    <input id="txbUserId" class="form-control py-2" type="text" placeholder="VD: 98BCFFA5-07F7-4544-9B87-1CE105E26E63" asp-for="@filter.Id" />
                 </div>
                 <div class="form-group col-md-2">
                     <label class="small mb-1" asp-for="@filter.FullName"></label>
-                    <input class="form-control py-2" type="text" placeholder="VD: Nguyễn Văn Anh" asp-for="@filter.FullName" />
+                    <input id="txbFullName" class="form-control py-2" type="text" placeholder="VD: Nguyễn Văn Anh" asp-for="@filter.FullName" />
                 </div>
                 <div class="form-group col-md-2">
                     <label class="small mb-1" asp-for="@filter.UserName"></label>
-                    <input class="form-control py-2" type="text" placeholder="VD: ZiTechDev" asp-for="@filter.UserName" />
+                    <input id="txbUserName" class="form-control py-2" type="text" placeholder="VD: ZiTechDev" asp-for="@filter.UserName" />
                 </div>
                 <div class="form-group col-md-2">
                     <label class="small mb-1" asp-for="@filter.DisplayName"></label>
-                    <input class="form-control py-2" type="text" placeholder="VD: Anh Nguyễn" asp-for="@filter.DisplayName" />
+                    <input id="txbDisplayName" class="form-control py-2" type="text" placeholder="VD: Anh Nguyễn" asp-for="@filter.DisplayName" />
                 </div>
                 <div class="form-group col-md-2">
                     <label class="small mb-1" asp-for="@filter.PhoneNumber"></label>
-                    <input class="form-control py-2" type="text" placeholder="VD: 0912345678" asp-for="@filter.PhoneNumber" />
+                    <input id="txbPhoneNumber" class="form-control py-2" type="text" placeholder="VD: 0912345678" asp-for="@filter.PhoneNumber" />
                 </div>
                 <div class="form-group col-md-2">
                     <label class="small mb-1" asp-for="@filter.Email"></label>
-                    <input class="form-control py-2" type="text" placeholder="VD: nva@gmail.com" asp-for="@filter.Email" />
+                    <input id="txbEmail" class="form-control py-2" type="text" placeholder="VD: nva@gmail.com" asp-for="@filter.Email" />
                 </div>
                 <div class="form-group col-md-2">
                     <label class="small mb-1" asp-for="@filter.Gender"></label>
-                    <select id="genders" class="form-control py-2" asp-for="@filter.Gender" asp-items="@(new SelectList(cbGender.Items,"Id","GenderName"))"></select>
+                    <select id="cbGenders" class="form-control py-2" asp-for="@filter.Gender" asp-items="@(new SelectList(cbGender.Items,"Id","GenderName"))"></select>
                 </div>
                 <div class="form-group col-md-2">
                     <label class="small mb-1" asp-for="@filter.FromDOB"></label>
-                    <input class="form-control py-2" asp-for="@filter.FromDOB">
+                    <input id="dtpFromDOB" class="form-control py-2" asp-for="@filter.FromDOB">
                 </div>
                 <div class="form-group col-md-2">
                     <label class="small mb-1" asp-for="@filter.ToDOB"></label>
-                    <input class="form-control py-2" asp-for="@filter.ToDOB">
+                    <input id="dtpToDOB" class="form-control py-2" asp-for="@filter.ToDOB">
                 </div>
                 <div class="form-group col-md-2">
                     <label class="small mb-1" asp-for="@filter.FromDOJ"></label>
-                    <input class="form-control py-2" asp-for="@filter.FromDOJ">
+                    <input id="dtpFromDOJ" class="form-control py-2" asp-for="@filter.FromDOJ">
                 </div>
                 <div class="form-group col-md-2">
                     <label class="small mb-1" asp-for="@filter.ToDOJ"></label>
-                    <input class="form-control py-2" asp-for="@filter.ToDOJ">
+                    <input id="dtpToDOJ" class="form-control py-2" asp-for="@filter.ToDOJ">
                 </div>
 
                 <div class="form-group col-md-2">
-                    <button class="form-control btn btn-success w-100 h-100" type="submit" onclick="btnFilterClick()">Áp dụng</button>
+                    <button id="filterApply" class="form-control btn btn-success w-100 h-100" type="submit" onclick="btnFilterClick()">Áp dụng</button>
                 </div>
             </form>
         </div>
@@ -79,57 +87,15 @@
     <div class="card mb-4 bg-light">
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                    <thead>
-                        <tr>
-                            <th class="text-center">Thao tác</th>
-                            <th class="text-center">Mã</th>
-                            <th class="text-center">Họ Tên</th>
-                            <th class="text-center">Tên hiển thị</th>
-                            <th class="text-center">Tên người dùng</th>
-                            <th class="text-center">Giới tính</th>
-                            <th class="text-center">SĐT</th>
-                            <th class="text-center">Email</th>
-                            <th class="text-center">Ngày sinh</th>
-                            <th class="text-center">Ngày đăng ký</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var item in users.Item)
-                        {
-                            <tr>
-                                @{
-                                    string fullId = item.Id.ToString();
-                                    string id = fullId.Length > 13 ? fullId.Substring(0, 9) + "..." : fullId;
-                                    string fullName = item.FirstName + " " + item.MiddleName + " " + item.LastName;
-                                    string bod = item.DateOfBirth.ToString("dd/MM/yyyy");
-                                    string doj = item.DateOfJoin.ToString("dd/MM/yyyy");
-                                    string sex = "";
-                                    if (item.Gender == GenderType.Male) sex = "Nam";
-                                    else if (item.Gender == GenderType.Female) sex = "Nữ";
-                                    else sex = "Khác";
-                                }
-                                <td class="text-center w-25">
-                                    <button type="button" class="btn-sm btn-info m-1" onclick="location.href='@Url.Action("Detail", "UsersAdministrator", new { userId = item.Id })'"><i class="fa fa-book"></i></button>
-                                    <button type="button" class="btn-sm btn-warning m-1" onclick="location.href='@Url.Action("Update", "UsersAdministrator", new { userId = item.Id })'"><i class="fa fa-pen"></i></button>
-                                    <button type="button" class="btn-sm btn-danger m-1" onclick="location.href='@Url.Action("Delete", "UsersAdministrator", new { userId = item.Id })'"><i class="fa fa-trash"></i></button>
-                                </td>
-                                <td class="limitContent" data-content="@item.Id">@Html.DisplayFor(modelItem => id)</td>
-                                <td>@Html.DisplayFor(modelItem => fullName)</td>
-                                <td>@Html.DisplayFor(modelItem => item.DisplayName)</td>
-                                <td>@Html.DisplayFor(modelItem => item.UserName)</td>
-                                <td>@Html.DisplayFor(modelItem => sex)</td>
-                                <td>@Html.DisplayFor(modelItem => item.PhoneNumber)</td>
-                                <td>@Html.DisplayFor(modelItem => item.Email)</td>
-                                <td>@Html.DisplayFor(modelItem => bod)</td>
-                                <td>@Html.DisplayFor(modelItem => doj)</td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
+                <partial name="_UsersListPartial" view-data="ViewData"/>
+                <div class="d-flex justify-content-center">
+                    @await Component.InvokeAsync("Paging", users)
+                </div>
             </div>
         </div>
     </div>
 </div>
 
-<script src="/js/UsersAdministrator/index.js" defer></script>
+@section Scripts{
+    <script src="/js/UsersAdministrator/index.js" defer></script>
+}

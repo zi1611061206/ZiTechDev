@@ -85,7 +85,9 @@ namespace ZiTechDev.Business.Services.User
                 }).ToListAsync();
             var result = new PaginitionEngines<UserViewModel>()
             {
-                TotalRecord = await query.CountAsync(),
+                TotalRecords = await query.CountAsync(),
+                PageSize = filter.PageSize,
+                CurrentPageIndex = filter.CurrentPageIndex,
                 Item = data
             };
             return new Successed<PaginitionEngines<UserViewModel>>(result);

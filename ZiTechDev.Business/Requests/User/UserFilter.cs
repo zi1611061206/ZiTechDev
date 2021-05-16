@@ -41,8 +41,6 @@ namespace ZiTechDev.Business.Requests.User
         public UserFilter()
         {
             Id = null;
-            CurrentPageIndex = 1;
-            PageSize = 10;
             FullName = null;
             UserName = null;
             DisplayName = null;
