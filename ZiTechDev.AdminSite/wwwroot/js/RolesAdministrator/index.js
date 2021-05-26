@@ -55,7 +55,7 @@ setTimeout(function () {
 //Hàm xác nhận xóa
 function btnDeleteConfirmClick() {
 	var id = document.getElementById('txbDeleteId').value;
-	location.href = '/UsersAdministrator/Delete?userId=' + id;
+	location.href = '/RolesAdministrator/Delete?roleId=' + id;
 }
 
 //Hàm copy chuỗi

@@ -6,6 +6,7 @@ namespace ZiTechDev.Business.Engines.Paginition
 {
     public class PaginitionConfiguration
     {
+        public string Keyword { get; set; }
         public int PageSize { get; set; }
         public int CurrentPageIndex { get; set; }
         public int TotalRecords { get; set; }
@@ -26,6 +27,7 @@ namespace ZiTechDev.Business.Engines.Paginition
 
         public PaginitionConfiguration(int pageSize = 2, int currentPageIndex = 1)
         {
+            Keyword = "";
             PageSize = pageSize;
             CurrentPageIndex = currentPageIndex;
         }

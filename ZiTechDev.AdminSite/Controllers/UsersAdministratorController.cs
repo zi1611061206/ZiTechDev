@@ -6,8 +6,10 @@ using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
 using System.Threading.Tasks;
+using ZiTechDev.AdminSite.ApiClientServices.Role;
 using ZiTechDev.AdminSite.ApiClientServices.User;
 using ZiTechDev.Business.Engines.Paginition;
+using ZiTechDev.Business.Requests.Role;
 using ZiTechDev.Business.Requests.User;
 
 namespace ZiTechDev.AdminSite.Controllers
@@ -15,10 +17,12 @@ namespace ZiTechDev.AdminSite.Controllers
     public class UsersAdministratorController : BaseController
     {
         private readonly IUserApiClient _userApiClient;
+        private readonly IRoleApiClient _roleApiClient;
 
-        public UsersAdministratorController(IUserApiClient userApiClient)
+        public UsersAdministratorController(IUserApiClient userApiClient, IRoleApiClient roleApiClient)
         {
             _userApiClient = userApiClient;
+            _roleApiClient = roleApiClient;
         }
 
         // Read
@@ -27,21 +31,36 @@ namespace ZiTechDev.AdminSite.Controllers
         {
             var filter = new UserFilter();
             var result = await _userApiClient.Get(filter);
-            var cb = new GenderSelector
+            var roles = _roleApiClient.GetAll().Result;
+            if (roles.IsSuccessed)
             {
-                Items = new List<GenderItem>()
+                foreach (var role in roles.ReturnedObject)
                 {
-                    new GenderItem(-1, "Tất cả"),
-                    new GenderItem(0, "Nam"),
-                    new GenderItem(1, "Nữ"),
-                    new GenderItem(2, "Giới tính khác")
+                    filter.Roles.Add(new RoleItem()
+                    {
+                        Id = role.Id,
+                        Name = role.Name,
+                        Checked = true
+                    });
                 }
-            };
+            }
 
-            ViewBag.Title = "Danh sách thành viên";
             ViewData["Users"] = result.ReturnedObject;
             ViewData["Filter"] = filter;
-            ViewData["CbGender"] = cb;
+
+            ViewBag.Title = "Danh sách thành viên";
+            if(TempData["Success"] != null)
+            {
+                ViewBag.Success = TempData["Success"];
+            }
+            if (TempData["Fail"] != null)
+            {
+                ViewBag.Fail = TempData["Fail"];
+            }
+            if (result.ReturnedObject.TotalRecords == 0)
+            {
+                ViewBag.Info = "Không có người dùng nào";
+            }
 
             return View();
         }
@@ -50,21 +69,15 @@ namespace ZiTechDev.AdminSite.Controllers
         public async Task<IActionResult> Index(UserFilter filter)
         {
             var result = await _userApiClient.Get(filter);
-            var cb = new GenderSelector
-            {
-                Items = new List<GenderItem>()
-                {
-                    new GenderItem(-1, "Tất cả"),
-                    new GenderItem(0, "Nam"),
-                    new GenderItem(1, "Nữ"),
-                    new GenderItem(2, "Giới tính khác")
-                }
-            };
 
-            ViewBag.Title = "Danh sách thành viên";
             ViewData["Users"] = result.ReturnedObject;
             ViewData["Filter"] = filter;
-            ViewData["CbGender"] = cb;
+
+            ViewBag.Title = "Danh sách thành viên";
+            if (result.ReturnedObject.TotalRecords == 0)
+            {
+                ViewBag.Info = "Không có người dùng nào";
+            }
 
             return View();
         }
@@ -73,7 +86,20 @@ namespace ZiTechDev.AdminSite.Controllers
         [HttpGet]
         public IActionResult Create()
         {
-            return View();
+            var model = new UserCreateRequest();
+            var roles = _roleApiClient.GetAll().Result;
+            if (roles.IsSuccessed)
+            {
+                foreach(var role in roles.ReturnedObject)
+                {
+                    model.Roles.Add(new RoleItem() { 
+                        Id = role.Id,
+                        Name = role.Name,
+                        Checked = role.Name.Contains("User")
+                    });
+                }
+            }
+            return View(model);
         }
 
         [HttpPost]
@@ -84,10 +110,20 @@ namespace ZiTechDev.AdminSite.Controllers
                 return View(request);
             }
 
+            foreach(var item in request.Roles)
+            {
+                if(item.Name.Equals("User") && !item.Checked)
+                {
+                    item.Checked = true;
+                }
+            }
+
             var result = await _userApiClient.Create(request);
 
             if (result.IsSuccessed)
             {
+                TempData["Success"] = "Tạo mới thành công người dùng có mã: " + result.ReturnedObject;
+                ModelState.Clear();
                 return RedirectToAction("Index");
             }
             ModelState.AddModelError("", result.Message);
@@ -114,6 +150,17 @@ namespace ZiTechDev.AdminSite.Controllers
                     PhoneNumber = user.PhoneNumber,
                     Email = user.Email
                 };
+                var userObj = await _userApiClient.GetById(user.Id);
+                var roleObj = await _roleApiClient.GetAll(); 
+                foreach (var role in roleObj.ReturnedObject)
+                {
+                    model.Roles.Add(new RoleItem()
+                    {
+                        Id = role.Id,
+                        Name = role.Name,
+                        Checked = userObj.ReturnedObject.Roles.Contains(role.Name)
+                    });
+                }
                 return View(model);
             }
             return RedirectToAction("Error", "Home");
@@ -127,9 +174,18 @@ namespace ZiTechDev.AdminSite.Controllers
                 return View(request);
             }
 
+            foreach (var item in request.Roles)
+            {
+                if (item.Name.Equals("User") && !item.Checked)
+                {
+                    item.Checked = true;
+                }
+            }
+
             var result = await _userApiClient.Update(request);
             if (result.IsSuccessed)
             {
+                TempData["Success"] = "Cập nhật thành công người dùng có mã: " + result.ReturnedObject;
                 return RedirectToAction("Index");
             }
             ModelState.AddModelError("", result.Message);
@@ -146,7 +202,8 @@ namespace ZiTechDev.AdminSite.Controllers
                 var model = result.ReturnedObject;
                 return View(model);
             }
-            return RedirectToAction("Error", "Home");
+            TempData["Fail"] = result.Message;
+            return RedirectToAction("Index");
         }
 
         // Delete
@@ -156,9 +213,25 @@ namespace ZiTechDev.AdminSite.Controllers
             var result = await _userApiClient.Delete(Guid.Parse(userId));
             if (result.IsSuccessed)
             {
+                TempData["Success"] = "Xóa người dùng thành công";
                 return RedirectToAction("Index");
             }
-            return RedirectToAction("Error", "Home");
+            TempData["Fail"] = result.Message;
+            return RedirectToAction("Index");
+        }
+
+        // ResetPassword
+        [HttpGet]
+        public async Task<IActionResult> ResetPassword(string userId)
+        {
+            var result = await _userApiClient.ResetPassword(Guid.Parse(userId));
+            if (result.IsSuccessed)
+            {
+                TempData["Success"] = "Đặt lại mật khẩu thành công, mật khẩu mới của bạn là " + result.ReturnedObject;
+                return RedirectToAction("Index");
+            }
+            TempData["Fail"] = result.Message;
+            return RedirectToAction("Index");
         }
     }
 }

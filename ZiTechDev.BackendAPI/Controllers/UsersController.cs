@@ -86,5 +86,16 @@ namespace ZiTechDev.BackendAPI.Controllers
             }
             return Ok(result.ReturnedObject);
         }
+
+        [HttpGet("reset-password/{userId}")]
+        public async Task<IActionResult> ResetPassword(Guid userId)
+        {
+            var result = await _userService.ResetPassword(userId);
+            if (!result.IsSuccessed)
+            {
+                return BadRequest(result.Message);
+            }
+            return Ok(result.ReturnedObject);
+        }
     }
 }

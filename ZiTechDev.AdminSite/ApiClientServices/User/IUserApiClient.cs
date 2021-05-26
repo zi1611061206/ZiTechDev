@@ -16,5 +16,6 @@ namespace ZiTechDev.AdminSite.ApiClientServices.User
         Task<ApiResult<string>> Create(UserCreateRequest request);
         Task<ApiResult<string>> Update(UserUpdateRequest request);
         Task<ApiResult<bool>> Delete(Guid userId);
+        Task<ApiResult<string>> ResetPassword(Guid userId);
     }
 }

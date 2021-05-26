@@ -22,6 +22,7 @@ using ZiTechDev.Business.Requests.Auth;
 using ZiTechDev.Business.Requests.User;
 using ZiTechDev.Business.Services.Activities;
 using ZiTechDev.Business.Services.Auth;
+using ZiTechDev.Business.Services.Role;
 using ZiTechDev.Business.Services.User;
 using ZiTechDev.Business.Validations.Activity;
 using ZiTechDev.Business.Validations.Auth;
@@ -53,6 +54,7 @@ namespace ZiTechDev.BackendAPI
             services.AddTransient<IActivityService, ActivityService>();
             services.AddTransient<IAuthService, AuthService>();
             services.AddTransient<IUserService, UserService>();
+            services.AddTransient<IRoleService, RoleService>();
 
             services.AddTransient<UserManager<AppUser>, UserManager<AppUser>>();
             services.AddTransient<SignInManager<AppUser>, SignInManager<AppUser>>();

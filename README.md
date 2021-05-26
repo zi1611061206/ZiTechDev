@@ -6,8 +6,11 @@
  - Microsoft .NET Framework 4.8.04084
 ## TECHNOLOGIES
  - ASP.NET CORE 3.1 (MVC)
- - Jquery 3.5.1
+ - Jquery 3.6.0
  - Bootstrap 4.6.0
+ - HTML 5
+ - CSS 3
+ - JS
 ## TEMPLATES
  - Start Bootstrap - SB Admin v6.0.3 (https://startbootstrap.com/template/sb-admin)
 ## SOLUTION STRUCTURE
