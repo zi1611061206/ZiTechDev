@@ -91,36 +91,48 @@ namespace ZiTechDev.Business.Services.User
 
         private IQueryable<AppUser> Filtering(IQueryable<AppUser> query, UserFilter filter)
         {
+            query = query.Where(x => x.DateOfBirth > filter.FromDOB && x.DateOfBirth < filter.ToDOB);
+            query = query.Where(x => x.DateOfJoin > filter.FromDOJ && x.DateOfJoin < filter.ToDOJ);
+            if (!string.IsNullOrEmpty(filter.CurrentUserId))
+            {
+                query = query.Where(x => !x.Id.Equals(Guid.Parse(filter.CurrentUserId)));
+                if (query.Count() <= 0) return query;
+            }
             if (!string.IsNullOrEmpty(filter.Id))
             {
                 query = query.Where(x => (x.Id.ToString()).Contains(filter.Id));
+                if (query.Count() <= 0) return query;
             }
             if (!string.IsNullOrEmpty(filter.FullName))
             {
                 query = query.Where(x => (x.FirstName + " " + x.MiddleName + " " + x.LastName).Contains(filter.FullName));
+                if (query.Count() <= 0) return query;
             }
             if (!string.IsNullOrEmpty(filter.UserName))
             {
                 query = query.Where(x => (x.UserName).Contains(filter.UserName));
+                if (query.Count() <= 0) return query;
             }
             if (!string.IsNullOrEmpty(filter.DisplayName))
             {
                 query = query.Where(x => (x.DisplayName).Contains(filter.DisplayName));
+                if (query.Count() <= 0) return query;
             }
             if (!string.IsNullOrEmpty(filter.PhoneNumber))
             {
                 query = query.Where(x => (x.PhoneNumber).Contains(filter.PhoneNumber));
+                if (query.Count() <= 0) return query;
             }
             if (!string.IsNullOrEmpty(filter.Email))
             {
                 query = query.Where(x => (x.Email).Contains(filter.Email));
+                if (query.Count() <= 0) return query;
             }
             if (filter.Gender != -1)
             {
                 query = query.Where(x => (int)x.Gender == filter.Gender);
+                if (query.Count() <= 0) return query;
             }
-            query = query.Where(x => x.DateOfBirth > filter.FromDOB && x.DateOfBirth < filter.ToDOB);
-            query = query.Where(x => x.DateOfJoin > filter.FromDOJ && x.DateOfJoin < filter.ToDOJ);
             return query;
         }
 

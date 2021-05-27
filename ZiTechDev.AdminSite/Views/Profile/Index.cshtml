@@ -1,7 +1,7 @@
 ﻿@using ZiTechDev.Data.Enums;
 @model ZiTechDev.Business.Requests.User.UserViewModel
 @{
-    ViewData["Title"] = "Chi tiết người dùng";
+    ViewData["Title"] = "Hồ sơ cá nhân";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -10,32 +10,21 @@
     <div class="card mb-4 bg-light">
         <div class="card-body justify-content-center">
 
-            <h1 class="form-group text-center text-uppercase">Chi tiết người dùng</h1>
-            <dl class="row">
-                <div class="col-md-6 row">
+            <h1 class="form-group text-center text-uppercase">Hồ sơ cá nhân của '@Model.UserName'</h1>
+            <dl class="row justify-content-center">
+                <div class="col-md-8 row">
                     <dt class="col-md-5">
                         @Html.DisplayNameFor(model => model.Id)
                     </dt>
                     <dd class="col-md-7">
                         @Html.DisplayFor(model => model.Id)
                     </dd>
+                    @{ var fullName = Model.FirstName + " " + Model.MiddleName + " " + Model.LastName; }
                     <dt class="col-md-5">
-                        @Html.DisplayNameFor(model => model.FirstName)
+                        Họ tên
                     </dt>
                     <dd class="col-md-7">
-                        @Html.DisplayFor(model => model.FirstName)
-                    </dd>
-                    <dt class="col-md-5">
-                        @Html.DisplayNameFor(model => model.MiddleName)
-                    </dt>
-                    <dd class="col-md-7">
-                        @Html.DisplayFor(model => model.MiddleName)
-                    </dd>
-                    <dt class="col-md-5">
-                        @Html.DisplayNameFor(model => model.LastName)
-                    </dt>
-                    <dd class="col-md-7">
-                        @Html.DisplayFor(model => model.LastName)
+                        @Html.DisplayFor(model => fullName)
                     </dd>
 
                     @{ var dob = Model.DateOfBirth.ToShortDateString(); }
@@ -58,6 +47,7 @@
                         @Html.DisplayFor(model => gender)
                     </dd>
 
+
                     <dt class="col-md-5">
                         @Html.DisplayNameFor(model => model.DisplayName)
                     </dt>
@@ -70,12 +60,6 @@
                     <dd class="col-md-7">
                         @Html.DisplayFor(model => model.UserName)
                     </dd>
-                    <dt class="col-md-5">
-                        @Html.DisplayNameFor(model => model.NormalizedUserName)
-                    </dt>
-                    <dd class="col-md-7">
-                        @Html.DisplayFor(model => model.NormalizedUserName)
-                    </dd>
 
                     <dt class="col-md-5">
                         @Html.DisplayNameFor(model => model.Email)
@@ -86,20 +70,15 @@
                             if (Model.EmailConfirmed)
                             {
                                 <i class="fa fa-check-circle" style="color:lightgreen"></i>
+                                <p class="text-success">Đã xác minh</p>
                             }
                             else
                             {
                                 <i class="fas fa-exclamation-circle" style="color:orange"></i>
+                                <a class="text-danger">Xác minh ngay</a>
                             }
                         }
                     </dd>
-                    <dt class="col-md-5">
-                        @Html.DisplayNameFor(model => model.NormalizedEmail)
-                    </dt>
-                    <dd class="col-md-7">
-                        @Html.DisplayFor(model => model.NormalizedEmail)
-                    </dd>
-
                     <dt class="col-md-5">
                         @Html.DisplayNameFor(model => model.PhoneNumber)
                     </dt>
@@ -109,59 +88,26 @@
                             if (Model.PhoneNumberConfirmed)
                             {
                                 <i class="fa fa-check-circle" style="color:lightgreen"></i>
+                                <p class="text-success">Đã xác minh</p>
                             }
                             else
                             {
                                 <i class="fas fa-exclamation-circle" style="color:orange"></i>
+                                <a class="text-danger">Xác minh ngay</a>
                             }
                         }
                     </dd>
-                </div>
 
-                <div class="col-md-6 row">
-                    <dt class="col-md-4">
+                    <dt class="col-md-5">
                         @Html.DisplayNameFor(model => model.DateOfJoin)
                     </dt>
-                    <dd class="col-md-8">
+                    <dd class="col-md-7">
                         @Html.DisplayFor(model => model.DateOfJoin)
                     </dd>
-                    <dt class="col-md-4">
-                        @Html.DisplayNameFor(model => model.ConcurrencyStamp)
-                    </dt>
-                    <dd class="col-md-8">
-                        @Html.DisplayFor(model => model.ConcurrencyStamp)
-                    </dd>
-                    <dt class="col-md-4">
-                        @Html.DisplayNameFor(model => model.SecurityStamp)
-                    </dt>
-                    <dd class="col-md-8">
-                        @Html.DisplayFor(model => model.SecurityStamp)
-                    </dd>
-                    <dt class="col-md-4">
-                        @Html.DisplayNameFor(model => model.LockoutEnabled)
-                    </dt>
-                    <dd class="col-md-8">
-                        @{
-                            if (Model.LockoutEnabled)
-                            {
-                                <p>Bật</p>
-                            }
-                            else
-                            {
-                                <p>Tắt</p>
-                            }
-                        }
-                    </dd>
-                    <dt class="col-md-4">
-                        @Html.DisplayNameFor(model => model.LockoutEnd)
-                    </dt>
-                    <dd class="col-md-8">
-                        @Html.DisplayFor(model => model.LockoutEnd)
-                    </dd>
-                    <dt class="col-md-4">
+                    <dt class="col-md-5">
                         @Html.DisplayNameFor(model => model.TwoFactorEnabled)
                     </dt>
-                    <dd class="col-md-8">
+                    <dd class="col-md-7">
                         @{
                             if (Model.TwoFactorEnabled)
                             {
@@ -173,22 +119,10 @@
                             }
                         }
                     </dd>
-                    <dt class="col-md-4">
-                        @Html.DisplayNameFor(model => model.LastAccess)
-                    </dt>
-                    <dd class="col-md-8">
-                        @Html.DisplayFor(model => model.LastAccess)
-                    </dd>
-                    <dt class="col-md-4">
-                        @Html.DisplayNameFor(model => model.AccessFailedCount)
-                    </dt>
-                    <dd class="col-md-8">
-                        @Html.DisplayFor(model => model.AccessFailedCount)
-                    </dd>
-                    <dt class="col-md-4">
+                    <dt class="col-md-5">
                         @Html.DisplayNameFor(model => model.Roles)
                     </dt>
-                    <dd class="col-md-8">
+                    <dd class="col-md-7">
                         @{
                             string roleStr = "";
                             if (Model.Roles != null)
@@ -198,11 +132,72 @@
                         }
                         @Html.DisplayFor(model => roleStr)
                     </dd>
+
+                    <dt class="col-md-5">
+                        @Html.DisplayNameFor(model => model.NormalizedUserName)
+                    </dt>
+                    <dd class="col-md-7">
+                        @Html.DisplayFor(model => model.NormalizedUserName)
+                    </dd>
+                    <dt class="col-md-5">
+                        @Html.DisplayNameFor(model => model.NormalizedEmail)
+                    </dt>
+                    <dd class="col-md-7">
+                        @Html.DisplayFor(model => model.NormalizedEmail)
+                    </dd>
+                    <dt class="col-md-5">
+                        @Html.DisplayNameFor(model => model.ConcurrencyStamp)
+                    </dt>
+                    <dd class="col-md-7">
+                        @Html.DisplayFor(model => model.ConcurrencyStamp)
+                    </dd>
+                    <dt class="col-md-5">
+                        @Html.DisplayNameFor(model => model.SecurityStamp)
+                    </dt>
+                    <dd class="col-md-7">
+                        @Html.DisplayFor(model => model.SecurityStamp)
+                    </dd>
+                    <dt class="col-md-5">
+                        @Html.DisplayNameFor(model => model.LockoutEnabled)
+                    </dt>
+                    <dd class="col-md-7">
+                        @{
+                            if (Model.LockoutEnabled)
+                            {
+                                <p>Bật</p>
+                            }
+                            else
+                            {
+                                <p>Tắt</p>
+                            }
+                        }
+                    </dd>
+                    <dt class="col-md-5">
+                        @Html.DisplayNameFor(model => model.LockoutEnd)
+                    </dt>
+                    <dd class="col-md-7">
+                        @Html.DisplayFor(model => model.LockoutEnd)
+                    </dd>
+                    <dt class="col-md-5">
+                        @Html.DisplayNameFor(model => model.LastAccess)
+                    </dt>
+                    <dd class="col-md-7">
+                        @Html.DisplayFor(model => model.LastAccess)
+                    </dd>
+                    <dt class="col-md-5">
+                        @Html.DisplayNameFor(model => model.AccessFailedCount)
+                    </dt>
+                    <dd class="col-md-7">
+                        @Html.DisplayFor(model => model.AccessFailedCount)
+                    </dd>
                 </div>
             </dl>
+
             <div class="row justify-content-center">
-                <button type="button" class="form-group col-md-5 btn btn-warning w-100 m-1" onclick="location.href='@Url.Action("Update", "UsersAdministrator", new { userId = Model.Id })'">Cập nhật</button>
-                <button type="button" class="form-group col-md-5 btn btn-dark w-100 m-1" onclick="window.location.href='Index'">Hủy</button>
+                <div class="col-md-8">
+                    <button type="button" class="form-group btn btn-warning w-100 m-1" onclick="location.href='@Url.Action("Edit", "Profile", new { userId = Model.Id })'">Chỉnh sửa</button>
+                    <button type="button" class="form-group btn btn-primary w-100 m-1" onclick="location.href='@Url.Action("ChangePassword", "Profile", new { userId = Model.Id })'">Đổi mật khẩu</button>
+                </div>
             </div>
         </div>
     </div>

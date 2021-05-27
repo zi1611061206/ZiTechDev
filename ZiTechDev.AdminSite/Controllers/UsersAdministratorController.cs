@@ -18,11 +18,21 @@ namespace ZiTechDev.AdminSite.Controllers
     {
         private readonly IUserApiClient _userApiClient;
         private readonly IRoleApiClient _roleApiClient;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public UsersAdministratorController(IUserApiClient userApiClient, IRoleApiClient roleApiClient)
+        public UsersAdministratorController(
+            IUserApiClient userApiClient, 
+            IRoleApiClient roleApiClient, 
+            IHttpContextAccessor httpContextAccessor)
         {
             _userApiClient = userApiClient;
             _roleApiClient = roleApiClient;
+            _httpContextAccessor = httpContextAccessor ?? throw new ArgumentNullException(nameof(httpContextAccessor));
+        }
+
+        public string GetCurrentUserId()
+        {
+            return _httpContextAccessor.HttpContext.User.Claims.First(i => i.Type == "UserId").Value;
         }
 
         // Read
@@ -30,6 +40,8 @@ namespace ZiTechDev.AdminSite.Controllers
         public async Task<IActionResult> Index()
         {
             var filter = new UserFilter();
+            filter.CurrentUserId = GetCurrentUserId();
+
             var result = await _userApiClient.Get(filter);
             var roles = _roleApiClient.GetAll().Result;
             if (roles.IsSuccessed)
@@ -68,6 +80,7 @@ namespace ZiTechDev.AdminSite.Controllers
         [HttpPost]
         public async Task<IActionResult> Index(UserFilter filter)
         {
+            filter.CurrentUserId = GetCurrentUserId();
             var result = await _userApiClient.Get(filter);
 
             ViewData["Users"] = result.ReturnedObject;

@@ -26,7 +26,7 @@
                 <td class="limitContent" data-content="@item.Id">@Html.DisplayFor(modelItem => id)</td>
                 <td>@Html.DisplayFor(modelItem => item.Name)</td>
                 <td>@Html.DisplayFor(modelItem => item.NormalizedName)</td>
-                <td>@Html.DisplayFor(modelItem => item.ConcurrencyStamp)</td>
+                <td class="limitContent" data-content="@item.NormalizedName">@Html.DisplayFor(modelItem => item.ConcurrencyStamp)</td>
                 <td class="limitContent" data-content="@item.Description">@Html.DisplayFor(modelItem => item.Description)</td>
                 <td class="text-center w-25">
                     <button type="button" class="btn-sm btn-warning m-1" onclick="location.href='@Url.Action("Update", "RolesAdministrator", new { roleId = item.Id })'"><i class="fa fa-pen"></i></button>

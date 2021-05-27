@@ -9,44 +9,47 @@ namespace ZiTechDev.Business.Requests.User
 {
     public class UserFilter : PaginitionConfiguration
     {
+        public string CurrentUserId { get; set; } = null;
+
+
         [Display(Name = "Mã")]
-        public string Id { get; set; }
+        public string Id { get; set; } = null;
 
         [Display(Name = "Họ tên")]
-        public string FullName { get; set; }
+        public string FullName { get; set; } = null;
 
         [Display(Name = "Tên đăng nhập")]
-        public string UserName { get; set; }
+        public string UserName { get; set; } = null;
 
         [Display(Name = "Tên hiển thị")]
-        public string DisplayName { get; set; }
+        public string DisplayName { get; set; } = null;
 
         [Display(Name = "Số điện thoại")]
         [DataType(DataType.PhoneNumber)]
-        public string PhoneNumber { get; set; }
+        public string PhoneNumber { get; set; } = null;
 
         [Display(Name = "Email")]
         [DataType(DataType.EmailAddress)]
-        public string Email { get; set; }
+        public string Email { get; set; } = null;
 
         [Display(Name = "Ngày sinh")]
         [DataType(DataType.Date)]
-        public DateTime FromDOB { get; set; }
+        public DateTime FromDOB { get; set; } = DateTime.MinValue;
 
         [Display(Name = "Đến")]
         [DataType(DataType.Date)]
-        public DateTime ToDOB { get; set; }
+        public DateTime ToDOB { get; set; } = DateTime.MaxValue;
 
         [Display(Name = "Ngày đăng ký")]
         [DataType(DataType.Date)]
-        public DateTime FromDOJ { get; set; }
+        public DateTime FromDOJ { get; set; } = DateTime.MinValue;
 
         [Display(Name = "Đến")]
         [DataType(DataType.Date)]
-        public DateTime ToDOJ { get; set; }
+        public DateTime ToDOJ { get; set; } = DateTime.MaxValue;
 
         [Display(Name = "Giới tính")]
-        public int Gender { get; set; }
+        public int Gender { get; set; } = -1;
         public GenderSelector GenderSelectors
         {
             get
@@ -67,19 +70,5 @@ namespace ZiTechDev.Business.Requests.User
         [Display(Name = "Vai trò")]
         public List<RoleItem> Roles { get; set; } = new List<RoleItem>();
 
-        public UserFilter()
-        {
-            Id = null;
-            FullName = null;
-            UserName = null;
-            DisplayName = null;
-            PhoneNumber = null;
-            Email = null;
-            FromDOB = DateTime.MinValue;
-            ToDOB = DateTime.MaxValue;
-            FromDOJ = DateTime.MinValue;
-            ToDOJ = DateTime.MaxValue;
-            Gender = -1; // All Genders
-        }
     }
 }

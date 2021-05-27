@@ -42,8 +42,11 @@ namespace ZiTechDev.Business.Services.Auth
             var roles = _userManager.GetRolesAsync(user);
             var claims = new[]
             {
+                new Claim("UserId", user.Id.ToString()),
                 new Claim(ClaimTypes.Email, user.Email),
+                new Claim(ClaimTypes.MobilePhone, user.PhoneNumber),
                 new Claim(ClaimTypes.Name, user.DisplayName),
+                new Claim("UserName", user.UserName),
                 new Claim(ClaimTypes.Role, string.Join(";", roles))
             };
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Tokens:Key"]));
