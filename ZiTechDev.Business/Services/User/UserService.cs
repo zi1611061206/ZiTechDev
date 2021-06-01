@@ -3,12 +3,15 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 using ZiTechDev.Business.Engines.CustomResult;
 using ZiTechDev.Business.Engines.Paginition;
+using ZiTechDev.Business.Requests.Auth;
 using ZiTechDev.Business.Requests.User;
 using ZiTechDev.Data.Entities;
+using ZiTechDev.Data.Enums;
 
 namespace ZiTechDev.Business.Services.User
 {
@@ -188,10 +191,10 @@ namespace ZiTechDev.Business.Services.User
                 LastName = request.LastName,
                 DisplayName = request.DisplayName,
                 DateOfBirth = request.DateOfBirth,
-                Gender = request.Gender,
                 PhoneNumber = request.PhoneNumber,
                 Email = request.Email,
-                UserName = request.UserName
+                UserName = request.UserName,
+                Gender = request.Gender
             };
 
             if (await _userManager.FindByEmailAsync(request.Email) != null && _userManager.IsEmailConfirmedAsync(user).Result)

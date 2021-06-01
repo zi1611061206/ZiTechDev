@@ -50,22 +50,13 @@ namespace ZiTechDev.Business.Requests.User
 
         [Display(Name = "Giới tính")]
         public int Gender { get; set; } = -1;
-        public GenderSelector GenderSelectors
-        {
-            get
-            {
-                return new GenderSelector
-                {
-                    Items = new List<GenderItem>()
+        public List<GenderItem> Genders { get; set; } = new List<GenderItem>()
                     {
                         new GenderItem(-1, "Tất cả"),
                         new GenderItem(0, "Nam"),
                         new GenderItem(1, "Nữ"),
                         new GenderItem(2, "Giới tính khác")
-                    }
-                };
-            }
-        }
+                    };
 
         [Display(Name = "Vai trò")]
         public List<RoleItem> Roles { get; set; } = new List<RoleItem>();

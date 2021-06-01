@@ -195,8 +195,8 @@
 
             <div class="row justify-content-center">
                 <div class="col-md-8">
-                    <button type="button" class="form-group btn btn-warning w-100 m-1" onclick="location.href='@Url.Action("Edit", "Profile", new { userId = Model.Id })'">Chỉnh sửa</button>
-                    <button type="button" class="form-group btn btn-primary w-100 m-1" onclick="location.href='@Url.Action("ChangePassword", "Profile", new { userId = Model.Id })'">Đổi mật khẩu</button>
+                    <button type="button" class="form-group btn btn-warning w-100 m-1" onclick="location.href='@Url.Action("EditProfile", "Auth", new { userId = Model.Id })'">Chỉnh sửa</button>
+                    <button type="button" class="form-group btn btn-primary w-100 m-1" onclick="location.href='@Url.Action("ChangePassword", "Auth", new { userId = Model.Id })'">Đổi mật khẩu</button>
                 </div>
             </div>
         </div>

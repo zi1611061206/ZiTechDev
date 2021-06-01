@@ -39,8 +39,10 @@ namespace ZiTechDev.AdminSite.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var filter = new UserFilter();
-            filter.CurrentUserId = GetCurrentUserId();
+            var filter = new UserFilter
+            {
+                CurrentUserId = GetCurrentUserId()
+            };
 
             var result = await _userApiClient.Get(filter);
             var roles = _roleApiClient.GetAll().Result;
@@ -135,7 +137,7 @@ namespace ZiTechDev.AdminSite.Controllers
 
             if (result.IsSuccessed)
             {
-                TempData["Success"] = "Tạo mới thành công người dùng có mã: " + result.ReturnedObject;
+                TempData["Success"] = "Tạo mới thành công";
                 ModelState.Clear();
                 return RedirectToAction("Index");
             }
@@ -159,11 +161,10 @@ namespace ZiTechDev.AdminSite.Controllers
                     LastName = user.LastName,
                     DisplayName = user.DisplayName,
                     DateOfBirth = user.DateOfBirth,
-                    Gender = user.Gender,
                     PhoneNumber = user.PhoneNumber,
-                    Email = user.Email
+                    Email = user.Email,
+                    Gender = user.Gender
                 };
-                var userObj = await _userApiClient.GetById(user.Id);
                 var roleObj = await _roleApiClient.GetAll(); 
                 foreach (var role in roleObj.ReturnedObject)
                 {
@@ -171,7 +172,7 @@ namespace ZiTechDev.AdminSite.Controllers
                     {
                         Id = role.Id,
                         Name = role.Name,
-                        Checked = userObj.ReturnedObject.Roles.Contains(role.Name)
+                        Checked = result.ReturnedObject.Roles.Contains(role.Name)
                     });
                 }
                 return View(model);

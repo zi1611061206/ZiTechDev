@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Text;
-using ZiTechDev.Business.Engines;
+using ZiTechDev.Business.Requests.User;
 using ZiTechDev.Data.Enums;
 
-namespace ZiTechDev.Business.Requests.User
+namespace ZiTechDev.Business.Requests.Auth
 {
-    public class UserUpdateRequest
+    public class EditProfileRequest
     {
         [Display(Name = "Mã")]
         public Guid Id { get; set; }
@@ -44,8 +43,5 @@ namespace ZiTechDev.Business.Requests.User
                         new GenderItem(1, "Nữ"),
                         new GenderItem(2, "Giới tính khác")
                     };
-
-        [Display(Name = "Vai trò")]
-        public List<RoleItem> Roles { get; set; } = new List<RoleItem>();
     }
 }

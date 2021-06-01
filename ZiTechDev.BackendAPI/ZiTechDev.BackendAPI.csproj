@@ -13,4 +13,8 @@
     <ProjectReference Include="..\ZiTechDev.Business\ZiTechDev.Business.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Engines\Translator\" />
+  </ItemGroup>
+
 </Project>

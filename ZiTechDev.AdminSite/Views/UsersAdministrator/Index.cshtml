@@ -74,7 +74,19 @@
                 </div>
                 <div class="form-group col-md-2">
                     <label class="small mb-1" asp-for="@filter.Gender"></label>
-                    <select id="cbGenders" class="form-control py-2" asp-for="@filter.Gender" asp-items="@(new SelectList(filter.GenderSelectors.Items,"Id","GenderName"))"></select>
+                    <select id="cbGenders" class="form-control py-2" asp-for="@filter.Gender">
+                        @foreach (var item in filter.Genders)
+                        {
+                            if (item.Id == (int)filter.Gender)
+                            {
+                                <option value="@item.Id" selected>@item.Name</option>
+                            }
+                            else
+                            {
+                                <option value="@item.Id">@item.Name</option>
+                            }
+                        }
+                    </select>
                 </div>
                 <div class="form-group col-md-2">
                     <label class="small mb-1" asp-for="@filter.FromDOB"></label>

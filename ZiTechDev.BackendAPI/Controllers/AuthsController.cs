@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using ZiTechDev.Business.Requests.Auth;
 using ZiTechDev.Business.Services.Auth;
+using ZiTechDev.Business.Services.User;
 
 namespace ZiTechDev.BackendAPI.Controllers
 {
@@ -16,9 +17,12 @@ namespace ZiTechDev.BackendAPI.Controllers
     public class AuthsController : ControllerBase
     {
         private readonly IAuthService _authService;
-        public AuthsController(IAuthService authService)
+        private readonly IUserService _userService;
+
+        public AuthsController(IAuthService authService, IUserService userService)
         {
             _authService = authService;
+            _userService = userService;
         }
 
         [HttpPost("login")]
@@ -46,6 +50,53 @@ namespace ZiTechDev.BackendAPI.Controllers
                 return BadRequest(ModelState);
             }
             var result = await _authService.Register(request);
+            if (!result.IsSuccessed)
+            {
+                return BadRequest(result.Message);
+            }
+            return Ok(result.ReturnedObject);
+        }
+
+        [HttpGet("profile/{userId}")]
+        public async Task<IActionResult> GetProfile(Guid userId)
+        {
+            var result = await _userService.GetById(userId);
+            if (result.IsSuccessed)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result.Message);
+        }
+
+        [HttpPut("profile/edit/{userId}")]
+        public async Task<IActionResult> EditProfile(Guid userId, [FromBody] EditProfileRequest request)
+        {
+            request.Id = userId;
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var result = await _authService.EditProfile(request);
+
+            if (!result.IsSuccessed)
+            {
+                return BadRequest(result.Message);
+            }
+            return Ok(result.ReturnedObject);
+        }
+
+        [HttpPut("change-password/{userId}")]
+        public async Task<IActionResult> ChangePassword(Guid userId, [FromBody] ChangePasswordRequest request)
+        {
+            request.Id = userId;
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var result = await _authService.ChangePassword(request);
+
             if (!result.IsSuccessed)
             {
                 return BadRequest(result.Message);

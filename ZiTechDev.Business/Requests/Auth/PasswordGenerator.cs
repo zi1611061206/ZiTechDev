@@ -4,7 +4,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace ZiTechDev.Business.Requests.User
+namespace ZiTechDev.Business.Requests.Auth
 {
     public class PasswordGenerator
     {
@@ -20,9 +20,9 @@ namespace ZiTechDev.Business.Requests.User
         public string AllNumericChars { get; private set; }
         public string AllSpecialChars { get; private set; }
 
-        private string _allAvailableChars;
-        private int _minimumNumberOfChars;
-        private RandomSecureVersion _randomSecure;
+        private readonly string _allAvailableChars;
+        private readonly int _minimumNumberOfChars;
+        private readonly RandomSecureVersion _randomSecure;
 
         public PasswordGenerator()
         {

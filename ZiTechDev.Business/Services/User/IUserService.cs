@@ -12,7 +12,7 @@ namespace ZiTechDev.Business.Services.User
     public interface IUserService
     {
         Task<ApiResult<PaginitionEngines<UserViewModel>>> Get(UserFilter filter);
-        Task<ApiResult<UserViewModel>> GetById(Guid roleId);
+        Task<ApiResult<UserViewModel>> GetById(Guid userId);
         Task<ApiResult<string>> Create(UserCreateRequest request);
         Task<ApiResult<string>> Update(UserUpdateRequest request);
         Task<ApiResult<bool>> Delete(Guid roleId);

@@ -58,7 +58,19 @@
                             <div class="form-group">
                                 <label asp-for="Gender" class="control-label"></label>
                                 <span class="text-danger"> (*)</span>
-                                <select class="form-control py-2" asp-for="Gender" asp-items="@(new SelectList(Model.GenderSelectors.Items,"Id","GenderName"))"></select>
+                                <select class="form-control py-2" asp-for="Gender">
+                                    @foreach (var item in Model.Genders)
+                                    {
+                                        if (item.Id == (int)Model.Gender)
+                                        {
+                                            <option value="@item.Id" selected>@item.Name</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="@item.Id">@item.Name</option>
+                                        }
+                                    }
+                                </select>
                                 <span asp-validation-for="Gender" class="text-danger"></span>
                             </div>
                         </div>
@@ -81,7 +93,7 @@
                                     @for (var i = 0; i < Model.Roles.Count(); i++)
                                     {
                                         <div class="form-check col-md-12 btn btn-outline-info text-center mb-2">
-                                            <input class="form-check-input" type="checkbox" id="@Model.Roles[i].Name" asp-for="@Model.Roles[i].Checked"/>
+                                            <input class="form-check-input" type="checkbox" id="@Model.Roles[i].Name" asp-for="@Model.Roles[i].Checked" />
                                             @{
                                                 if (@Model.Roles[i].Name.Equals("User"))
                                                 {

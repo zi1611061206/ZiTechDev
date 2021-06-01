@@ -1,7 +1,7 @@
-﻿@model ZiTechDev.Business.Requests.User.UserCreateRequest
+﻿@model ZiTechDev.Business.Requests.Auth.EditProfileRequest
 
 @{
-    ViewData["Title"] = "Tạo mới người dùng";
+    ViewData["Title"] = "Chỉnh sửa thông tin";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -10,16 +10,22 @@
     <div class="card mb-4 bg-light">
         <div class="card-body justify-content-center">
 
-            <h1 class="form-group text-center text-uppercase">Tạo mới người dùng</h1>
-            <form asp-controller="UsersAdministrator" asp-action="Create" method="post">
+            <h1 class="form-group text-center text-uppercase">Chỉnh sửa thông tin</h1>
+            <form asp-controller="Auth" asp-action="EditProfile" method="post">
                 <div class="row">
                     <div class="col-md-12">
                         <div class="form-group text-center">
                             <div class="summary-error bg-danger text-white" style="list-style: none" asp-validation-summary="ModelOnly"></div>
                         </div>
                     </div>
-                    <div class="col-md-12 row">
+
+                    <div class="col-md-12 row justify-content-center">
                         <div class="col-md-6">
+                            <div class="form-group" hidden>
+                                <label asp-for="Id" class="control-label"></label>
+                                <input asp-for="Id" class="form-control" />
+                                <span asp-validation-for="Id" class="text-danger"></span>
+                            </div>
                             <div class="form-group">
                                 <label asp-for="FirstName" class="control-label"></label>
                                 <span class="text-danger"> (*)</span>
@@ -36,6 +42,12 @@
                                 <span class="text-danger"> (*)</span>
                                 <input id="txbLastName" asp-for="LastName" class="form-control" onchange="fullNameChanged()" />
                                 <span asp-validation-for="LastName" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="DisplayName" class="control-label"></label>
+                                <span class="text-danger"> (*)</span>
+                                <input id="txbDisplayName" asp-for="DisplayName" class="form-control" />
+                                <span asp-validation-for="DisplayName" class="text-danger"></span>
                             </div>
                             <div class="form-group">
                                 <label asp-for="DateOfBirth" class="control-label"></label>
@@ -73,61 +85,11 @@
                                 <input asp-for="Email" class="form-control" />
                                 <span asp-validation-for="Email" class="text-danger"></span>
                             </div>
-                        </div>
-                        <div class="col-md-6">
                             <div class="form-group">
-                                <label asp-for="UserName" class="control-label"></label>
-                                <span class="text-danger"> (*)</span>
-                                <input asp-for="UserName" class="form-control" />
-                                <span asp-validation-for="UserName" class="text-danger"></span>
-                            </div>
-                            <div class="form-group">
-                                <label asp-for="DisplayName" class="control-label"></label>
-                                <input id="txbDisplayName" asp-for="DisplayName" class="form-control" />
-                                <span asp-validation-for="DisplayName" class="text-danger"></span>
-                            </div>
-                            <div class="form-group">
-                                <label asp-for="Password" class="control-label"></label>
-                                <span class="text-danger"> (*)</span>
-                                <input asp-for="Password" class="form-control" />
-                                <span asp-validation-for="Password" class="text-danger"></span>
-                            </div>
-                            <div class="form-group">
-                                <label asp-for="PasswordConfirmation" class="control-label"></label>
-                                <span class="text-danger"> (*)</span>
-                                <input asp-for="PasswordConfirmation" class="form-control" />
-                                <span asp-validation-for="PasswordConfirmation" class="text-danger"></span>
-                            </div>
-                            <div class="form-group row justify-content-center">
-                                <label asp-for="Roles" class="control-label col-md-12"></label>
-                                <div class="col-md-12 row">
-                                    @for (var i = 0; i < Model.Roles.Count(); i++)
-                                    {
-                                        <div class="form-check col-md-12 btn btn-outline-info text-center mb-2">
-                                            <input class="form-check-input" type="checkbox" id="@Model.Roles[i].Name" asp-for="@Model.Roles[i].Checked" />
-                                            @{
-                                                if (@Model.Roles[i].Name.Equals("User"))
-                                                {
-                                                    <label class="form-check-label" for="@Model.Roles[i].Name">@Model.Roles[i].Name (*)</label>
-                                                }
-                                                else
-                                                {
-                                                    <label class="form-check-label" for="@Model.Roles[i].Name">@Model.Roles[i].Name</label>
-                                                }
-                                            }
-                                            <input type="hidden" asp-for="@Model.Roles[i].Id" />
-                                            <input type="hidden" asp-for="@Model.Roles[i].Name" />
-                                        </div>
-                                    }
-                                </div>
-                                <span asp-validation-for="Roles" class="text-danger col-md-12"></span>
+                                <button type="submit" class="form-control btn btn-primary w-100">Lưu</button>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="row justify-content-center">
-                    <button type="submit" class="form-group col-md-5 btn btn-primary w-100 m-1">Lưu</button>
-                    <button type="button" class="form-group col-md-5 btn btn-dark w-100 m-1" onclick="window.location.href='Index'">Hủy</button>
                 </div>
             </form>
 
@@ -136,5 +98,5 @@
 </div>
 
 @section Scripts{
-    <script type="text/javascript" src="/js/UsersAdministrator/create.js" defer></script>
+    <script type="text/javascript" src="/js/Auth/edit-profile.js" defer></script>
 }

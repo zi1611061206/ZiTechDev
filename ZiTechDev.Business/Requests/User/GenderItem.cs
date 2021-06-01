@@ -7,11 +7,13 @@ namespace ZiTechDev.Business.Requests.User
     public class GenderItem
     {
         public int Id { get; set; }
-        public string GenderName { get; set; }
-        public GenderItem(int id, string genderName)
+
+        public string Name { get; set; }
+
+        public GenderItem(int id, string name)
         {
             Id = id;
-            GenderName = genderName;
+            Name = name;
         }
     }
 }

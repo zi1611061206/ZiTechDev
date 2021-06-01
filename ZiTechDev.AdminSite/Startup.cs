@@ -17,7 +17,6 @@ using System.Net.Http.Headers;
 using System.Reflection;
 using System.Threading.Tasks;
 using ZiTechDev.AdminSite.ApiClientServices.Auth;
-using ZiTechDev.AdminSite.ApiClientServices.Profile;
 using ZiTechDev.AdminSite.ApiClientServices.Role;
 using ZiTechDev.AdminSite.ApiClientServices.User;
 using ZiTechDev.Business.Requests.Activity;
@@ -56,7 +55,6 @@ namespace ZiTechDev.AdminSite
             services.AddTransient<IAuthApiClient, AuthApiClient>();
             services.AddTransient<IUserApiClient, UserApiClient>();
             services.AddTransient<IRoleApiClient, RoleApiClient>();
-            services.AddTransient<IProfileApiClient, ProfileApiClient>();
 
             services.AddSession(x=> {
                 x.IdleTimeout = TimeSpan.FromMinutes(30);
