@@ -1,36 +1,16 @@
-using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http.Headers;
-using System.Reflection;
-using System.Threading.Tasks;
 using ZiTechDev.AdminSite.ApiClientServices.Auth;
 using ZiTechDev.AdminSite.ApiClientServices.Role;
 using ZiTechDev.AdminSite.ApiClientServices.User;
-using ZiTechDev.Business.Requests.Activity;
-using ZiTechDev.Business.Requests.Auth;
-using ZiTechDev.Business.Requests.User;
-using ZiTechDev.Business.Services.Activities;
-using ZiTechDev.Business.Services.Auth;
-using ZiTechDev.Business.Services.User;
-using ZiTechDev.Business.Validations.Activity;
 using ZiTechDev.Business.Validations.Auth;
-using ZiTechDev.Business.Validations.User;
-using ZiTechDev.Common.Constants;
-using ZiTechDev.Data.Context;
-using ZiTechDev.Data.Entities;
 
 namespace ZiTechDev.AdminSite
 {

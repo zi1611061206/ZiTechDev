@@ -4,29 +4,20 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using ZiTechDev.Business.Requests.Activity;
-using ZiTechDev.Business.Requests.Auth;
-using ZiTechDev.Business.Requests.User;
-using ZiTechDev.Business.Services.Activities;
+using ZiTechDev.BackendAPI.Engines.Email;
+using ZiTechDev.Business.Engines.Email;
 using ZiTechDev.Business.Services.Auth;
 using ZiTechDev.Business.Services.Role;
 using ZiTechDev.Business.Services.User;
-using ZiTechDev.Business.Validations.Activity;
 using ZiTechDev.Business.Validations.Auth;
-using ZiTechDev.Business.Validations.User;
 using ZiTechDev.Common.Constants;
 using ZiTechDev.Data.Context;
 using ZiTechDev.Data.Entities;
@@ -49,9 +40,12 @@ namespace ZiTechDev.BackendAPI
         {
             services.AddDbContext<ZiTechDevDBContext>(options => options.UseSqlServer(Configuration.GetConnectionString(ProjectConstants.ConnectionString)));
             
-            services.AddIdentity<AppUser, AppRole>().AddEntityFrameworkStores<ZiTechDevDBContext>().AddDefaultTokenProviders();
+            services.AddIdentity<AppUser, AppRole>(options => {
+                options.Password.RequiredLength = 8;
+                options.User.RequireUniqueEmail = true;
+                //options.SignIn.RequireConfirmedEmail = true;
+            }).AddEntityFrameworkStores<ZiTechDevDBContext>().AddDefaultTokenProviders();
             
-            services.AddTransient<IActivityService, ActivityService>();
             services.AddTransient<IAuthService, AuthService>();
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<IRoleService, RoleService>();
@@ -60,12 +54,15 @@ namespace ZiTechDev.BackendAPI
             services.AddTransient<SignInManager<AppUser>, SignInManager<AppUser>>();
             services.AddTransient<RoleManager<AppRole>, RoleManager<AppRole>>();
 
-            services.AddControllers().AddFluentValidation(x=>x.RegisterValidatorsFromAssemblyContaining<LoginValidator>());
+            services.AddControllers().AddFluentValidation(options => options.RegisterValidatorsFromAssemblyContaining<LoginValidator>());
 
-            services.AddSwaggerGen(c =>
+            services.AddSingleton<IEmailServerConfiguration>(Configuration.GetSection("EmailConfiguration").Get<EmailServerConfiguration>());
+            services.AddTransient<IEmailService, EmailService>();
+
+            services.AddSwaggerGen(options =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "ZiTechDev Swagger", Version = "v1" });
-                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                options.SwaggerDoc("v1", new OpenApiInfo { Title = "ZiTechDev Swagger", Version = "v1" });
+                options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
                     Description = @"JWT Authorization header using the Bearer scheme. \r\n\r\n 
                       Enter 'Bearer' [space] and then your token in the text input below.
@@ -76,7 +73,7 @@ namespace ZiTechDev.BackendAPI
                     Scheme = "Bearer"
                 });
 
-                c.AddSecurityRequirement(new OpenApiSecurityRequirement()
+                options.AddSecurityRequirement(new OpenApiSecurityRequirement()
                 {
                     {
                         new OpenApiSecurityScheme
