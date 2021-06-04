@@ -5,6 +5,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Include="wwwroot\EmailTemplates\EmailConfirmationTemplate.txt" />
+    <None Include="wwwroot\EmailTemplates\EmailFooterTemplate.txt" />
+    <None Include="wwwroot\EmailTemplates\EmailHeaderTemplate.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="MailKit" Version="2.12.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.5" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.1.4" />

@@ -13,5 +13,6 @@ namespace ZiTechDev.Business.Services.Auth
         Task<ApiResult<string>> Register(RegisterRequest request);
         Task<ApiResult<bool>> EditProfile(EditProfileRequest request);
         Task<ApiResult<bool>> ChangePassword(ChangePasswordRequest request);
+        Task<ApiResult<bool>> ConfirmEmail(string userName, string token); 
     }
 }

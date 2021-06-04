@@ -1,11 +1,14 @@
 ﻿using MailKit.Net.Pop3;
 using MailKit.Net.Smtp;
+using Microsoft.Extensions.Configuration;
 using MimeKit;
 using MimeKit.Text;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Authentication;
 using System.Text;
+using System.Threading.Tasks;
 using ZiTechDev.Business.Engines.Email;
 
 namespace ZiTechDev.BackendAPI.Engines.Email
@@ -19,7 +22,7 @@ namespace ZiTechDev.BackendAPI.Engines.Email
             _emailServerConfiguration = emailServerConfiguration;
         }
 
-        public void Send(EmailItem emailItem)
+        public async Task<bool> SendAsync(EmailItem emailItem)
         {
             var email = new MimeMessage();
             email.From.AddRange(emailItem.Senders.Select(x => new MailboxAddress(x.Name, x.Address)));
@@ -31,26 +34,30 @@ namespace ZiTechDev.BackendAPI.Engines.Email
             };
 
             using var emailClient = new SmtpClient();
+            emailClient.CheckCertificateRevocation = false;
+            // Ghi đè phiên bản ssl/tls: emailClient.SslProtocols = SslProtocols.Ssl3 | SslProtocols.Tls | SslProtocols.Tls11 | SslProtocols.Tls12 | SslProtocols.Tls13;
             // Khuyến nghị để SSL = true
-            emailClient.Connect(_emailServerConfiguration.SmtpServer, _emailServerConfiguration.SmtpPort, true);
+            await emailClient.ConnectAsync(_emailServerConfiguration.SmtpServer, _emailServerConfiguration.SmtpPort, true);
             // Xóa bất kỳ chức năng OAuth nào vì chúng tôi sẽ không sử dụng chức năng đó.
             emailClient.AuthenticationMechanisms.Remove("XOAUTH2");
-            emailClient.Authenticate(_emailServerConfiguration.SmtpUsername, _emailServerConfiguration.SmtpPassword);
-            emailClient.Send(email);
-            emailClient.Disconnect(true);
+            //Turn on to test: https://myaccount.google.com/lesssecureapps?pli=1&rapt=AEjHL4MPFGcGo6RugIy9aEUcS9EhTk0ZF_1Mo4dgnC9zr9D6GDypFGzJBhXmzUAiQm_FG0bJ7LkzC_i2Ca5n0UhbJwXQ5SxpzA
+            await emailClient.AuthenticateAsync(_emailServerConfiguration.SmtpUsername, _emailServerConfiguration.SmtpPassword);
+            await emailClient.SendAsync(email);
+            await emailClient.DisconnectAsync(true);
+            return true;
         }
 
-        public List<EmailItem> Receive(int maxCount = 10)
+        public async Task<List<EmailItem>> ReceiveAsync(int maxCount = 10)
         {
             using var emailClient = new Pop3Client();
-            emailClient.Connect(_emailServerConfiguration.PopServer, _emailServerConfiguration.PopPort, true);
+            await emailClient.ConnectAsync(_emailServerConfiguration.PopServer, _emailServerConfiguration.PopPort, true);
             emailClient.AuthenticationMechanisms.Remove("XOAUTH2");
-            emailClient.Authenticate(_emailServerConfiguration.PopUsername, _emailServerConfiguration.PopPassword);
+            await emailClient.AuthenticateAsync(_emailServerConfiguration.PopUsername, _emailServerConfiguration.PopPassword);
 
             List<EmailItem> emails = new();
             for (int i = 0; i < emailClient.Count && i < maxCount; i++)
             {
-                var email = emailClient.GetMessage(i);
+                var email = await emailClient.GetMessageAsync(i);
                 var emailItem = new EmailItem()
                 {
                     Subject = email.Subject,

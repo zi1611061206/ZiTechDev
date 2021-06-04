@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -18,13 +18,13 @@ namespace ZiTechDev.Business.Services.Auth
     {
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
-        private readonly IConfiguration _config;
+        private readonly IConfiguration _configuration;
 
-        public AuthService(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IConfiguration config)
+        public AuthService(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IConfiguration configuration)
         {
             _userManager = userManager;
             _signInManager = signInManager;
-            _config = config;
+            _configuration = configuration;
         }
 
         public async Task<ApiResult<string>> Login(LoginRequest request)
@@ -33,6 +33,10 @@ namespace ZiTechDev.Business.Services.Auth
             if (user == null)
             {
                 return new Failed<string>("Người dùng không tồn tại");
+            }
+            if (!user.EmailConfirmed)
+            {
+                return new Failed<string>("Tài khoản chưa được kích hoạt. Vui lòng kiểm tra hộp thư của bạn");
             }
             var result = await _signInManager.PasswordSignInAsync(user, request.Password, request.RememberMe, true);
             if (!result.Succeeded)
@@ -50,11 +54,11 @@ namespace ZiTechDev.Business.Services.Auth
                 new Claim("UserName", user.UserName),
                 new Claim(ClaimTypes.Role, string.Join(";", roles))
             };
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Tokens:Key"]));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Tokens:Key"]));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
             var token = new JwtSecurityToken(
-                _config["Tokens:Issuer"],
-                _config["Tokens:Issuer"],
+                _configuration["Tokens:Issuer"],
+                _configuration["Tokens:Issuer"],
                 claims,
                 expires: DateTime.Now.AddHours(3),
                 signingCredentials: creds
@@ -103,9 +107,9 @@ namespace ZiTechDev.Business.Services.Auth
             {
                 return new Failed<bool>("Không thể tìm thấy người dùng có mã: " + request.Id);
             }
-            if (await _userManager.Users.AnyAsync(x => x.Email.Equals(request.Email) && x.Id != request.Id && x.EmailConfirmed == true))
+            if (await _userManager.Users.AnyAsync(x => x.Email.Equals(request.Email) && x.Id != request.Id))
             {
-                return new Failed<bool>("Địa chỉ email đã được đăng ký và xác thực bởi người dùng khác");
+                return new Failed<bool>("Địa chỉ email đã được đăng ký bởi người dùng khác");
             }
 
             user.FirstName = request.FirstName;
@@ -146,5 +150,21 @@ namespace ZiTechDev.Business.Services.Auth
                 return new Failed<bool>("Mật khẩu hiện tại không đúng");
             }
         }
+
+        public async Task<ApiResult<bool>> ConfirmEmail(string userName, string token)
+        {
+            if (string.IsNullOrEmpty(userName) || string.IsNullOrEmpty(token))
+            {
+                return new Failed<bool>("Thông tin không hợp lệ");
+            }
+            var user = await _userManager.FindByNameAsync(userName);
+            var decodedToken = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(token));
+            var result = await _userManager.ConfirmEmailAsync(user, decodedToken);
+            if (!result.Succeeded)
+            {
+                return new Failed<bool>("Vượt quá thời gian xác nhận. Vui lòng đăng ký lại hoặc liên hệ quản trị viên");
+            }
+            return new Successed<bool>(true);
+        } 
     }
 }

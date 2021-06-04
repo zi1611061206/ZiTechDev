@@ -6,17 +6,13 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Logging;
 using Microsoft.IdentityModel.Tokens;
 using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using ZiTechDev.AdminSite.ApiClientServices.Auth;
-using ZiTechDev.AdminSite.ApiClientServices.Role;
-using ZiTechDev.AdminSite.ApiClientServices.User;
 using ZiTechDev.Business.Requests.Auth;
-using ZiTechDev.Business.Requests.User;
 
 namespace ZiTechDev.AdminSite.Controllers
 {
@@ -94,6 +90,11 @@ namespace ZiTechDev.AdminSite.Controllers
         [HttpGet]
         public async Task<IActionResult> GetProfile()
         {
+            if (GetCurrentUserId() == null)
+            {
+                RedirectToAction("Login", "Auth");
+            }
+
             var userId = Guid.Parse(GetCurrentUserId());
             var result = await _authApiClient.GetProfile(userId);
             if (result.IsSuccessed)
@@ -106,7 +107,12 @@ namespace ZiTechDev.AdminSite.Controllers
 
         public string GetCurrentUserId()
         {
-            return _httpContextAccessor.HttpContext.User.Claims.First(i => i.Type == "UserId").Value;
+            var currentUser = _httpContextAccessor.HttpContext.User;
+            if (currentUser != null)
+            {
+                return currentUser.Claims.First(i => i.Type == "UserId").Value;
+            }
+            return null;
         }
 
         [HttpGet]

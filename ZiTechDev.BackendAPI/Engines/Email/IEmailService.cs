@@ -8,7 +8,7 @@ namespace ZiTechDev.BackendAPI.Engines.Email
 {
     public interface IEmailService
     {
-        void Send(EmailItem emailItem);
-        List<EmailItem> Receive(int maxCount = 10);
+        Task<bool> SendAsync(EmailItem emailItem);
+        Task<List<EmailItem>> ReceiveAsync(int maxCount = 10);
     }
 }

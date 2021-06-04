@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Hosting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,16 +20,24 @@ namespace ZiTechDev.BackendAPI.Controllers
     {
         private readonly IAuthService _authService;
         private readonly IUserService _userService;
+        private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public AuthsController(IAuthService authService, IUserService userService)
+        public AuthsController(
+            IAuthService authService, 
+            IUserService userService, 
+            IWebHostEnvironment webHostEnvironment,
+            IHttpContextAccessor httpContextAccessor)
         {
             _authService = authService;
             _userService = userService;
+            _webHostEnvironment = webHostEnvironment;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         [HttpPost("login")]
         [AllowAnonymous]
-        public async Task<IActionResult> Login([FromBody]LoginRequest request)
+        public async Task<IActionResult> Login([FromBody] LoginRequest request)
         {
             if (!ModelState.IsValid)
             {
@@ -102,6 +112,20 @@ namespace ZiTechDev.BackendAPI.Controllers
                 return BadRequest(result.Message);
             }
             return Ok(result.ReturnedObject);
+        }
+
+        [HttpGet("confirm-email")]
+        [AllowAnonymous]
+        public async Task<IActionResult> ConfirmEmail([FromQuery] string userName, [FromQuery] string token)
+        {
+            var result = await _authService.ConfirmEmail(userName, token);
+            var request = _httpContextAccessor.HttpContext.Request;
+            var domain = $"{request.Scheme}://{request.Host}";
+            if (!result.IsSuccessed)
+            {
+                return Redirect(domain + "/EmailTemplates/EmailConfirmationFailed.html");
+            }
+            return Redirect(domain + "/EmailTemplates/EmailConfirmationSuccessed.html");
         }
     }
 }

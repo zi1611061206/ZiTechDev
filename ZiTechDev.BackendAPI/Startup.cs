@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System;
 using System.Collections.Generic;
 using ZiTechDev.BackendAPI.Engines.Email;
 using ZiTechDev.Business.Engines.Email;
@@ -39,13 +40,19 @@ namespace ZiTechDev.BackendAPI
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<ZiTechDevDBContext>(options => options.UseSqlServer(Configuration.GetConnectionString(ProjectConstants.ConnectionString)));
-            
-            services.AddIdentity<AppUser, AppRole>(options => {
+
+            services.AddIdentity<AppUser, AppRole>(options =>
+            {
                 options.Password.RequiredLength = 8;
                 options.User.RequireUniqueEmail = true;
-                //options.SignIn.RequireConfirmedEmail = true;
-            }).AddEntityFrameworkStores<ZiTechDevDBContext>().AddDefaultTokenProviders();
-            
+                options.Tokens.EmailConfirmationTokenProvider = "emailconfirmation";
+                options.SignIn.RequireConfirmedEmail = true;
+            }).AddEntityFrameworkStores<ZiTechDevDBContext>()
+            .AddDefaultTokenProviders()
+            .AddTokenProvider<EmailConfirmationTokenProvider<AppUser>>("emailconfirmation");
+            services.Configure<DataProtectionTokenProviderOptions>(options => options.TokenLifespan = TimeSpan.FromHours(2));
+            services.Configure<EmailConfirmationTokenProviderOptions>(options => options.TokenLifespan = TimeSpan.FromDays(3));
+
             services.AddTransient<IAuthService, AuthService>();
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<IRoleService, RoleService>();

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -197,9 +198,9 @@ namespace ZiTechDev.Business.Services.User
                 Gender = request.Gender
             };
 
-            if (await _userManager.FindByEmailAsync(request.Email) != null && _userManager.IsEmailConfirmedAsync(user).Result)
+            if (await _userManager.FindByEmailAsync(request.Email) != null)
             {
-                return new Failed<string>("Địa chỉ email đã được đăng ký và xác thực");
+                return new Failed<string>("Địa chỉ email đã được đăng ký");
             }
 
             var result = await _userManager.CreateAsync(user, request.Password);
@@ -207,8 +208,10 @@ namespace ZiTechDev.Business.Services.User
             {
                 return new Failed<string>("Tạo mới thất bại");
             }
+            var emailToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            var encodedToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(emailToken));
             await RoleAssign(user.Id, request.Roles);
-            return new Successed<string>(user.Id.ToString());
+            return new Successed<string>(encodedToken);
         }
 
         public async Task<ApiResult<string>> Update(UserUpdateRequest request)
@@ -218,7 +221,7 @@ namespace ZiTechDev.Business.Services.User
             {
                 return new Failed<string>("Không thể tìm thấy người dùng có mã: " + request.Id);
             }
-            if (await _userManager.Users.AnyAsync(x => x.Email.Equals(request.Email) && x.Id != request.Id && x.EmailConfirmed == true))
+            if (await _userManager.Users.AnyAsync(x => x.Email.Equals(request.Email) && x.Id != request.Id))
             {
                 return new Failed<string>("Địa chỉ email đã được đăng ký và xác thực bởi người dùng khác");
             }

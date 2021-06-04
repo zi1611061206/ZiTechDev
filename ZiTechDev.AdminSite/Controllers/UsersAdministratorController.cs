@@ -32,13 +32,23 @@ namespace ZiTechDev.AdminSite.Controllers
 
         public string GetCurrentUserId()
         {
-            return _httpContextAccessor.HttpContext.User.Claims.First(i => i.Type == "UserId").Value;
+            var currentUser = _httpContextAccessor.HttpContext.User;
+            if(currentUser != null)
+            {
+                return currentUser.Claims.First(i => i.Type == "UserId").Value;
+            }
+            return null;
         }
 
         // Read
         [HttpGet]
         public async Task<IActionResult> Index()
         {
+            if (GetCurrentUserId() == null)
+            {
+                RedirectToAction("Login", "Auth");
+            }
+
             var filter = new UserFilter
             {
                 CurrentUserId = GetCurrentUserId()
@@ -82,6 +92,11 @@ namespace ZiTechDev.AdminSite.Controllers
         [HttpPost]
         public async Task<IActionResult> Index(UserFilter filter)
         {
+            if (GetCurrentUserId() == null)
+            {
+                RedirectToAction("Login", "Auth");
+            }
+
             filter.CurrentUserId = GetCurrentUserId();
             var result = await _userApiClient.Get(filter);
 
@@ -137,7 +152,7 @@ namespace ZiTechDev.AdminSite.Controllers
 
             if (result.IsSuccessed)
             {
-                TempData["Success"] = "Tạo mới thành công";
+                TempData["Success"] = "Tạo mới thành công! (Chờ xác thực)";
                 ModelState.Clear();
                 return RedirectToAction("Index");
             }
