@@ -20,17 +20,19 @@
             <div class="row justify-content-md-center">
                 <div class="col-md-6 row m-0 justify-content-md-start">
                     <form asp-controller="UsersAdministrator" asp-action="Create" method="get">
-                        <button id="btnCreate" type="submit" class="btn-sm btn-success m-1"><i class="fa fa-plus"></i></button>
+                        <button id="btnCreate" type="submit" title="Thêm người dùng" class="btn-sm btn-success m-1"><i class="fa fa-plus"></i></button>
                     </form>
-                    <button type="button" class="btn-sm btn-secondary m-1" onclick="btnFilterClick()"><i class="fa fa-filter"></i></button>
+                    <button type="button" title="Bộ lọc" class="btn-sm btn-secondary m-1" onclick="btnFilterClick()"><i class="fa fa-filter"></i></button>
                 </div>
 
                 <div class="col-md-6 row m-0">
-                    <div class="col-md-11">
-                        <input id="txbSearch" class="form-control" type="text" placeholder="Từ khóa tìm kiếm" asp-for="@filter.Keyword" />
-                    </div>
-                    <div class="col-md-1">
-                        <button id="btnSearch" type="button" class="btn-sm btn-primary m-1" onclick="btnSearchClick()"><i class="fa fa-search"></i></button>
+                    <div class="input-group">
+                        <input id="txbSearch" class="form-control mb-1" type="text" placeholder="Từ khóa tìm kiếm" asp-for="@filter.Keyword" >
+                        <div class="input-group-append">
+                            <button id="btnSearch" type="button" title="Tìm kiếm" class="input-group-text mb-1" onclick="btnSearchClick()">
+                                <i class="fa fa-search"></i>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>

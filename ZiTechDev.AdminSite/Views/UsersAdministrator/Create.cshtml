@@ -23,18 +23,18 @@
                             <div class="form-group">
                                 <label asp-for="FirstName" class="control-label"></label>
                                 <span class="text-danger"> (*)</span>
-                                <input id="txbFirstName" asp-for="FirstName" class="form-control" onchange="fullNameChanged()" />
+                                <input asp-for="FirstName" class="form-control" />
                                 <span asp-validation-for="FirstName" class="text-danger"></span>
                             </div>
                             <div class="form-group">
                                 <label asp-for="MiddleName" class="control-label"></label>
-                                <input id="txbMiddleName" asp-for="MiddleName" class="form-control" onchange="fullNameChanged()" />
+                                <input asp-for="MiddleName" class="form-control" />
                                 <span asp-validation-for="MiddleName" class="text-danger"></span>
                             </div>
                             <div class="form-group">
                                 <label asp-for="LastName" class="control-label"></label>
                                 <span class="text-danger"> (*)</span>
-                                <input id="txbLastName" asp-for="LastName" class="form-control" onchange="fullNameChanged()" />
+                                <input asp-for="LastName" class="form-control" />
                                 <span asp-validation-for="LastName" class="text-danger"></span>
                             </div>
                             <div class="form-group">
@@ -78,7 +78,7 @@
                             <div class="form-group">
                                 <label asp-for="UserName" class="control-label"></label>
                                 <span class="text-danger"> (*)</span>
-                                <input asp-for="UserName" class="form-control" />
+                                <input id="txbUserName" asp-for="UserName" class="form-control" onchange="userNameChanged()" />
                                 <span asp-validation-for="UserName" class="text-danger"></span>
                             </div>
                             <div class="form-group">
@@ -89,13 +89,31 @@
                             <div class="form-group">
                                 <label asp-for="Password" class="control-label"></label>
                                 <span class="text-danger"> (*)</span>
-                                <input asp-for="Password" class="form-control" />
+                                <div class="input-group">
+                                    <input id="_password" class="form-control py-4" type="password" asp-for="Password" />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">
+                                            <a href="#">
+                                                <i onclick="ShowHidePW('password')" id="password" class="fa fa-eye" aria-hidden="true"></i>
+                                            </a>
+                                        </span>
+                                    </div>
+                                </div>
                                 <span asp-validation-for="Password" class="text-danger"></span>
                             </div>
                             <div class="form-group">
                                 <label asp-for="PasswordConfirmation" class="control-label"></label>
                                 <span class="text-danger"> (*)</span>
-                                <input asp-for="PasswordConfirmation" class="form-control" />
+                                <div class="input-group">
+                                    <input id="_password-confirmation" class="form-control py-4" type="password" asp-for="PasswordConfirmation" />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">
+                                            <a href="#">
+                                                <i onclick="ShowHidePW('password-confirmation')" id="password-confirmation" class="fa fa-eye" aria-hidden="true"></i>
+                                            </a>
+                                        </span>
+                                    </div>
+                                </div>
                                 <span asp-validation-for="PasswordConfirmation" class="text-danger"></span>
                             </div>
                             <div class="form-group row justify-content-center">

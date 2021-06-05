@@ -7,7 +7,7 @@
 
 <table class="table table-bordered" width="100%" cellspacing="0">
     <thead>
-        <tr class="btn-outline-info">
+        <tr class="btn-info">
             <th class="text-center">Mã</th>
             <th class="text-center">Họ Tên</th>
             <th class="text-center">Tên hiển thị</th>
@@ -46,17 +46,45 @@
                 <td>@Html.DisplayFor(modelItem => item.DisplayName)</td>
                 <td>@Html.DisplayFor(modelItem => item.UserName)</td>
                 <td>@Html.DisplayFor(modelItem => sex)</td>
-                <td>@Html.DisplayFor(modelItem => item.PhoneNumber)</td>
-                <td>@Html.DisplayFor(modelItem => item.Email)</td>
+                @{
+                    if (item.PhoneNumberConfirmed)
+                    {
+                        <td class="text-success">@Html.DisplayFor(modelItem => item.PhoneNumber)</td>
+                    }
+                    else
+                    {
+                        <td class="text-danger">@Html.DisplayFor(modelItem => item.PhoneNumber)</td>
+                    }
+                    if (item.EmailConfirmed)
+                    {
+                        <td class="limitContent text-success" data-content="@item.Email">@Html.DisplayFor(modelItem => item.Email)</td>
+                    }
+                    else
+                    {
+                        <td class="limitContent text-danger" data-content="@item.Email">@Html.DisplayFor(modelItem => item.Email)</td>
+                    }
+                }
                 <td>@Html.DisplayFor(modelItem => roleStr)</td>
                 <td>@Html.DisplayFor(modelItem => bod)</td>
                 <td>@Html.DisplayFor(modelItem => doj)</td>
                 <td class="text-center w-25">
-                    <button type="button" class="btn-sm btn-info m-1" onclick="location.href='@Url.Action("Detail", "UsersAdministrator", new { userId = item.Id })'"><i class="fa fa-book"></i></button>
-                    <button type="button" class="btn-sm btn-dark m-1" onclick="location.href='@Url.Action("ResetPassword", "UsersAdministrator", new { userId = item.Id })'"><i class="fa fa-key"></i></button>
-                    <button type="button" class="btn-sm btn-warning m-1" onclick="location.href='@Url.Action("Update", "UsersAdministrator", new { userId = item.Id })'"><i class="fa fa-pen"></i></button>
-                    <button type="button" class="btn-sm btn-danger m-1" data-toggle="modal" data-target="#deleteModal"><i class="fa fa-trash"></i></button>
-                    <button type="button" class="btn-sm btn-light m-1" onclick="CopyToClipboard('@item.Id')"><i class="fa fa-copy"></i></button>
+                    <div class="w-100">
+                        <button type="button" class="btn-sm btn-info m-1" title="Chi tiết người dùng" onclick="location.href='@Url.Action("Detail", "UsersAdministrator", new { userId = item.Id })'"><i class="fa fa-book"></i></button>
+                        <button type="button" class="btn-sm btn-warning m-1" title="Chỉnh sửa người dùng" onclick="location.href='@Url.Action("Update", "UsersAdministrator", new { userId = item.Id })'"><i class="fa fa-pen"></i></button>
+                        <button type="button" class="btn-sm btn-danger m-1" title="Xóa người dùng" data-toggle="modal" data-target="#deleteModal"><i class="fa fa-trash"></i></button>
+                    </div>
+                    <div class="w-100">
+                        <button type="button" class="btn-sm btn-dark m-1" title="Đặt lại mật khẩu về mặc định" onclick="location.href='@Url.Action("ResetPassword", "UsersAdministrator", new { userId = item.Id })'"><i class="fa fa-key"></i></button>
+                        <button type="button" class="btn-sm btn-light m-1" title="Sao chép mã người dùng" onclick="CopyToClipboard('@item.Id')"><i class="fa fa-copy"></i></button>
+                        @if (!item.EmailConfirmed)
+                        {
+                            <button type="button" class="btn-sm btn-secondary m-1" title="Gửi yêu cầu xác nhận email" onclick="location.href='@Url.Action("ConfirmEmail", "Auth", new { userId = item.Id })'"><i class="fa fa-envelope"></i></button>
+                        }
+                        @if (!item.PhoneNumberConfirmed)
+                        {
+                            <button type="button" class="btn-sm btn-outline-info m-1" title="Gửi yêu cầu xác nhận số điện thoại" onclick="location.href='@Url.Action("ConfirmPhone", "Auth", new { userId = item.Id })'"><i class="fa fa-sms"></i></button>
+                        }
+                    </div>
                 </td>
             </tr>
         }
@@ -75,7 +103,7 @@
             </div>
             <div class="modal-body row d-flex justify-content-center">
                 <p class="col-md-12 text-center">Nhập mã người dùng để xác nhận xóa</p>
-                <input class="col-md-10 text-danger text-center" id="txbDeleteId" />
+                <input class="col-md-10 text-danger text-center" id="txbDeleteId" autofocus />
             </div>
             <div class="modal-footer justify-content-center row">
                 <button type="button" class="btn btn-primary col-md-2" onclick="btnDeleteConfirmClick()">Đồng ý</button>

@@ -183,6 +183,11 @@ namespace ZiTechDev.Api.Services.User
                 return new Failed<string>("Tên đăng nhập đã tồn tại");
             }
 
+            if (string.IsNullOrEmpty(request.DisplayName))
+            {
+                request.DisplayName = request.UserName;
+            }
+
             var user = new AppUser()
             {
                 FirstName = request.FirstName,
@@ -224,10 +229,13 @@ namespace ZiTechDev.Api.Services.User
                 return new Failed<string>("Địa chỉ email đã được đăng ký và xác thực bởi người dùng khác");
             }
 
+            if (!string.IsNullOrEmpty(request.DisplayName))
+            {
+                user.DisplayName = request.DisplayName;
+            }
             user.FirstName = request.FirstName;
             user.MiddleName = request.MiddleName;
             user.LastName = request.LastName;
-            user.DisplayName = request.DisplayName;
             user.PhoneNumber = request.PhoneNumber;
             user.Email = request.Email;
             user.DateOfBirth = request.DateOfBirth;

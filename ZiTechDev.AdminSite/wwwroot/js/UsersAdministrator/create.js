@@ -1,18 +1,26 @@
-﻿//Hàm tự động tạo tên hiển thị dựa trên FullName
-function fullNameChanged() {
-    var firstName = document.getElementById('txbFirstName').value;
-    var middleName = document.getElementById('txbMiddleName').value;
-    var lastName = document.getElementById('txbLastName').value;
+﻿//Hàm tự động tạo tên hiển thị dựa trên UserName
+function userNameChanged() {
+    var userName = document.getElementById('txbUserName').value;
     var displayName = document.getElementById('txbDisplayName').value;
-    if (displayName.trim().length > 0) return;
-    var fullName = firstName + middleName + lastName;
-    for (var i = 0; i < fullName.length; i++) {
-        if (i % 2 == 0) {
-            displayName += fullName.charAt(i);
-        }
-    }
-    if (displayName.length > 20) {
-        displayName = displayName.slice(0, 19);
-    }
+    if (displayName.trim().length > 0)
+        return;
+    else
+        displayName = userName;
     document.getElementById('txbDisplayName').value = displayName;
+}
+
+//Hàm ẩn hiện mật khẩu
+function ShowHidePW(elementId) {
+    if ($('#_' + elementId).attr("type") == "text") {
+        $('#_' + elementId).attr('type', 'password');
+
+        $('#' + elementId).addClass("fa-eye");
+        $('#' + elementId).removeClass("fa-eye-slash");
+    }
+    else if ($('#_' + elementId).attr("type") == "password") {
+        $('#_' + elementId).attr('type', 'text');
+
+        $('#' + elementId).removeClass("fa-eye");
+        $('#' + elementId).addClass("fa-eye-slash");
+    }
 }

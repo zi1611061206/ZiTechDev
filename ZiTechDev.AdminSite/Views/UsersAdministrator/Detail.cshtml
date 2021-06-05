@@ -1,7 +1,7 @@
 ﻿@using ZiTechDev.Data.Enums;
 @model ZiTechDev.CommonModel.Requests.User.UserViewModel
 @{ ViewData["Title"] = "Chi tiết người dùng";
-                Layout = "~/Views/Shared/_Layout.cshtml"; }
+    Layout = "~/Views/Shared/_Layout.cshtml"; }
 
 <hr />
 <div class="container-fluid">
@@ -44,9 +44,9 @@
                         @Html.DisplayFor(model => dob)
                     </dd>
                     @{ var gender = "";
-                                    if (Model.Gender == GenderType.Male) gender = "Nam";
-                                    else if (Model.Gender == GenderType.Female) gender = "Nữ";
-                                    else gender = "Khác"; }
+                        if (Model.Gender == GenderType.Male) gender = "Nam";
+                        else if (Model.Gender == GenderType.Female) gender = "Nữ";
+                        else gender = "Khác"; }
                     <dt class="col-md-5">
                         @Html.DisplayNameFor(model => model.Gender)
                     </dt>
@@ -79,11 +79,11 @@
                     <dd class="col-md-7">
                         @Html.DisplayFor(model => model.Email)
                         @{ if (Model.EmailConfirmed)
-                                        {
-                            <i class="fa fa-check-circle" style="color:lightgreen"></i> }
-                                        else
-                                        {
-                            <i class="fas fa-exclamation-circle" style="color:orange"></i> } }
+                            {
+                <i class="fa fa-check-circle" style="color:lightgreen"></i> }
+            else
+            {
+<i class="fas fa-exclamation-circle" style="color:orange"></i> } }
                     </dd>
                     <dt class="col-md-5">
                         @Html.DisplayNameFor(model => model.NormalizedEmail)
@@ -98,11 +98,11 @@
                     <dd class="col-md-7">
                         @Html.DisplayFor(model => model.PhoneNumber)
                         @{ if (Model.PhoneNumberConfirmed)
-                                        {
-                            <i class="fa fa-check-circle" style="color:lightgreen"></i> }
-                                        else
-                                        {
-                            <i class="fas fa-exclamation-circle" style="color:orange"></i> } }
+                            {
+                <i class="fa fa-check-circle" style="color:lightgreen"></i> }
+            else
+            {
+<i class="fas fa-exclamation-circle" style="color:orange"></i> } }
                     </dd>
                 </div>
 
@@ -130,11 +130,11 @@
                     </dt>
                     <dd class="col-md-8">
                         @{ if (Model.LockoutEnabled)
-                                        {
-                            <p>Bật</p> }
-                                        else
-                                        {
-                            <p>Tắt</p> } }
+                            {
+                <p>Bật</p> }
+            else
+            {
+<p>Tắt</p> } }
                     </dd>
                     <dt class="col-md-4">
                         @Html.DisplayNameFor(model => model.LockoutEnd)
@@ -147,11 +147,11 @@
                     </dt>
                     <dd class="col-md-8">
                         @{ if (Model.TwoFactorEnabled)
-                                        {
-                            <p>Đã kích hoạt</p> }
-                                        else
-                                        {
-                            <p>Chưa kích hoạt</p> } }
+                            {
+                <p>Đã kích hoạt</p> }
+            else
+            {
+<p>Chưa kích hoạt</p> } }
                     </dd>
                     <dt class="col-md-4">
                         @Html.DisplayNameFor(model => model.LastAccess)
@@ -170,10 +170,10 @@
                     </dt>
                     <dd class="col-md-8">
                         @{ string roleStr = "";
-                                        if (Model.Roles != null)
-                                        {
-                                            roleStr = string.Join(", ", Model.Roles);
-                                        } }
+                            if (Model.Roles != null)
+                            {
+                                roleStr = string.Join(", ", Model.Roles);
+                            } }
                         @Html.DisplayFor(model => roleStr)
                     </dd>
                 </div>
