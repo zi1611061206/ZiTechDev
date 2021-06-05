@@ -12,7 +12,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using ZiTechDev.AdminSite.ApiClientServices.Auth;
-using ZiTechDev.Business.Requests.Auth;
+using ZiTechDev.CommonModel.Requests.Auth;
 
 namespace ZiTechDev.AdminSite.Controllers
 {

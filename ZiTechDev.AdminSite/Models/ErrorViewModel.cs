@@ -1,5 +1,3 @@
-using System;
-
 namespace ZiTechDev.AdminSite.Models
 {
     public class ErrorViewModel

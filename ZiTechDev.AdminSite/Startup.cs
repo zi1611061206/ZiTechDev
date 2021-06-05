@@ -10,7 +10,7 @@ using System;
 using ZiTechDev.AdminSite.ApiClientServices.Auth;
 using ZiTechDev.AdminSite.ApiClientServices.Role;
 using ZiTechDev.AdminSite.ApiClientServices.User;
-using ZiTechDev.Business.Validations.Auth;
+using ZiTechDev.CommonModel.Validations.Auth;
 
 namespace ZiTechDev.AdminSite
 {

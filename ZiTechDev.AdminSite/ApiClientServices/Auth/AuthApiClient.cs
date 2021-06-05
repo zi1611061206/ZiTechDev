@@ -1,15 +1,13 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
-using ZiTechDev.Business.Engines.CustomResult;
-using ZiTechDev.Business.Requests.Auth;
-using ZiTechDev.Business.Requests.User;
+using ZiTechDev.CommonModel.Engines.CustomResult;
+using ZiTechDev.CommonModel.Requests.Auth;
+using ZiTechDev.CommonModel.Requests.User;
 
 namespace ZiTechDev.AdminSite.ApiClientServices.Auth
 {

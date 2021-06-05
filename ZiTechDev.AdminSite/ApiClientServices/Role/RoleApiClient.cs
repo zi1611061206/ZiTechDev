@@ -2,14 +2,13 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
-using ZiTechDev.Business.Engines.CustomResult;
-using ZiTechDev.Business.Engines.Paginition;
-using ZiTechDev.Business.Requests.Role;
+using ZiTechDev.CommonModel.Engines.CustomResult;
+using ZiTechDev.CommonModel.Engines.Paginition;
+using ZiTechDev.CommonModel.Requests.Role;
 
 namespace ZiTechDev.AdminSite.ApiClientServices.Role
 {

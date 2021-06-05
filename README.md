@@ -14,10 +14,9 @@
 ## TEMPLATES
  - Start Bootstrap - SB Admin v6.0.3 (https://startbootstrap.com/template/sb-admin)
 ## SOLUTION STRUCTURE
- - COMMON
  - DATA
- - BUSINESS
- - BACKENDAPI
+ - COMMONMODEL
+ - API
  - ADMINSITE
 ## PAKAGES
  - DATA:
@@ -28,12 +27,14 @@
 	 + Microsoft.Extensions.Configuration 5.0.0
 	 + Microsoft.Extensions.Configuration.FileExtensions 5.0.0
 	 + Microsoft.Extensions.Configuration.Json 5.0.0
- - BUSINESS
-	 + FluentValidation.AspNetCore 10.1.0
- - BACKEND API
+ - COMMONMODEL
+	 + FluentValidation.AspNetCore 10.2.3
+ - API
 	 + Swashbuckle.AspNetCore 6.1.4
-	 + Microsoft.AspNetCore.Authentication.JwtBearer 5.0.5
+	 + Microsoft.AspNetCore.Authentication.JwtBearer 5.0.6
+	 + MailKit 2.12.0
  - ADMIN SITE
 	 + Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation 3.1.12
-	 + FluentValidation.AspNetCore 10.1.0
+	 + FluentValidation.AspNetCore 10.2.3
 	 + Microsoft.Aspnetcore.Session 2.2.0
+	 + Microsoft.VisualStudio.Web.CodeGeneration.Design 3.1.5

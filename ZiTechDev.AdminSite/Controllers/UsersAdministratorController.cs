@@ -1,16 +1,11 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using System;
-using System.Collections.Generic;
-using System.Dynamic;
 using System.Linq;
 using System.Threading.Tasks;
 using ZiTechDev.AdminSite.ApiClientServices.Role;
 using ZiTechDev.AdminSite.ApiClientServices.User;
-using ZiTechDev.Business.Engines.Paginition;
-using ZiTechDev.Business.Requests.Role;
-using ZiTechDev.Business.Requests.User;
+using ZiTechDev.CommonModel.Requests.User;
 
 namespace ZiTechDev.AdminSite.Controllers
 {

@@ -24,8 +24,4 @@
     <Folder Include="Migrations\" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\ZiTechDev.Common\ZiTechDev.Common.csproj" />
-  </ItemGroup>
-
 </Project>
