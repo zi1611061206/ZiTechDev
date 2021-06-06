@@ -1,7 +1,7 @@
 ﻿@using ZiTechDev.Data.Enums;
 @model ZiTechDev.CommonModel.Requests.User.UserViewModel
 @{
-    ViewData["Title"] = "Hồ sơ cá nhân";
+    ViewData["Title"] = ViewBag.Title;
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -10,7 +10,7 @@
     <div class="card mb-4 bg-light">
         <div class="card-body justify-content-center">
 
-            <h1 class="form-group text-center text-uppercase">Hồ sơ cá nhân của '@Model.UserName'</h1>
+            <h1 class="form-group text-center text-uppercase">@ViewBag.Title</h1>
             <dl class="row justify-content-center">
                 <div class="col-md-8 row">
                     <dt class="col-md-5">

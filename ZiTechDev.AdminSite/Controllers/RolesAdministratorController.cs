@@ -25,7 +25,6 @@ namespace ZiTechDev.AdminSite.Controllers
             ViewData["Roles"] = result.ReturnedObject;
             ViewData["Filter"] = filter;
 
-            ViewBag.Title = "Danh sách vai trò";
             if (TempData["Success"] != null)
             {
                 ViewBag.Success = TempData["Success"];
@@ -38,7 +37,7 @@ namespace ZiTechDev.AdminSite.Controllers
             {
                 ViewBag.Info = "Không có vai trò nào";
             }
-
+            ViewBag.Title = "Danh sách vai trò";
             return View();
         }
 
@@ -50,12 +49,11 @@ namespace ZiTechDev.AdminSite.Controllers
             ViewData["Roles"] = result.ReturnedObject;
             ViewData["Filter"] = filter;
 
-            ViewBag.Title = "Danh sách vai trò";
             if (result.ReturnedObject.TotalRecords == 0)
             {
                 ViewBag.Info = "Không có vai trò nào";
             }
-
+            ViewBag.Title = "Danh sách vai trò";
             return View();
         }
 
@@ -64,6 +62,7 @@ namespace ZiTechDev.AdminSite.Controllers
         public IActionResult Create()
         {
             var model = new RoleCreateRequest();
+            ViewBag.Title = "Tạo mới vai trò";
             return View(model);
         }
 
@@ -72,6 +71,7 @@ namespace ZiTechDev.AdminSite.Controllers
         {
             if (!ModelState.IsValid)
             {
+                ViewBag.Title = "Tạo mới vai trò";
                 return View(request);
             }
 
@@ -84,6 +84,7 @@ namespace ZiTechDev.AdminSite.Controllers
                 return RedirectToAction("Index");
             }
             ModelState.AddModelError("", result.Message);
+            ViewBag.Title = "Tạo mới vai trò";
             return View(request);
         }
 
@@ -101,6 +102,7 @@ namespace ZiTechDev.AdminSite.Controllers
                     Name = role.Name,
                     Description = role.Description
                 };
+                ViewBag.Title = "Cập nhật vai trò";
                 return View(model);
             }
             return RedirectToAction("Error", "Home");
@@ -111,6 +113,7 @@ namespace ZiTechDev.AdminSite.Controllers
         {
             if (!ModelState.IsValid)
             {
+                ViewBag.Title = "Cập nhật vai trò";
                 return View(request);
             }
 
@@ -121,6 +124,7 @@ namespace ZiTechDev.AdminSite.Controllers
                 return RedirectToAction("Index");
             }
             ModelState.AddModelError("", result.Message);
+            ViewBag.Title = "Cập nhật vai trò";
             return View(request);
         }
 

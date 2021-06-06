@@ -18,17 +18,20 @@ namespace ZiTechDev.AdminSite.Controllers
 
         public IActionResult Index()
         {
+            ViewBag.Title = "Trang quản trị";
             return View();
         }
 
         public IActionResult Privacy()
         {
+            ViewBag.Title = "Quyền riêng tư";
             return View();
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
+            ViewBag.Title = "Sự cố";
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
     }

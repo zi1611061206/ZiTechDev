@@ -36,6 +36,7 @@ namespace ZiTechDev.AdminSite.Controllers
         public async Task<IActionResult> Login()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            ViewBag.Title = "Đăng nhập";
             return View();
         }
 
@@ -44,6 +45,7 @@ namespace ZiTechDev.AdminSite.Controllers
         {
             if (!ModelState.IsValid)
             {
+                ViewBag.Title = "Đăng nhập";
                 return View(request);
             }
 
@@ -62,6 +64,7 @@ namespace ZiTechDev.AdminSite.Controllers
                 return RedirectToAction("index", "home");
             }
             ModelState.AddModelError("", result.Message);
+            ViewBag.Title = "Đăng nhập";
             return View(request);
         }
 
@@ -100,6 +103,7 @@ namespace ZiTechDev.AdminSite.Controllers
             if (result.IsSuccessed)
             {
                 var model = result.ReturnedObject;
+                ViewBag.Title = "Hồ sơ cá nhân";
                 return View(model);
             }
             return RedirectToAction("Error", "Home");
@@ -134,6 +138,7 @@ namespace ZiTechDev.AdminSite.Controllers
                     Email = user.Email,
                     Gender = user.Gender
                 };
+                ViewBag.Title = "Chỉnh sửa hồ sơ";
                 return View(model);
             }
             return RedirectToAction("Error", "Home");
@@ -144,6 +149,7 @@ namespace ZiTechDev.AdminSite.Controllers
         {
             if (!ModelState.IsValid)
             {
+                ViewBag.Title = "Chỉnh sửa hồ sơ";
                 return View(request);
             }
 
@@ -153,6 +159,7 @@ namespace ZiTechDev.AdminSite.Controllers
                 return RedirectToAction("GetProfile");
             }
             ModelState.AddModelError("", result.Message);
+            ViewBag.Title = "Chỉnh sửa hồ sơ";
             return View(request);
         }
 
@@ -163,6 +170,7 @@ namespace ZiTechDev.AdminSite.Controllers
             {
                 Id = Guid.Parse(userId)
             };
+            ViewBag.Title = "Đổi mật khẩu";
             return View(model);
         }
 
@@ -171,6 +179,7 @@ namespace ZiTechDev.AdminSite.Controllers
         {
             if (!ModelState.IsValid)
             {
+                ViewBag.Title = "Đổi mật khẩu";
                 return View(request);
             }
 
@@ -180,6 +189,7 @@ namespace ZiTechDev.AdminSite.Controllers
                 return RedirectToAction("Login", "Auth");
             }
             ModelState.AddModelError("", result.Message);
+            ViewBag.Title = "Đổi mật khẩu";
             return View(request);
         }
     }
