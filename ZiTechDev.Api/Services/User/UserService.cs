@@ -135,6 +135,21 @@ namespace ZiTechDev.Api.Services.User
                 query = query.Where(x => (int)x.Gender == filter.Gender);
                 if (!query.Any()) return query;
             }
+            if (filter.EmailConfirmed != -1)
+            {
+                query = query.Where(x => x.EmailConfirmed == (filter.EmailConfirmed != 0));                       
+                if (!query.Any()) return query;
+            }
+            if (filter.PhoneNumberConfirmed != -1)
+            {
+                query = query.Where(x => x.PhoneNumberConfirmed == (filter.PhoneNumberConfirmed != 0));
+                if (!query.Any()) return query;
+            }
+            if (filter.TwoFactorEnabled != -1)
+            {
+                query = query.Where(x => x.TwoFactorEnabled == (filter.TwoFactorEnabled != 0));
+                if (!query.Any()) return query;
+            }
             return query;
         }
 
