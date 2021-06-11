@@ -10,6 +10,8 @@ using System;
 using ZiTechDev.AdminSite.ApiClientServices.Auth;
 using ZiTechDev.AdminSite.ApiClientServices.Role;
 using ZiTechDev.AdminSite.ApiClientServices.User;
+using ZiTechDev.AdminSite.EmailConfiguration;
+using ZiTechDev.CommonModel.Engines.Email;
 using ZiTechDev.CommonModel.Validations.Auth;
 
 namespace ZiTechDev.AdminSite
@@ -42,10 +44,12 @@ namespace ZiTechDev.AdminSite
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(x => {
                 x.LoginPath = "/Auth/Login/";
-                x.AccessDeniedPath = "/Auth/Forbidden/";
             }); 
             
             services.AddControllersWithViews().AddFluentValidation(x=>x.RegisterValidatorsFromAssemblyContaining<LoginValidator>());
+
+            services.AddSingleton<IEmailServerConfiguration>(Configuration.GetSection("EmailConfiguration").Get<EmailServerConfiguration>());
+            services.AddTransient<IEmailService, EmailService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using System;
+using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
@@ -19,14 +20,30 @@ namespace ZiTechDev.AdminSite.ApiClientServices.User
         public UserApiClient(IHttpClientFactory httpClientFactory, IHttpContextAccessor httpContextAccessor)
         {
             _httpClientFactory = httpClientFactory;
-            _httpContextAccessor = httpContextAccessor;
+            _httpContextAccessor = httpContextAccessor ?? throw new ArgumentNullException(nameof(httpContextAccessor));
         }
-                
-        public async Task<ApiResult<PaginitionEngines<UserViewModel>>> Get(UserFilter filter)
+
+        private string GetCurrentUserId()
+        {
+            return _httpContextAccessor.HttpContext.User.FindFirst(i => i.Type == "UserId").Value;
+        }
+
+        private HttpClient GetHttpClient()
         {
             var client = _httpClientFactory.CreateClient("zitechdev");
             var session = _httpContextAccessor.HttpContext.Session.GetString("Token");
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", session);
+            return client;
+        }
+
+        public async Task<ApiResult<PaginitionEngines<UserViewModel>>> Get(UserFilter filter)
+        {
+            var client = GetHttpClient();
+
+            if (GetCurrentUserId() != null)
+            {
+                filter.CurrentUserId = GetCurrentUserId();
+            }
 
             var content = JsonConvert.SerializeObject(filter);
             var httpContent = new StringContent(content, Encoding.UTF8, "application/json");
@@ -39,9 +56,7 @@ namespace ZiTechDev.AdminSite.ApiClientServices.User
         
         public async Task<ApiResult<UserViewModel>> GetById(Guid userId)
         {
-            var client = _httpClientFactory.CreateClient("zitechdev");
-            var session = _httpContextAccessor.HttpContext.Session.GetString("Token");
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", session);
+            var client = GetHttpClient();
 
             var response = await client.GetAsync("api/users/" + userId);
             var body = await response.Content.ReadAsStringAsync();
@@ -52,11 +67,22 @@ namespace ZiTechDev.AdminSite.ApiClientServices.User
             return JsonConvert.DeserializeObject<Failed<UserViewModel>>(body);
         }
 
+        public async Task<ApiResult<UserViewModel>> GetByUserName(string userName)
+        {
+            var client = GetHttpClient();
+
+            var response = await client.GetAsync("api/users?userName=" + userName);
+            var body = await response.Content.ReadAsStringAsync();
+            if (response.IsSuccessStatusCode)
+            {
+                return JsonConvert.DeserializeObject<Successed<UserViewModel>>(body);
+            }
+            return JsonConvert.DeserializeObject<Failed<UserViewModel>>(body);
+        }
+
         public async Task<ApiResult<string>> Create(UserCreateRequest request)
         {
-            var client = _httpClientFactory.CreateClient("zitechdev");
-            var session = _httpContextAccessor.HttpContext.Session.GetString("Token");
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", session);
+            var client = GetHttpClient();
 
             var content = JsonConvert.SerializeObject(request);
             var httpContent = new StringContent(content, Encoding.UTF8, "application/json");
@@ -71,9 +97,7 @@ namespace ZiTechDev.AdminSite.ApiClientServices.User
 
         public async Task<ApiResult<string>> Update(UserUpdateRequest request)
         {
-            var client = _httpClientFactory.CreateClient("zitechdev");
-            var session = _httpContextAccessor.HttpContext.Session.GetString("Token");
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", session);
+            var client = GetHttpClient();
 
             var content = JsonConvert.SerializeObject(request);
             var httpContent = new StringContent(content, Encoding.UTF8, "application/json");
@@ -88,9 +112,7 @@ namespace ZiTechDev.AdminSite.ApiClientServices.User
 
         public async Task<ApiResult<bool>> Delete(Guid userId)
         {
-            var client = _httpClientFactory.CreateClient("zitechdev");
-            var session = _httpContextAccessor.HttpContext.Session.GetString("Token");
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", session);
+            var client = GetHttpClient();
 
             var response = await client.DeleteAsync("api/users/delete/" + userId);
             var body = await response.Content.ReadAsStringAsync();
@@ -101,13 +123,11 @@ namespace ZiTechDev.AdminSite.ApiClientServices.User
             return new Failed<bool> (body);
         }
 
-        public async Task<ApiResult<string>> ResetPassword(Guid userId)
+        public async Task<ApiResult<string>> ConfirmEmail(Guid userId)
         {
-            var client = _httpClientFactory.CreateClient("zitechdev");
-            var session = _httpContextAccessor.HttpContext.Session.GetString("Token");
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", session);
+            var client = GetHttpClient();
 
-            var response = await client.GetAsync("api/users/reset-password/" + userId);
+            var response = await client.GetAsync("api/users/confirm-email/" + userId);
             var body = await response.Content.ReadAsStringAsync();
             if (response.IsSuccessStatusCode)
             {

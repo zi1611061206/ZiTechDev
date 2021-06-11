@@ -23,11 +23,17 @@ namespace ZiTechDev.AdminSite.ApiClientServices.Role
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public async Task<ApiResult<PaginitionEngines<RoleViewModel>>> Get(RoleFilter filter)
+        private HttpClient GetHttpClient()
         {
             var client = _httpClientFactory.CreateClient("zitechdev");
             var session = _httpContextAccessor.HttpContext.Session.GetString("Token");
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", session);
+            return client;
+        }
+
+        public async Task<ApiResult<PaginitionEngines<RoleViewModel>>> Get(RoleFilter filter)
+        {
+            var client = GetHttpClient();
 
             var content = JsonConvert.SerializeObject(filter);
             var httpContent = new StringContent(content, Encoding.UTF8, "application/json");
@@ -40,9 +46,7 @@ namespace ZiTechDev.AdminSite.ApiClientServices.Role
 
         public async Task<ApiResult<RoleViewModel>> GetById(Guid roleId)
         {
-            var client = _httpClientFactory.CreateClient("zitechdev");
-            var session = _httpContextAccessor.HttpContext.Session.GetString("Token");
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", session);
+            var client = GetHttpClient();
 
             var response = await client.GetAsync("api/roles/" + roleId);
             var body = await response.Content.ReadAsStringAsync();
@@ -55,9 +59,7 @@ namespace ZiTechDev.AdminSite.ApiClientServices.Role
 
         public async Task<ApiResult<string>> Create(RoleCreateRequest request)
         {
-            var client = _httpClientFactory.CreateClient("zitechdev");
-            var session = _httpContextAccessor.HttpContext.Session.GetString("Token");
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", session);
+            var client = GetHttpClient();
 
             var content = JsonConvert.SerializeObject(request);
             var httpContent = new StringContent(content, Encoding.UTF8, "application/json");
@@ -72,9 +74,7 @@ namespace ZiTechDev.AdminSite.ApiClientServices.Role
 
         public async Task<ApiResult<string>> Update(RoleUpdateRequest request)
         {
-            var client = _httpClientFactory.CreateClient("zitechdev");
-            var session = _httpContextAccessor.HttpContext.Session.GetString("Token");
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", session);
+            var client = GetHttpClient();
 
             var content = JsonConvert.SerializeObject(request);
             var httpContent = new StringContent(content, Encoding.UTF8, "application/json");
@@ -89,9 +89,7 @@ namespace ZiTechDev.AdminSite.ApiClientServices.Role
 
         public async Task<ApiResult<bool>> Delete(Guid roleId)
         {
-            var client = _httpClientFactory.CreateClient("zitechdev");
-            var session = _httpContextAccessor.HttpContext.Session.GetString("Token");
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", session);
+            var client = GetHttpClient();
 
             var response = await client.DeleteAsync("api/roles/delete/" + roleId);
             var body = await response.Content.ReadAsStringAsync();
@@ -104,9 +102,7 @@ namespace ZiTechDev.AdminSite.ApiClientServices.Role
 
         public async Task<ApiResult<List<RoleViewModel>>> GetAll()
         {
-            var client = _httpClientFactory.CreateClient("zitechdev");
-            var session = _httpContextAccessor.HttpContext.Session.GetString("Token");
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", session);
+            var client = GetHttpClient();
 
             var response = await client.GetAsync("/api/roles");
             var body = await response.Content.ReadAsStringAsync(); 

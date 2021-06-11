@@ -5,8 +5,9 @@ using MimeKit.Text;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ZiTechDev.CommonModel.Engines.Email;
 
-namespace ZiTechDev.Api.Engines.Email
+namespace ZiTechDev.AdminSite.EmailConfiguration
 {
     public class EmailService : IEmailService
     {

@@ -1,4 +1,4 @@
-﻿namespace ZiTechDev.Api.Engines.Email
+﻿namespace ZiTechDev.CommonModel.Engines.Email
 {
     public interface IEmailServerConfiguration
     {

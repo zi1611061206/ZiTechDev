@@ -1,0 +1,18 @@
+﻿@{
+    ViewData["Title"] = "SuccessedConfirm";
+    Layout = "~/Views/Shared/_AuthLayout.cshtml";
+}
+
+@section styles{
+    <link href="~/css/email-confirm.css" rel="stylesheet" />
+}
+
+<div class="card">
+    <div class="successed-icon">
+        <i class="checkmark text-success">✓</i>
+    </div>
+    <h1 class="text-success">THÀNH CÔNG</h1>
+    <p>- Zi-Team -</p>
+    <button type="button" class="btn-sm btn-info m-1" onclick="location.href='@Url.Action("Login", "Auth")'">Đăng nhập</button>
+</div>
+

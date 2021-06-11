@@ -10,9 +10,10 @@ namespace ZiTechDev.Api.Services.User
     {
         Task<ApiResult<PaginitionEngines<UserViewModel>>> Get(UserFilter filter);
         Task<ApiResult<UserViewModel>> GetById(Guid userId);
+        Task<ApiResult<UserViewModel>> GetByUserName(string userName);
         Task<ApiResult<string>> Create(UserCreateRequest request);
         Task<ApiResult<string>> Update(UserUpdateRequest request);
         Task<ApiResult<bool>> Delete(Guid roleId);
-        Task<ApiResult<string>> ResetPassword(Guid userId);
+        Task<ApiResult<string>> ConfirmEmail(Guid userId);
     }
 }

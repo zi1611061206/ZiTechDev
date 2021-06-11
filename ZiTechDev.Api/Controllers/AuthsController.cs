@@ -1,6 +1,4 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
@@ -17,19 +15,13 @@ namespace ZiTechDev.Api.Controllers
     {
         private readonly IAuthService _authService;
         private readonly IUserService _userService;
-        private readonly IWebHostEnvironment _webHostEnvironment;
-        private readonly IHttpContextAccessor _httpContextAccessor;
 
         public AuthsController(
             IAuthService authService,
-            IUserService userService,
-            IWebHostEnvironment webHostEnvironment,
-            IHttpContextAccessor httpContextAccessor)
+            IUserService userService)
         {
             _authService = authService;
             _userService = userService;
-            _webHostEnvironment = webHostEnvironment;
-            _httpContextAccessor = httpContextAccessor;
         }
 
         [HttpPost("login")]
@@ -62,6 +54,18 @@ namespace ZiTechDev.Api.Controllers
                 return BadRequest(result.Message);
             }
             return Ok(result.ReturnedObject);
+        }
+
+        [HttpGet("")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetByEmail([FromQuery] string email)
+        {
+            var result = await _authService.GetByEmail(email);
+            if (result.IsSuccessed)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result.Message);
         }
 
         [HttpGet("profile/{userId}")]
@@ -111,18 +115,44 @@ namespace ZiTechDev.Api.Controllers
             return Ok(result.ReturnedObject);
         }
 
-        [HttpGet("confirm-email")]
+        [HttpPost("forgot-password")]
         [AllowAnonymous]
-        public async Task<IActionResult> ConfirmEmail([FromQuery] string userName, [FromQuery] string token)
+        public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordRequest request)
         {
-            var result = await _authService.ConfirmEmail(userName, token);
-            var request = _httpContextAccessor.HttpContext.Request;
-            var domain = $"{request.Scheme}://{request.Host}";
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var result = await _authService.ForgotPassword(request);
             if (!result.IsSuccessed)
             {
-                return Redirect(domain + "/EmailTemplates/EmailConfirmationFailed.html");
+                return BadRequest(result.Message);
             }
-            return Redirect(domain + "/EmailTemplates/EmailConfirmationSuccessed.html");
+            return Ok(result.ReturnedObject);
+        }
+
+        [HttpGet("vertified-email")]
+        [AllowAnonymous]
+        public async Task<IActionResult> VertifiedEmail([FromQuery] string userId, [FromQuery] string token)
+        {
+            var result = await _authService.VertifiedEmail(Guid.Parse(userId), token);
+            if (!result.IsSuccessed)
+            {
+                return BadRequest(result.Message);
+            }
+            return Ok(result.ReturnedObject);
+        }
+
+        [HttpPost("reset-password")]
+        [AllowAnonymous]
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordRequest request)
+        {
+            var result = await _authService.ResetPassword(request);
+            if (!result.IsSuccessed)
+            {
+                return BadRequest(result.Message);
+            }
+            return Ok(result.ReturnedObject);
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace ZiTechDev.Api.Engines.Email
+namespace ZiTechDev.CommonModel.Engines.Email
 {
     public class EmailItem
     {

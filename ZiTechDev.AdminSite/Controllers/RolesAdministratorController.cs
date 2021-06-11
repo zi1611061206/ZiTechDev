@@ -15,7 +15,7 @@ namespace ZiTechDev.AdminSite.Controllers
             _roleApiClient = roleApiClient;
         }
 
-        // Read
+        #region Read Role List
         [HttpGet]
         public async Task<IActionResult> Index()
         {
@@ -56,8 +56,9 @@ namespace ZiTechDev.AdminSite.Controllers
             ViewBag.Title = "Danh sách vai trò";
             return View();
         }
+        #endregion
 
-        // Create
+        #region Create Role
         [HttpGet]
         public IActionResult Create()
         {
@@ -87,8 +88,9 @@ namespace ZiTechDev.AdminSite.Controllers
             ViewBag.Title = "Tạo mới vai trò";
             return View(request);
         }
+        #endregion
 
-        // Update
+        #region Update Role
         [HttpGet]
         public async Task<IActionResult> Update(string roleId)
         {
@@ -127,8 +129,9 @@ namespace ZiTechDev.AdminSite.Controllers
             ViewBag.Title = "Cập nhật vai trò";
             return View(request);
         }
+        #endregion
 
-        // Delete
+        #region Delete Role
         [HttpGet]
         public async Task<IActionResult> Delete(string roleId)
         {
@@ -141,5 +144,6 @@ namespace ZiTechDev.AdminSite.Controllers
             TempData["Fail"] = result.Message;
             return RedirectToAction("Index");
         }
+        #endregion
     }
 }

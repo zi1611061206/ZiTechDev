@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ZiTechDev.CommonModel.Engines.CustomResult;
 using ZiTechDev.CommonModel.Requests.Auth;
+using ZiTechDev.CommonModel.Requests.User;
 using ZiTechDev.Data.Entities;
 
 namespace ZiTechDev.Api.Services.Auth
@@ -100,6 +101,44 @@ namespace ZiTechDev.Api.Services.Auth
             return new Successed<string>(user.Id.ToString());
         }
 
+        public async Task<ApiResult<UserViewModel>> GetByEmail(string email)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null)
+            {
+                return new Failed<UserViewModel>("Không thể tìm thấy người dùng " + email);
+            }
+            var roles = await _userManager.GetRolesAsync(user);
+            var viewModel = new UserViewModel()
+            {
+                FirstName = user.FirstName,
+                MiddleName = user.MiddleName,
+                LastName = user.LastName,
+                DisplayName = user.DisplayName,
+                DateOfBirth = user.DateOfBirth,
+                LastAccess = user.LastAccess,
+                DateOfJoin = user.DateOfJoin,
+                Gender = user.Gender,
+
+                LockoutEnd = user.LockoutEnd,
+                TwoFactorEnabled = user.TwoFactorEnabled,
+                PhoneNumberConfirmed = user.PhoneNumberConfirmed,
+                PhoneNumber = user.PhoneNumber,
+                ConcurrencyStamp = user.ConcurrencyStamp,
+                SecurityStamp = user.SecurityStamp,
+                EmailConfirmed = user.EmailConfirmed,
+                NormalizedEmail = user.NormalizedEmail,
+                Email = user.Email,
+                NormalizedUserName = user.NormalizedUserName,
+                UserName = user.UserName,
+                Id = user.Id,
+                LockoutEnabled = user.LockoutEnabled,
+                AccessFailedCount = user.AccessFailedCount,
+                Roles = roles
+            };
+            return new Successed<UserViewModel>(viewModel);
+        }
+
         public async Task<ApiResult<bool>> EditProfile(EditProfileRequest request)
         {
             var user = await _userManager.FindByIdAsync(request.Id.ToString());
@@ -151,18 +190,70 @@ namespace ZiTechDev.Api.Services.Auth
             }
         }
 
-        public async Task<ApiResult<bool>> ConfirmEmail(string userName, string token)
+        public async Task<ApiResult<bool>> VertifiedEmail(Guid userId, string token)
         {
-            if (string.IsNullOrEmpty(userName) || string.IsNullOrEmpty(token))
+            if (string.IsNullOrEmpty(userId.ToString()) || string.IsNullOrEmpty(token))
             {
                 return new Failed<bool>("Thông tin không hợp lệ");
             }
-            var user = await _userManager.FindByNameAsync(userName);
-            var decodedToken = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(token));
+            var user = await _userManager.FindByIdAsync(userId.ToString());
+            string decodedToken;
+            try
+            {
+                decodedToken = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(token));
+            }
+            catch
+            {
+                return new Failed<bool>("Token không hợp lệ");
+            }
             var result = await _userManager.ConfirmEmailAsync(user, decodedToken);
             if (!result.Succeeded)
             {
-                return new Failed<bool>("Vượt quá thời gian xác nhận. Vui lòng đăng ký lại hoặc liên hệ quản trị viên");
+                return new Failed<bool>("Xác minh email không thành công do token đã thay đổi.");
+            }
+            return new Successed<bool>(true);
+        }
+
+        public async Task<ApiResult<string>> ForgotPassword(ForgotPasswordRequest request)
+        {
+            var user = await _userManager.FindByEmailAsync(request.Email);
+            if (user == null)
+            {
+                return new Failed<string>("Người dùng không tồn tại");
+            }
+            if (!user.EmailConfirmed)
+            {
+                return new Failed<string>("Email người dùng chưa được xác minh");
+            }
+            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+            var encodedToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
+            return new Successed<string>(encodedToken);
+        }
+
+        public async Task<ApiResult<bool>> ResetPassword(ResetPasswordRequest request)
+        {
+            if (string.IsNullOrEmpty(request.Id.ToString()) || string.IsNullOrEmpty(request.Token))
+            {
+                return new Failed<bool>("Thông tin xác minh không hợp lệ");
+            }
+            var user = await _userManager.FindByIdAsync(request.Id.ToString());
+            if(user == null)
+            {
+                return new Failed<bool>("Người dùng không tồn tại hoặc đã bị xóa");
+            }
+            string decodedToken;
+            try
+            {
+                decodedToken = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(request.Token));
+            }
+            catch
+            {
+                return new Failed<bool>("Token không hợp lệ");
+            }
+            var result = await _userManager.ResetPasswordAsync(user, decodedToken, request.Password);
+            if (!result.Succeeded)
+            {
+                return new Failed<bool>("Đặt lại mật khẩu không thành công do token đã thay đổi.");
             }
             return new Successed<bool>(true);
         }

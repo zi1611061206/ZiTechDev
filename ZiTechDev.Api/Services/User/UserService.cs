@@ -8,7 +8,6 @@ using System.Text;
 using System.Threading.Tasks;
 using ZiTechDev.CommonModel.Engines.CustomResult;
 using ZiTechDev.CommonModel.Engines.Paginition;
-using ZiTechDev.CommonModel.Requests.Auth;
 using ZiTechDev.CommonModel.Requests.User;
 using ZiTechDev.Data.Entities;
 
@@ -137,7 +136,7 @@ namespace ZiTechDev.Api.Services.User
             }
             if (filter.EmailConfirmed != -1)
             {
-                query = query.Where(x => x.EmailConfirmed == (filter.EmailConfirmed != 0));                       
+                query = query.Where(x => x.EmailConfirmed == (filter.EmailConfirmed != 0));
                 if (!query.Any()) return query;
             }
             if (filter.PhoneNumberConfirmed != -1)
@@ -226,9 +225,9 @@ namespace ZiTechDev.Api.Services.User
             {
                 return new Failed<string>("Tạo mới thất bại");
             }
-            var emailToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-            var encodedToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(emailToken));
             await RoleAssign(user.Id, request.Roles);
+            var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            var encodedToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
             return new Successed<string>(encodedToken);
         }
 
@@ -248,11 +247,15 @@ namespace ZiTechDev.Api.Services.User
             {
                 user.DisplayName = request.DisplayName;
             }
+            if (!user.Email.ToLower().Equals(request.Email.ToLower()))
+            {
+                user.Email = request.Email;
+                user.EmailConfirmed = false;
+            }
             user.FirstName = request.FirstName;
             user.MiddleName = request.MiddleName;
             user.LastName = request.LastName;
             user.PhoneNumber = request.PhoneNumber;
-            user.Email = request.Email;
             user.DateOfBirth = request.DateOfBirth;
             user.Gender = request.Gender;
 
@@ -262,7 +265,9 @@ namespace ZiTechDev.Api.Services.User
                 return new Failed<string>("Lưu thất bại");
             }
             await RoleAssign(user.Id, request.Roles);
-            return new Successed<string>(user.Id.ToString());
+            var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            var encodedToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
+            return new Successed<string>(encodedToken);
         }
 
         public async Task<ApiResult<bool>> RoleAssign(Guid userId, List<RoleItem> roles)
@@ -312,25 +317,54 @@ namespace ZiTechDev.Api.Services.User
             return new Successed<bool>(true);
         }
 
-        public async Task<ApiResult<string>> ResetPassword(Guid userId)
+        public async Task<ApiResult<string>> ConfirmEmail(Guid userId)
         {
             var user = await _userManager.FindByIdAsync(userId.ToString());
             if (user == null)
             {
                 return new Failed<string>("Người dùng không tồn tại");
             }
+            var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            var encodedToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
+            return new Successed<string>(encodedToken);
+        }
 
-            var generator = new PasswordGenerator();
-            string password = generator.Generate();
-            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-
-            var result = await _userManager.ResetPasswordAsync(user, token, password);
-            if (!result.Succeeded)
+        public async Task<ApiResult<UserViewModel>> GetByUserName(string userName)
+        {
+            var user = await _userManager.FindByNameAsync(userName);
+            if (user == null)
             {
-                return new Failed<string>("Đặt lại mật khẩu thất bại. Vui lòng thử lại.");
+                return new Failed<UserViewModel>("Không thể tìm thấy người dùng " + userName);
             }
+            var roles = await _userManager.GetRolesAsync(user);
+            var viewModel = new UserViewModel()
+            {
+                FirstName = user.FirstName,
+                MiddleName = user.MiddleName,
+                LastName = user.LastName,
+                DisplayName = user.DisplayName,
+                DateOfBirth = user.DateOfBirth,
+                LastAccess = user.LastAccess,
+                DateOfJoin = user.DateOfJoin,
+                Gender = user.Gender,
 
-            return new Successed<string>(password);
+                LockoutEnd = user.LockoutEnd,
+                TwoFactorEnabled = user.TwoFactorEnabled,
+                PhoneNumberConfirmed = user.PhoneNumberConfirmed,
+                PhoneNumber = user.PhoneNumber,
+                ConcurrencyStamp = user.ConcurrencyStamp,
+                SecurityStamp = user.SecurityStamp,
+                EmailConfirmed = user.EmailConfirmed,
+                NormalizedEmail = user.NormalizedEmail,
+                Email = user.Email,
+                NormalizedUserName = user.NormalizedUserName,
+                UserName = user.UserName,
+                Id = user.Id,
+                LockoutEnabled = user.LockoutEnabled,
+                AccessFailedCount = user.AccessFailedCount,
+                Roles = roles
+            };
+            return new Successed<UserViewModel>(viewModel);
         }
     }
 }

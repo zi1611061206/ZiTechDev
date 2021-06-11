@@ -74,15 +74,14 @@
                         <button type="button" class="btn-sm btn-danger m-1" title="Xóa người dùng" data-toggle="modal" data-target="#deleteModal"><i class="fa fa-trash"></i></button>
                     </div>
                     <div class="w-100">
-                        <button type="button" class="btn-sm btn-dark m-1" title="Đặt lại mật khẩu về mặc định" onclick="location.href='@Url.Action("ResetPassword", "UsersAdministrator", new { userId = item.Id })'"><i class="fa fa-key"></i></button>
                         <button type="button" class="btn-sm btn-light m-1" title="Sao chép mã người dùng" onclick="CopyToClipboard('@item.Id')"><i class="fa fa-copy"></i></button>
                         @if (!item.EmailConfirmed)
                         {
-                            <button type="button" class="btn-sm btn-secondary m-1" title="Gửi yêu cầu xác nhận email" onclick="location.href='@Url.Action("ConfirmEmail", "Auth", new { userId = item.Id })'"><i class="fa fa-envelope"></i></button>
+                            <button type="button" class="btn-sm btn-secondary m-1" title="Gửi yêu cầu xác nhận email" onclick="location.href='@Url.Action("ConfirmEmail", "UsersAdministrator", new { userId = item.Id })'"><i class="fa fa-envelope"></i></button>
                         }
                         @if (!item.PhoneNumberConfirmed)
                         {
-                            <button type="button" class="btn-sm btn-outline-info m-1" title="Gửi yêu cầu xác nhận số điện thoại" onclick="location.href='@Url.Action("ConfirmPhone", "Auth", new { userId = item.Id })'"><i class="fa fa-sms"></i></button>
+                            <button type="button" class="btn-sm btn-dark m-1" title="Gửi yêu cầu xác nhận số điện thoại" onclick="location.href='@Url.Action("ConfirmPhone", "UsersAdministrator", new { userId = item.Id })'"><i class="fa fa-sms"></i></button>
                         }
                     </div>
                 </td>

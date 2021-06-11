@@ -1,7 +1,7 @@
 ﻿@model ZiTechDev.CommonModel.Requests.Auth.EditProfileRequest
 @{
     ViewData["Title"] = ViewBag.Title;
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    Layout = "~/Views/Shared/_AuthLayout.cshtml";
 }
 
 <hr />
@@ -14,7 +14,7 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="form-group text-center">
-                            <div class="summary-error bg-danger text-white" style="list-style: none" asp-validation-summary="ModelOnly"></div>
+                            <div class="summary-error bg-danger text-white" asp-validation-summary="ModelOnly"></div>
                         </div>
                     </div>
 

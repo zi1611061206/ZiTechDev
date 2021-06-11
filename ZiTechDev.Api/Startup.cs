@@ -13,10 +13,10 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System;
 using System.Collections.Generic;
-using ZiTechDev.Api.Engines.Email;
 using ZiTechDev.Api.Services.Auth;
 using ZiTechDev.Api.Services.Role;
 using ZiTechDev.Api.Services.User;
+using ZiTechDev.CommonModel.Engines.Email;
 using ZiTechDev.CommonModel.Validations.Auth;
 using ZiTechDev.Data.Constants;
 using ZiTechDev.Data.Context;
@@ -61,9 +61,6 @@ namespace ZiTechDev.Api
             services.AddTransient<RoleManager<AppRole>, RoleManager<AppRole>>();
 
             services.AddControllers().AddFluentValidation(options => options.RegisterValidatorsFromAssemblyContaining<LoginValidator>());
-
-            services.AddSingleton<IEmailServerConfiguration>(Configuration.GetSection("EmailConfiguration").Get<EmailServerConfiguration>());
-            services.AddTransient<IEmailService, EmailService>();
 
             services.AddSwaggerGen(options =>
             {
