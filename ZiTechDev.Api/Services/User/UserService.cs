@@ -1,13 +1,18 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ZiTechDev.Api.EmailConfiguration;
 using ZiTechDev.CommonModel.Engines.CustomResult;
+using ZiTechDev.CommonModel.Engines.Email;
 using ZiTechDev.CommonModel.Engines.Paginition;
+using ZiTechDev.CommonModel.Requests.CommonItems;
 using ZiTechDev.CommonModel.Requests.User;
 using ZiTechDev.Data.Entities;
 
@@ -16,10 +21,20 @@ namespace ZiTechDev.Api.Services.User
     public class UserService : IUserService
     {
         private readonly UserManager<AppUser> _userManager;
+        private readonly IConfiguration _configuration;
+        private readonly IEmailService _emailService;
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public UserService(UserManager<AppUser> userManager)
+        public UserService(
+            UserManager<AppUser> userManager,
+            IConfiguration configuration,
+            IEmailService emailService,
+            IWebHostEnvironment webHostEnvironment)
         {
             _userManager = userManager;
+            _configuration = configuration;
+            _emailService = emailService;
+            _webHostEnvironment = webHostEnvironment;
         }
 
         public async Task<ApiResult<PaginitionEngines<UserViewModel>>> Get(UserFilter filter)
@@ -220,7 +235,7 @@ namespace ZiTechDev.Api.Services.User
                 return new Failed<string>("Địa chỉ email đã được đăng ký");
             }
 
-            var result = await _userManager.CreateAsync(user, request.Password);
+            var result = await _userManager.CreateAsync(user, new PasswordGenerator().Generate());
             if (!result.Succeeded)
             {
                 return new Failed<string>("Tạo mới thất bại");
@@ -265,7 +280,7 @@ namespace ZiTechDev.Api.Services.User
                 return new Failed<string>("Lưu thất bại");
             }
             await RoleAssign(user.Id, request.Roles);
-            var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
             var encodedToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
             return new Successed<string>(encodedToken);
         }
@@ -365,6 +380,26 @@ namespace ZiTechDev.Api.Services.User
                 Roles = roles
             };
             return new Successed<UserViewModel>(viewModel);
+        }
+
+        public async Task<ApiResult<bool>> SendActiveEmail(string emailAddress, string token, string activeBaseUrl)
+        {
+            var user = await _userManager.FindByEmailAsync(emailAddress);
+            var activeUrl = activeBaseUrl + $"?userId={user.Id}&token={token}";
+
+            var template = new EmailTemplate(_webHostEnvironment.WebRootPath);
+            template.EmailConfirmation(activeUrl, user.UserName);
+
+            var email = new EmailItem();
+            email.Senders.Add(new EmailBase(_configuration.GetValue<string>("EmailSender:Name"), _configuration.GetValue<string>("EmailSender:Address")));
+            email.Receivers.Add(new EmailBase(user.UserName, user.Email));
+            email.Subject = template.Subject;
+            email.Body = template.Content;
+            if(await _emailService.SendAsync(email))
+            {
+                return new Successed<bool>(true);
+            }
+            return new Failed<bool>(string.Empty);
         }
     }
 }

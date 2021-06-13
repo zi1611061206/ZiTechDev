@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using ZiTechDev.CommonModel.Requests.User;
+using ZiTechDev.CommonModel.Requests.CommonItems;
 using ZiTechDev.Data.Enums;
 
-namespace ZiTechDev.CommonModel.Requests.Auth
+namespace ZiTechDev.CommonModel.Requests.Profile
 {
-    public class EditProfileRequest
+    public class ProfileEditRequest
     {
         [Display(Name = "Mã")]
         public Guid Id { get; set; }

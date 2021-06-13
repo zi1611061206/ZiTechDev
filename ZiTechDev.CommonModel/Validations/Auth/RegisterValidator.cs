@@ -25,11 +25,6 @@ namespace ZiTechDev.CommonModel.Validations.Auth
             RuleFor(x => x.PhoneNumber)
                 .NotEmpty().WithMessage("Trường thông tin này là bắt buộc")
                 .MaximumLength(11).WithMessage("Không thể vượt quá 11 ký tự");
-            RuleFor(x => x.Password)
-                .CusTomPasswordRule();
-            RuleFor(x => x.PasswordConfirmation)
-                .NotEmpty().WithMessage("Trường thông tin này là bắt buộc")
-                .Equal(x => x.Password).WithMessage("Mật khẩu xác nhận không khớp");
             RuleFor(x => x.Email)
                 .NotEmpty().WithMessage("Trường thông tin này là bắt buộc")
                 .EmailAddress().WithMessage("Định dạng không hợp lệ (VD: MailName@MailServer)");

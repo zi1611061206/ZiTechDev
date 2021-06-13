@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
-using ZiTechDev.CommonModel.Requests.Auth;
+using ZiTechDev.CommonModel.Requests.Profile;
 
-namespace ZiTechDev.CommonModel.Validations.Auth
+namespace ZiTechDev.CommonModel.Validations.Profile
 {
     public class ChangePasswordValidator : AbstractValidator<ChangePasswordRequest>
     {

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using ZiTechDev.CommonModel.Requests.CommonItems;
 using ZiTechDev.Data.Enums;
 
 namespace ZiTechDev.CommonModel.Requests.User
@@ -26,14 +27,6 @@ namespace ZiTechDev.CommonModel.Requests.User
         [Display(Name = "Số điện thoại")]
         [DataType(DataType.PhoneNumber)]
         public string PhoneNumber { get; set; }
-
-        [Display(Name = "Mật khẩu")]
-        [DataType(DataType.Password)]
-        public string Password { get; set; }
-
-        [Display(Name = "Mật khẩu xác nhận")]
-        [DataType(DataType.Password)]
-        public string PasswordConfirmation { get; set; }
 
         [Display(Name = "Email")]
         [DataType(DataType.EmailAddress)]

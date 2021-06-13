@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace ZiTechDev.CommonModel.Requests.Auth
+namespace ZiTechDev.CommonModel.Requests.Profile
 {
     public class ChangePasswordRequest
     {

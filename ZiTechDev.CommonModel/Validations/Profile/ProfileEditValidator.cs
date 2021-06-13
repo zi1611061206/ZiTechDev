@@ -1,13 +1,14 @@
 ﻿using FluentValidation;
 using System;
-using ZiTechDev.CommonModel.Requests.User;
-using ZiTechDev.CommonModel.Validations.Auth;
+using System.Collections.Generic;
+using System.Text;
+using ZiTechDev.CommonModel.Requests.Profile;
 
-namespace ZiTechDev.CommonModel.Validations.User
+namespace ZiTechDev.CommonModel.Validations.Profile
 {
-    public class UserCreateValidator : AbstractValidator<UserCreateRequest>
+    public class ProfileEditValidator : AbstractValidator<ProfileEditRequest>
     {
-        public UserCreateValidator()
+        public ProfileEditValidator()
         {
             CascadeMode = CascadeMode.Stop;
             RuleFor(x => x.FirstName)
@@ -20,18 +21,12 @@ namespace ZiTechDev.CommonModel.Validations.User
                 .MaximumLength(20).WithMessage("Không thể vượt quá 20 ký tự");
             RuleFor(x => x.DisplayName)
                 .MaximumLength(50).WithMessage("Không thể vượt quá 50 ký tự");
-            RuleFor(x => x.DateOfBirth)
-                .GreaterThan(DateTime.Now.AddYears(-150)).WithMessage("Bạn không thể vượt quá 150 tuổi")
-                .LessThan(DateTime.Now.AddYears(-1)).WithMessage("Bạn không thể nào mới ra đời được! :D");
             RuleFor(x => x.PhoneNumber)
                 .NotEmpty().WithMessage("Trường thông tin này là bắt buộc")
                 .MaximumLength(11).WithMessage("Không thể vượt quá 11 ký tự");
             RuleFor(x => x.Email)
                 .NotEmpty().WithMessage("Trường thông tin này là bắt buộc")
                 .EmailAddress().WithMessage("Định dạng không hợp lệ (VD: MailName@MailServer)");
-            RuleFor(x => x.UserName)
-                .NotEmpty().WithMessage("Trường thông tin này là bắt buộc")
-                .MaximumLength(50).WithMessage("Không thể vượt quá 50 ký tự");
         }
     }
 }

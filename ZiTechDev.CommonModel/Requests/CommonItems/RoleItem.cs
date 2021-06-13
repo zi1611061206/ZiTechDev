@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ZiTechDev.CommonModel.Requests.User
+namespace ZiTechDev.CommonModel.Requests.CommonItems
 {
     public class RoleItem
     {

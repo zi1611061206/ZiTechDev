@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace ZiTechDev.CommonModel.Requests.User
+namespace ZiTechDev.CommonModel.Requests.CommonItems
 {
     public class TwoFactorStatusItem
     {

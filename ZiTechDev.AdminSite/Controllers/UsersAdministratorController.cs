@@ -1,14 +1,11 @@
-﻿using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System;
-using System.Linq;
 using System.Threading.Tasks;
 using ZiTechDev.AdminSite.ApiClientServices.Role;
 using ZiTechDev.AdminSite.ApiClientServices.User;
-using ZiTechDev.AdminSite.EmailConfiguration;
 using ZiTechDev.CommonModel.Engines.Email;
+using ZiTechDev.CommonModel.Requests.CommonItems;
 using ZiTechDev.CommonModel.Requests.User;
 
 namespace ZiTechDev.AdminSite.Controllers
@@ -17,22 +14,13 @@ namespace ZiTechDev.AdminSite.Controllers
     {
         private readonly IUserApiClient _userApiClient;
         private readonly IRoleApiClient _roleApiClient;
-        private readonly IEmailService _emailService;
-        private readonly IWebHostEnvironment _webHostEnvironment;
-        private readonly IConfiguration _configuration;
 
         public UsersAdministratorController(
             IUserApiClient userApiClient, 
-            IRoleApiClient roleApiClient,
-            IEmailService emailService,
-            IWebHostEnvironment webHostEnvironment,
-            IConfiguration configuration)
+            IRoleApiClient roleApiClient)
         {
             _userApiClient = userApiClient;
             _roleApiClient = roleApiClient;
-            _emailService = emailService;
-            _webHostEnvironment = webHostEnvironment;
-            _configuration = configuration;
         }
 
         #region Read Memeber List
@@ -135,19 +123,12 @@ namespace ZiTechDev.AdminSite.Controllers
 
             if (result.IsSuccessed)
             {
-                var user = await _userApiClient.GetByUserName(request.UserName);
-                var emailConfirmUrl = Url.ActionLink("VertifiedEmail", "Auth", new { userId = user.ReturnedObject.Id, token = result.ReturnedObject }, Request.Scheme);
-                var template = new EmailTemplate(_webHostEnvironment.WebRootPath);
-                template.EmailConfirmation(emailConfirmUrl, request.UserName);
-
-                var email = new EmailItem();
-                email.Senders.Add(new EmailBase(_configuration.GetValue<string>("EmailSender:Name"), _configuration.GetValue<string>("EmailSender:Address")));
-                email.Receivers.Add(new EmailBase(request.UserName, request.Email));
-                email.Subject = template.Subject;
-                email.Body = template.Content;
-                await _emailService.SendAsync(email);
-
-                ModelState.Clear();
+                var activeBaseUrl = Url.ActionLink("ResetPassword", "Auth", Request.Scheme);
+                var sendMail = await _userApiClient.SendActiveEmail(request.Email, result.ReturnedObject, activeBaseUrl);
+                if (!sendMail.IsSuccessed)
+                {
+                    TempData["Fail"] = "Tạo mới thành công! (Không thể gửi xác thực)";
+                }
                 TempData["Success"] = "Tạo mới thành công! (Chờ xác thực)";
                 return RedirectToAction("Index");
             }
@@ -213,17 +194,8 @@ namespace ZiTechDev.AdminSite.Controllers
             var result = await _userApiClient.Update(request);
             if (result.IsSuccessed)
             {
-                var user = await _userApiClient.GetById(request.Id);
-                var emailConfirmUrl = Url.ActionLink("VertifiedEmail", "Auth", new { userId = request.Id, token = result.ReturnedObject }, Request.Scheme);
-                var template = new EmailTemplate(_webHostEnvironment.WebRootPath);
-                template.EmailConfirmation(emailConfirmUrl, user.ReturnedObject.UserName);
-
-                var email = new EmailItem();
-                email.Senders.Add(new EmailBase(_configuration.GetValue<string>("EmailSender:Name"), _configuration.GetValue<string>("EmailSender:Address")));
-                email.Receivers.Add(new EmailBase(user.ReturnedObject.UserName, user.ReturnedObject.Email));
-                email.Subject = template.Subject;
-                email.Body = template.Content;
-                await _emailService.SendAsync(email);
+                var emailConfirmBaseUrl = Url.ActionLink("VertifiedEmail", "Auth", Request.Scheme);
+                //Pass
 
                 ModelState.Clear();
                 TempData["Success"] = "Cập nhật người dùng thành công";
@@ -273,17 +245,8 @@ namespace ZiTechDev.AdminSite.Controllers
             var result = await _userApiClient.ConfirmEmail(Guid.Parse(userId));
             if (result.IsSuccessed)
             {
-                var user = await _userApiClient.GetById(Guid.Parse(userId));
-                var emailConfirmUrl = Url.ActionLink("VertifiedEmail", "Auth", new { userId, token = result.ReturnedObject }, Request.Scheme);
-                var template = new EmailTemplate(_webHostEnvironment.WebRootPath);
-                template.EmailConfirmation(emailConfirmUrl, user.ReturnedObject.UserName);
-
-                var email = new EmailItem();
-                email.Senders.Add(new EmailBase(_configuration.GetValue<string>("EmailSender:Name"), _configuration.GetValue<string>("EmailSender:Address")));
-                email.Receivers.Add(new EmailBase(user.ReturnedObject.UserName, user.ReturnedObject.Email));
-                email.Subject = template.Subject;
-                email.Body = template.Content;
-                await _emailService.SendAsync(email);
+                var emailConfirmBaseUrl = Url.ActionLink("VertifiedEmail", "Auth", Request.Scheme);
+                //Pass
 
                 TempData["Success"] = "Đã gửi xác thực đến email người dùng";
                 return RedirectToAction("Index");

@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Net;
 using System.Threading.Tasks;
 using ZiTechDev.Api.Services.Auth;
-using ZiTechDev.Api.Services.User;
 using ZiTechDev.CommonModel.Requests.Auth;
 
 namespace ZiTechDev.Api.Controllers
@@ -14,32 +14,13 @@ namespace ZiTechDev.Api.Controllers
     public class AuthsController : ControllerBase
     {
         private readonly IAuthService _authService;
-        private readonly IUserService _userService;
 
-        public AuthsController(
-            IAuthService authService,
-            IUserService userService)
+        public AuthsController(IAuthService authService)
         {
             _authService = authService;
-            _userService = userService;
         }
 
-        [HttpPost("login")]
-        [AllowAnonymous]
-        public async Task<IActionResult> Login([FromBody] LoginRequest request)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-            var result = await _authService.Login(request);
-            if (!result.IsSuccessed)
-            {
-                return BadRequest(result.Message);
-            }
-            return Ok(result.ReturnedObject);
-        }
-
+        #region Api/Auths/Register
         [HttpPost("register")]
         [AllowAnonymous]
         public async Task<IActionResult> Register([FromBody] RegisterRequest request)
@@ -55,66 +36,41 @@ namespace ZiTechDev.Api.Controllers
             }
             return Ok(result.ReturnedObject);
         }
+        #endregion
 
-        [HttpGet("")]
+        #region Api/Auths/Login
+        [HttpPost("login")]
         [AllowAnonymous]
-        public async Task<IActionResult> GetByEmail([FromQuery] string email)
+        public async Task<IActionResult> Login([FromBody] LoginRequest request)
         {
-            var result = await _authService.GetByEmail(email);
-            if (result.IsSuccessed)
-            {
-                return Ok(result);
-            }
-            return BadRequest(result.Message);
-        }
-
-        [HttpGet("profile/{userId}")]
-        public async Task<IActionResult> GetProfile(Guid userId)
-        {
-            var result = await _userService.GetById(userId);
-            if (result.IsSuccessed)
-            {
-                return Ok(result);
-            }
-            return BadRequest(result.Message);
-        }
-
-        [HttpPut("profile/edit/{userId}")]
-        public async Task<IActionResult> EditProfile(Guid userId, [FromBody] EditProfileRequest request)
-        {
-            request.Id = userId;
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-
-            var result = await _authService.EditProfile(request);
-
+            var result = await _authService.Login(request);
             if (!result.IsSuccessed)
             {
                 return BadRequest(result.Message);
             }
             return Ok(result.ReturnedObject);
         }
+        #endregion
 
-        [HttpPut("change-password/{userId}")]
-        public async Task<IActionResult> ChangePassword(Guid userId, [FromBody] ChangePasswordRequest request)
+        #region Api/Auths/Login-Warning?userName={userName}&forgotPasswordBaseUrl={forgotPasswordBaseUrl}
+        [HttpPost("login-warning")]
+        [AllowAnonymous]
+        public async Task<IActionResult> LoginWarning([FromQuery] string userName, [FromQuery] string forgotPasswordBaseUrl)
         {
-            request.Id = userId;
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var result = await _authService.ChangePassword(request);
-
+            var result = await _authService.LoginWarning(userName, WebUtility.UrlDecode(forgotPasswordBaseUrl));
             if (!result.IsSuccessed)
             {
                 return BadRequest(result.Message);
             }
             return Ok(result.ReturnedObject);
         }
+        #endregion
 
+        #region Api/Auths/Forgot-Password
         [HttpPost("forgot-password")]
         [AllowAnonymous]
         public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordRequest request)
@@ -130,7 +86,55 @@ namespace ZiTechDev.Api.Controllers
             }
             return Ok(result.ReturnedObject);
         }
+        #endregion
 
+        #region Api/Auths/Send-Forgot?email={email}&token={token}&resetPasswordBaseUrl={resetPasswordBaseUrl}
+        [HttpPost("send-forgot")]
+        [AllowAnonymous]
+        public async Task<IActionResult> SendForgotPasswordEmail([FromQuery] string email, [FromQuery] string token, [FromQuery] string resetPasswordBaseUrl)
+        {
+            var result = await _authService.SendForgotPasswordEmail(email, token, WebUtility.UrlDecode(resetPasswordBaseUrl));
+            if (!result.IsSuccessed)
+            {
+                return BadRequest(result.Message);
+            }
+            return Ok(result.ReturnedObject);
+        }
+        #endregion
+
+        #region Api/Auths/Unlock-Out?userId={userId}
+        [HttpGet("unlock-out")]
+        [AllowAnonymous]
+        public async Task<IActionResult> UnlockOut([FromQuery] string userId)
+        {
+            var result = await _authService.UnlockOut(Guid.Parse(userId));
+            if (!result.IsSuccessed)
+            {
+                return BadRequest(result.Message);
+            }
+            return Ok(result.ReturnedObject);
+        }
+        #endregion
+
+        #region Api/Auths/Reset-Password
+        [HttpPost("reset-password")]
+        [AllowAnonymous]
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordRequest request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var result = await _authService.ResetPassword(request);
+            if (!result.IsSuccessed)
+            {
+                return BadRequest(result.Message);
+            }
+            return Ok(result.ReturnedObject);
+        }
+        #endregion
+
+        #region Api/Auths/Vertified-Email?userId={userId}&token={token}
         [HttpGet("vertified-email")]
         [AllowAnonymous]
         public async Task<IActionResult> VertifiedEmail([FromQuery] string userId, [FromQuery] string token)
@@ -142,17 +146,6 @@ namespace ZiTechDev.Api.Controllers
             }
             return Ok(result.ReturnedObject);
         }
-
-        [HttpPost("reset-password")]
-        [AllowAnonymous]
-        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordRequest request)
-        {
-            var result = await _authService.ResetPassword(request);
-            if (!result.IsSuccessed)
-            {
-                return BadRequest(result.Message);
-            }
-            return Ok(result.ReturnedObject);
-        }
+        #endregion
     }
 }

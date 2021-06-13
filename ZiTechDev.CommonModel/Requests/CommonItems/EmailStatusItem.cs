@@ -2,15 +2,15 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace ZiTechDev.CommonModel.Requests.User
+namespace ZiTechDev.CommonModel.Requests.CommonItems
 {
-    public class PhoneStatusItem
+    public class EmailStatusItem
     {
         public int Id { get; set; }
 
         public string Name { get; set; }
 
-        public PhoneStatusItem(int id, string name)
+        public EmailStatusItem(int id, string name)
         {
             Id = id;
             Name = name;

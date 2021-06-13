@@ -1,7 +1,7 @@
-﻿@model ZiTechDev.CommonModel.Requests.Auth.EditProfileRequest
+﻿@model ZiTechDev.CommonModel.Requests.Profile.ProfileEditRequest
 @{
     ViewData["Title"] = ViewBag.Title;
-    Layout = "~/Views/Shared/_AuthLayout.cshtml";
+    Layout = "~/Views/Shared/_ProfileLayout.cshtml";
 }
 
 <hr />
@@ -97,5 +97,5 @@
 </div>
 
 @section Scripts{
-    <script type="text/javascript" src="/js/Auth/edit-profile.js" defer></script>
+    <script type="text/javascript" src="~/js/Profile/edit-profile.js" defer></script>
 }

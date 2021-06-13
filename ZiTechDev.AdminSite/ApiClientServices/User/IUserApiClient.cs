@@ -15,5 +15,6 @@ namespace ZiTechDev.AdminSite.ApiClientServices.User
         Task<ApiResult<string>> Update(UserUpdateRequest request);
         Task<ApiResult<bool>> Delete(Guid userId);
         Task<ApiResult<string>> ConfirmEmail(Guid userId);
+        Task<ApiResult<bool>> SendActiveEmail(string email, string token, string activeBaseUrl);
     }
 }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 
-namespace ZiTechDev.CommonModel.Requests.Auth
+namespace ZiTechDev.CommonModel.Requests.CommonItems
 {
     public class PasswordGenerator
     {

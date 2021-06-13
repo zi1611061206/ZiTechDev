@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using ZiTechDev.CommonModel.Requests.CommonItems;
 using ZiTechDev.Data.Enums;
 
 namespace ZiTechDev.CommonModel.Requests.User

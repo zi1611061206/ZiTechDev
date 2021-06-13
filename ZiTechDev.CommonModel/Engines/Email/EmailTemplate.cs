@@ -43,5 +43,18 @@ namespace ZiTechDev.CommonModel.Engines.Email
             Body = Body.Replace("PLACEHOLDER-LINK-CONFIRM", url);
             Content = Header + Body + Footer;
         }
+
+        public void LoginWarning(string forgotPasswordUrl, string userName)
+        {
+            Body = File.OpenText(RootPath + @"\EmailTemplates\LoginWarningBodyTemplate.txt").ReadToEnd();
+            Subject = "[ZITECHDEV] Cảnh báo đăng nhập";
+            Header = Header.Replace("PLACEHOLDER-TITLE", "CẢNH BÁO ĐĂNG NHẬP");
+            Header = Header.Replace("PLACEHOLDER-DEAR", $"Chào {userName}." +
+                $" Tài khoản của bạn sẽ bị khóa tạm thời trong 15 phút do đăng nhập sai thông tin quá nhiều." +
+                $" Nếu bạn quên mật khẩu hoặc nghi ngờ tài khoản của bạn bị tấn công," +
+                $" vui lòng nhấn nút bên dưới để tiến hành đổi mật khẩu.");
+            Body = Body.Replace("PLACEHOLDER-LINK-FORGOT", forgotPasswordUrl);
+            Content = Header + Body + Footer;
+        }
     }
 }

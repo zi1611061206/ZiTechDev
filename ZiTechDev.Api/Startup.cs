@@ -13,7 +13,9 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System;
 using System.Collections.Generic;
+using ZiTechDev.Api.EmailConfiguration;
 using ZiTechDev.Api.Services.Auth;
+using ZiTechDev.Api.Services.Profile;
 using ZiTechDev.Api.Services.Role;
 using ZiTechDev.Api.Services.User;
 using ZiTechDev.CommonModel.Engines.Email;
@@ -46,6 +48,8 @@ namespace ZiTechDev.Api
                 options.User.RequireUniqueEmail = true;
                 options.Tokens.EmailConfirmationTokenProvider = "emailconfirmation";
                 options.SignIn.RequireConfirmedEmail = true;
+                options.Lockout.MaxFailedAccessAttempts = 5;
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(15);
             }).AddEntityFrameworkStores<ZiTechDevDBContext>()
             .AddDefaultTokenProviders()
             .AddTokenProvider<EmailConfirmationTokenProvider<AppUser>>("emailconfirmation");
@@ -53,6 +57,7 @@ namespace ZiTechDev.Api
             services.Configure<EmailConfirmationTokenProviderOptions>(options => options.TokenLifespan = TimeSpan.FromDays(3));
 
             services.AddTransient<IAuthService, AuthService>();
+            services.AddTransient<IProfileService, ProfileService>();
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<IRoleService, RoleService>();
 
@@ -61,6 +66,9 @@ namespace ZiTechDev.Api
             services.AddTransient<RoleManager<AppRole>, RoleManager<AppRole>>();
 
             services.AddControllers().AddFluentValidation(options => options.RegisterValidatorsFromAssemblyContaining<LoginValidator>());
+
+            services.AddSingleton<IEmailServerConfiguration>(Configuration.GetSection("EmailConfiguration").Get<EmailServerConfiguration>());
+            services.AddTransient<IEmailService, EmailService>();
 
             services.AddSwaggerGen(options =>
             {

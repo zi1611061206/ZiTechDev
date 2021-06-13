@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
@@ -134,6 +135,19 @@ namespace ZiTechDev.AdminSite.ApiClientServices.User
                 return new Successed<string>(body);
             }
             return new Failed<string>(body);
+        }
+
+        public async Task<ApiResult<bool>> SendActiveEmail(string email, string token, string activeBaseUrl)
+        {
+            var client = GetHttpClient();
+
+            var response = await client.GetAsync($"api/users/send-active?email={email}&token={token}&activeBaseUrl=" + WebUtility.UrlEncode(activeBaseUrl));
+            var body = await response.Content.ReadAsStringAsync();
+            if (response.IsSuccessStatusCode)
+            {
+                return new Successed<bool>(true);
+            }
+            return new Failed<bool>(body);
         }
     }
 }

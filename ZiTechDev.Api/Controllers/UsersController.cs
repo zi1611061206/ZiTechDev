@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System;
+using System.Net;
 using System.Threading.Tasks;
 using ZiTechDev.Api.Services.User;
 using ZiTechDev.CommonModel.Requests.User;
@@ -100,6 +101,17 @@ namespace ZiTechDev.Api.Controllers
         public async Task<IActionResult> ConfirmEmail(Guid userId)
         {
             var result = await _userService.ConfirmEmail(userId);
+            if (!result.IsSuccessed)
+            {
+                return BadRequest(result.Message);
+            }
+            return Ok(result.ReturnedObject);
+        }
+
+        [HttpGet("send-active")]
+        public async Task<IActionResult> SendActiveEmail([FromQuery] string email, [FromQuery] string token, [FromQuery] string activeBaseUrl)
+        {
+            var result = await _userService.SendActiveEmail(email, token, WebUtility.UrlDecode(activeBaseUrl));
             if (!result.IsSuccessed)
             {
                 return BadRequest(result.Message);

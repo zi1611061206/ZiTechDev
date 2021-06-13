@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using ZiTechDev.CommonModel.Engines.Email;
 
-namespace ZiTechDev.AdminSite.EmailConfiguration
+namespace ZiTechDev.Api.EmailConfiguration
 {
     public interface IEmailService
     {

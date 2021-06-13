@@ -11,6 +11,12 @@
             <div class="card shadow-lg border-0 rounded-lg mt-5">
                 <div class="card-header"><h3 class="text-center font-weight-light my-4">@ViewBag.Title</h3></div>
                 <div class="card-body">
+                    @if (ViewBag.Error != null)
+                    {
+                        <div class="alert alert-danger text-center" role="alert">
+                            @ViewBag.Error
+                        </div>
+                    }
                     <form asp-controller="Auth" asp-action="Login" method="post">
                         <div class="form-group text-center">
                             <div class="summary-error bg-danger text-white" asp-validation-summary="ModelOnly"></div>
@@ -37,15 +43,19 @@
                             <span asp-validation-for="Password" class="text-danger"></span>
                         </div>
 
-                        <div class="form-group" hidden>
+                        <div class="form-group">
                             <div class="custom-control custom-checkbox">
                                 <input class="custom-control-input" asp-for="RememberMe" type="checkbox" />
-                                <label class="custom-control-label">Ghi nhớ tôi</label>
+                                <label class="custom-control-label" asp-for="RememberMe">Ghi nhớ tôi</label>
+                                <span asp-validation-for="RememberMe" class="text-danger"></span>
                             </div>
                         </div>
                         <div class="form-group d-flex align-items-center justify-content-between mt-4 mb-0">
+                            <button class="btn btn-primary w-100" type="submit">Đăng nhập</button>
+                        </div>
+                        <div class="form-group d-flex align-items-center justify-content-between mt-4 mb-0">
                             <a class="small" href="/Auth/ForgotPassword">Quên mật khẩu?</a>
-                            <button class="btn btn-primary" type="submit">Đăng nhập</button>
+                            <a class="small" href="/Auth/Register">Chưa có tài khoản?</a>
                         </div>
                     </form>
                 </div>
