@@ -28,6 +28,39 @@ namespace ZiTechDev.AdminSite.Controllers
             _configuration = configuration;
         }
 
+        #region Auth/Register
+        [HttpGet]
+        public IActionResult Register()
+        {
+            var model = new RegisterRequest();
+            ViewBag.Title = "Đăng ký";
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Register(RegisterRequest request)
+        {
+            if (!ModelState.IsValid)
+            {
+                ViewBag.Title = "Đăng ký";
+                return View(request);
+            }
+
+            var activatedEmailBaseUrl = Url.ActionLink("ActivatedEmail", "Auth", Request.Scheme).Split("?")[0];
+            var result = await _authApiClient.Register(activatedEmailBaseUrl, request);
+            if (result.IsSuccessed)
+            {
+                ViewBag.Success = "Một yêu cầu kích hoạt đã được gửi đến " + request.Email;
+            }
+            else
+            {
+                ModelState.AddModelError(string.Empty, result.Message);
+            }
+            ViewBag.Title = "Đăng ký";
+            return View(request);
+        }
+        #endregion
+
         #region Auth/Login
         [HttpGet]
         public IActionResult Login()
@@ -45,8 +78,79 @@ namespace ZiTechDev.AdminSite.Controllers
                 ViewBag.Title = "Đăng nhập";
                 return View(request);
             }
+            var resetPasswordBaseUrl = Url.ActionLink("ResetPassword", "Auth", Request.Scheme).Split("?")[0];
+            var checker = await _authApiClient.ValidateLogin(resetPasswordBaseUrl, request);
+            if (!checker.IsSuccessed)
+            {
+                ModelState.AddModelError(string.Empty, checker.Message);
+                ViewBag.Title = "Đăng nhập";
+                return View(request);
+            }
+            var twoFactorsEnabled = checker.ReturnedObject;
+            if (twoFactorsEnabled)
+            {
+                var model = new Authenticate2FARequest()
+                {
+                    UserName = request.UserName,
+                    Password = request.Password,
+                    RememberMe = request.RememberMe
+                };
+                ViewBag.Title = "Xác thực bước 2";
+                return View("Authenticate2FA", model);
+            }
+            else
+            {
+                var result = await _authApiClient.Login(request);
+                if (result.IsSuccessed)
+                {
+                    // Lưu Session
+                    HttpContext.Session.SetString("Token", result.ReturnedObject);
+                    var principal = ValidateToken(result.ReturnedObject);
+                    var authProperties = new AuthenticationProperties()
+                    {
+                        // Đặt hạn sử dụng của cookie phiên là 30 phút 
+                        ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(30),
+                        // Xác định cookie có bị xóa khi đóng trình duyệt hay không (Có cần đăng nhập lại hay không?)
+                        IsPersistent = request.RememberMe
+                    };
+                    // Lưu cookie
+                    await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal, authProperties);
+                    return RedirectToAction("Index", "Home");
+                }
+                else
+                {
+                    ModelState.AddModelError(string.Empty, result.Message);
+                    ViewBag.Title = "Đăng nhập";
+                    return View(request);
+                }
+            }
+        }
 
-            var result = await _authApiClient.Login(request);
+        private ClaimsPrincipal ValidateToken(string jwtToken)
+        {
+            IdentityModelEventSource.ShowPII = true;
+            TokenValidationParameters parameters = new TokenValidationParameters
+            {
+                ValidateLifetime = true,
+                ValidAudience = _configuration["Tokens:Issuer"],
+                ValidIssuer = _configuration["Tokens:Issuer"],
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Tokens:Key"]))
+            };
+            ClaimsPrincipal principal = new JwtSecurityTokenHandler().ValidateToken(jwtToken, parameters, out SecurityToken validatedToken);
+            return principal;
+        }
+        #endregion
+
+        #region Auth/Authenticate2FA
+        [HttpPost]
+        public async Task<IActionResult> Authenticate2FA(Authenticate2FARequest request)
+        {
+            if (!ModelState.IsValid)
+            {
+                ViewBag.Title = "Xác thực bước 2";
+                return View(request);
+            }
+            var result = await _authApiClient.Authenticate2FA(request);
             if (result.IsSuccessed)
             {
                 // Lưu Session
@@ -63,41 +167,12 @@ namespace ZiTechDev.AdminSite.Controllers
                 await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal, authProperties);
                 return RedirectToAction("Index", "Home");
             }
-
-            // Nếu đăng nhập sai 5 lần (Tiên quyết: LockOutEnabled = true) tài khoản sẽ bị khóa đăng nhập trong 15 phút: AccessFailedCount được reset về 0, LockOutEnd được đặt lại thành thời điểm 15 phút sau
-            var forgotPasswordBaseUrl = Url.ActionLink("ForgotPassword", "Auth", Request.Scheme);
-            var loginWarning = await _authApiClient.LoginWarning(request.UserName, forgotPasswordBaseUrl);
-            if (loginWarning.IsSuccessed)
-            {
-                ViewBag.Error = $" Tài khoản của bạn bị khóa tạm thời do đăng nhập sai thông tin quá nhiều." +
-                $" Nếu bạn quên mật khẩu hoặc nghi ngờ tài khoản của bạn bị tấn công," +
-                $" vui lòng tiến hành đổi mật khẩu. Thời gian khóa còn lại: {loginWarning.ReturnedObject} giây";
-            }
-            else if(int.Parse(loginWarning.Message) <= 0)
-            {
-                ModelState.AddModelError(string.Empty, result.ReturnedObject);
-            }
             else
             {
-                ModelState.AddModelError(string.Empty, result.ReturnedObject + $" ({loginWarning.Message})");
+                ModelState.AddModelError(string.Empty, result.Message);
+                ViewBag.Title = "Xác thực bước 2";
+                return View(request);
             }
-
-            ViewBag.Title = "Đăng nhập";
-            return View(request);
-        }
-
-        private ClaimsPrincipal ValidateToken(string jwtToken)
-        {
-            IdentityModelEventSource.ShowPII = true;
-            TokenValidationParameters parameters = new TokenValidationParameters
-            {
-                ValidateLifetime = true,
-                ValidAudience = _configuration["Tokens:Issuer"],
-                ValidIssuer = _configuration["Tokens:Issuer"],
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Tokens:Key"]))
-            };
-            ClaimsPrincipal principal = new JwtSecurityTokenHandler().ValidateToken(jwtToken, parameters, out SecurityToken validatedToken);
-            return principal;
         }
         #endregion
 
@@ -120,17 +195,13 @@ namespace ZiTechDev.AdminSite.Controllers
                 return View(request);
             }
 
-            var result = await _authApiClient.ForgotPassword(request);
+            var resetPasswordBaseUrl = Url.ActionLink("ResetPassword", "Auth", Request.Scheme).Split("?")[0];
+            var result = await _authApiClient.ForgotPassword(resetPasswordBaseUrl, request);
             if (!result.IsSuccessed)
             {
                 ModelState.AddModelError(string.Empty, result.Message);
-                ViewBag.Title = "Quên mật khẩu";
-                return View(request);
             }
-
-            var resetPasswordBaseUrl = Url.ActionLink("ResetPassword", "Auth", Request.Scheme);
-            var sendMail = await _authApiClient.SendForgotPasswordEmail(request.Email, result.ReturnedObject, resetPasswordBaseUrl);
-            if (sendMail.IsSuccessed)
+            else
             {
                 ViewBag.Success = "Một yêu cầu xác minh danh tính đã được gửi đến " + request.Email;
             }
@@ -154,7 +225,7 @@ namespace ZiTechDev.AdminSite.Controllers
         }
         #endregion
 
-        #region Auth/ResetPassword
+        #region Auth/ResetPassword?userId={userId}&token={token}
         [HttpGet]
         public IActionResult ResetPassword(string userId, string token)
         {
@@ -201,8 +272,36 @@ namespace ZiTechDev.AdminSite.Controllers
         }
         #endregion
 
+        #region Auth/VertifiedChangeEmail?userId={userId}&token={token}&newEmail={newEmail}
+        [HttpGet]
+        public async Task<IActionResult> VertifiedChangeEmail(string userId, string token, string newEmail)
+        {
+            var result = await _authApiClient.VertifiedChangeEmail(Guid.Parse(userId), token, newEmail);
+            if (result.IsSuccessed)
+            {
+                return View("SuccessedConfirm");
+            }
+            ViewBag.Error = result.Message;
+            return View("FailedConfirm");
+        }
+        #endregion
+
+        #region Auth/ActivatedEmail?userId={userId}&token={token}
+        [HttpGet]
+        public async Task<IActionResult> ActivatedEmail(string userId, string token)
+        {
+            var result = await _authApiClient.ActivatedEmail(Guid.Parse(userId), token);
+            if (result.IsSuccessed)
+            {
+                return RedirectToAction("ResetPassword", "Auth", new { userId, token = result.ReturnedObject });
+            }
+            ViewBag.Error = result.Message;
+            return View("FailedConfirm");
+        }
+        #endregion
+
         #region Auth/Logout
-        [HttpPost]
+        [HttpGet]
         public async Task<IActionResult> Logout()
         {
             HttpContext.Session.Remove("Token");

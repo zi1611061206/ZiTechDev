@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Hosting;
+﻿using Google.Authenticator;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Configuration;
@@ -13,7 +14,6 @@ using ZiTechDev.CommonModel.Engines.CustomResult;
 using ZiTechDev.CommonModel.Engines.Email;
 using ZiTechDev.CommonModel.Requests.Auth;
 using ZiTechDev.CommonModel.Requests.CommonItems;
-using ZiTechDev.CommonModel.Requests.User;
 using ZiTechDev.Data.Entities;
 
 namespace ZiTechDev.Api.Services.Auth
@@ -41,19 +41,31 @@ namespace ZiTechDev.Api.Services.Auth
         }
 
         #region Register (Handler)
-        public async Task<ApiResult<string>> Register(RegisterRequest request)
+        public async Task<ApiResult<bool>> Register(string activatedEmailBaseUrl, RegisterRequest request)
         {
             if (await _userManager.FindByNameAsync(request.UserName) != null)
             {
-                return new Failed<string>("Tên đăng nhập đã tồn tại");
+                return new Failed<bool>("Tên đăng nhập đã tồn tại");
+            }
+            var user = await _userManager.FindByEmailAsync(request.Email);
+            if (user != null)
+            {
+                if (user.EmailConfirmed)
+                {
+                    return new Failed<bool>("Địa chỉ email đã được đăng ký");
+                }
+                else
+                {
+                    await _userManager.DeleteAsync(user);
+                }
             }
 
-            var user = new AppUser()
+            user = new AppUser()
             {
                 FirstName = request.FirstName,
                 MiddleName = request.MiddleName,
                 LastName = request.LastName,
-                DisplayName = request.DisplayName,
+                DisplayName = string.IsNullOrEmpty(request.DisplayName) ? request.UserName : request.DisplayName,
                 DateOfBirth = request.DateOfBirth,
                 Gender = request.Gender,
                 PhoneNumber = request.PhoneNumber,
@@ -61,17 +73,74 @@ namespace ZiTechDev.Api.Services.Auth
                 UserName = request.UserName
             };
 
-            if (await _userManager.FindByEmailAsync(request.Email) != null && _userManager.IsEmailConfirmedAsync(user).Result)
-            {
-                return new Failed<string>("Địa chỉ email đã được đăng ký và xác thực");
-            }
-
             var result = await _userManager.CreateAsync(user, new PasswordGenerator().Generate());
             if (!result.Succeeded)
             {
-                return new Failed<string>("Đăng ký thất bại");
+                return new Failed<bool>("Đăng ký thất bại");
             }
-            return new Successed<string>(user.Id.ToString());
+            await _userManager.AddToRoleAsync(user, "User");
+
+            var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            var encodedToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
+            var activatedEmailUrl = activatedEmailBaseUrl + $"?userId={user.Id}&token={encodedToken}";
+
+            var template = new EmailTemplate(_webHostEnvironment.WebRootPath);
+            template.EmailConfirmation(activatedEmailUrl, user.UserName);
+
+            var email = new EmailItem();
+            email.Senders.Add(new EmailBase(_configuration.GetValue<string>("EmailSender:Name"), _configuration.GetValue<string>("EmailSender:Address")));
+            email.Receivers.Add(new EmailBase(user.UserName, user.Email));
+            email.Subject = template.Subject;
+            email.Body = template.Content;
+            if (await _emailService.SendAsync(email))
+            {
+                return new Successed<bool>(true);
+            }
+            return new Failed<bool>("Lỗi hệ thống: không thể gửi xác thực đến " + user.Email);
+        }
+        #endregion
+
+        #region CheckLogin (Handler)
+        public async Task<ApiResult<bool>> ValidateLogin(string resetPasswordBaseUrl, LoginRequest request)
+        {
+            var user = await _userManager.FindByNameAsync(request.UserName);
+            if (user == null)
+            {
+                return new Failed<bool>("Người dùng không tồn tại");
+            }
+            else if (!user.EmailConfirmed)
+            {
+                return new Failed<bool>("Tài khoản chưa được kích hoạt. Vui lòng kiểm tra hộp thư của bạn");
+            }
+            else if (!(await _userManager.CheckPasswordAsync(user, request.Password)))
+            {
+                if (await _userManager.IsLockedOutAsync(user))
+                {
+                    var resetPasswordtoken = await _userManager.GeneratePasswordResetTokenAsync(user);
+                    var encodedToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(resetPasswordtoken));
+                    var resetPasswordUrl = resetPasswordBaseUrl + $"?userId={user.Id}&token={encodedToken}";
+
+                    var template = new EmailTemplate(_webHostEnvironment.WebRootPath);
+                    template.LoginWarning(resetPasswordUrl, user.UserName);
+
+                    var email = new EmailItem();
+                    email.Senders.Add(new EmailBase(_configuration.GetValue<string>("EmailSender:Name"), _configuration.GetValue<string>("EmailSender:Address")));
+                    email.Receivers.Add(new EmailBase(user.UserName, user.Email));
+                    email.Subject = template.Subject;
+                    email.Body = template.Content;
+                    await _emailService.SendAsync(email);
+
+                    var timeSpan = (int)Math.Ceiling(user.LockoutEnd.Value.UtcDateTime.Subtract(DateTime.UtcNow).TotalSeconds / 60);
+                    return new Failed<bool>($" Tài khoản của bạn bị khóa tạm thời do đăng nhập sai thông tin quá nhiều." +
+                        $" Nếu bạn quên mật khẩu hoặc nghi ngờ tài khoản của bạn bị tấn công," +
+                        $" vui lòng tiến hành đổi mật khẩu. Bạn có thể thử đăng nhập sau: ~{timeSpan} phút");
+                }
+                return new Failed<bool>("Mật khẩu đăng nhập không đúng " + $"({user.AccessFailedCount})");
+            }
+            else
+            {
+                return new Successed<bool>(user.TwoFactorEnabled);
+            }
         }
         #endregion
 
@@ -81,94 +150,83 @@ namespace ZiTechDev.Api.Services.Auth
             var user = await _userManager.FindByNameAsync(request.UserName);
             if (user == null)
             {
-                return new Failed<string>("Người dùng không tồn tại");
-            }
-            if (!user.EmailConfirmed)
-            {
-                return new Failed<string>("Tài khoản chưa được kích hoạt. Vui lòng kiểm tra hộp thư của bạn");
-            }
-            var result = await _signInManager.PasswordSignInAsync(user, request.Password, request.RememberMe, true);
-            if (!result.Succeeded)
-            {
-                return new Failed<string>("Mật khẩu đăng nhập không đúng");
+                return new Failed<string>("Người dùng không tồn tại hoặc đã bị xóa");
             }
 
+            var result = await _signInManager.PasswordSignInAsync(user, request.Password, request.RememberMe, true);
+            if (result.Succeeded)
+            {
+                var roles = _userManager.GetRolesAsync(user);
+                var claims = new[]
+                {
+                    new Claim("UserId", user.Id.ToString()),
+                    new Claim(ClaimTypes.Email, user.Email),
+                    new Claim(ClaimTypes.MobilePhone, user.PhoneNumber),
+                    new Claim(ClaimTypes.Name, user.DisplayName),
+                    new Claim("UserName", user.UserName),
+                    new Claim(ClaimTypes.Role, string.Join(";", roles))
+                };
+                var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Tokens:Key"]));
+                var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+                var token = new JwtSecurityToken(
+                    _configuration["Tokens:Issuer"], _configuration["Tokens:Issuer"],
+                    claims, expires: DateTime.Now.AddHours(3), signingCredentials: creds);
+                return new Successed<string>(new JwtSecurityTokenHandler().WriteToken(token));
+            }
+            return new Failed<string>("Đăng nhập không thành công");
+        }
+        #endregion
+
+        #region Authenticate2FA (Handler)
+        public async Task<ApiResult<string>> Authenticate2FA(Authenticate2FARequest request)
+        {
+            var user = await _userManager.FindByNameAsync(request.UserName);
+            if (user == null)
+            {
+                return new Failed<string>("Người dùng không tồn tại hoặc đã bị xóa");
+            }
+            TwoFactorAuthenticator twoFactorAuthenticator = new TwoFactorAuthenticator();
+            bool isValid = twoFactorAuthenticator.ValidateTwoFactorPIN(
+                $"{_configuration.GetValue<string>("Token:Key")}+{user.UserName}",
+                request.PinCode);
+            if (!isValid)
+            {
+                return new Failed<string>("Mã xác thực không hợp lệ");
+            }
             var roles = _userManager.GetRolesAsync(user);
             var claims = new[]
             {
-                new Claim("UserId", user.Id.ToString()),
-                new Claim(ClaimTypes.Email, user.Email),
-                new Claim(ClaimTypes.MobilePhone, user.PhoneNumber),
-                new Claim(ClaimTypes.Name, user.DisplayName),
-                new Claim("UserName", user.UserName),
-                new Claim(ClaimTypes.Role, string.Join(";", roles))
-            };
+                    new Claim("UserId", user.Id.ToString()),
+                    new Claim(ClaimTypes.Email, user.Email),
+                    new Claim(ClaimTypes.MobilePhone, user.PhoneNumber),
+                    new Claim(ClaimTypes.Name, user.DisplayName),
+                    new Claim("UserName", user.UserName),
+                    new Claim(ClaimTypes.Role, string.Join(";", roles))
+                };
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Tokens:Key"]));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
             var token = new JwtSecurityToken(
-                _configuration["Tokens:Issuer"],
-                _configuration["Tokens:Issuer"],
-                claims,
-                expires: DateTime.Now.AddHours(3),
-                signingCredentials: creds
-                );
-
+                _configuration["Tokens:Issuer"], _configuration["Tokens:Issuer"],
+                claims, expires: DateTime.Now.AddHours(3), signingCredentials: creds);
             return new Successed<string>(new JwtSecurityTokenHandler().WriteToken(token));
         }
         #endregion
 
-        #region LoginWarning (Handler)
-        public async Task<ApiResult<int>> LoginWarning(string userName, string forgotPasswordBaseUrl)
-        {
-            var user = await _userManager.FindByNameAsync(userName);
-            if (user == null)
-            {
-                return new Failed<int>("0");
-            }
-            if (await _userManager.IsLockedOutAsync(user))
-            {
-                if (user.EmailConfirmed)
-                {
-                    var template = new EmailTemplate(_webHostEnvironment.WebRootPath);
-                    template.LoginWarning(forgotPasswordBaseUrl, user.UserName);
-
-                    var email = new EmailItem();
-                    email.Senders.Add(new EmailBase(_configuration.GetValue<string>("EmailSender:Name"), _configuration.GetValue<string>("EmailSender:Address")));
-                    email.Receivers.Add(new EmailBase(user.UserName, user.Email));
-                    email.Subject = template.Subject;
-                    email.Body = template.Content;
-                    await _emailService.SendAsync(email);
-                }
-                var timeSpan = (int)Math.Floor(user.LockoutEnd.Value.UtcDateTime.Subtract(DateTime.UtcNow).TotalSeconds);
-                return new Successed<int>(timeSpan);
-            }
-            return new Failed<int>(user.AccessFailedCount.ToString());
-        }
-        #endregion
-
         #region ForgotPassword (Handler)
-        public async Task<ApiResult<string>> ForgotPassword(ForgotPasswordRequest request)
+        public async Task<ApiResult<bool>> ForgotPassword(string resetPasswordBaseUrl, ForgotPasswordRequest request)
         {
             var user = await _userManager.FindByEmailAsync(request.Email);
             if (user == null)
             {
-                return new Failed<string>("Người dùng không tồn tại");
+                return new Failed<bool>("Người dùng không tồn tại");
             }
             if (!user.EmailConfirmed)
             {
-                return new Failed<string>("Email người dùng chưa được xác minh");
+                return new Failed<bool>("Email người dùng chưa được xác minh");
             }
             var token = await _userManager.GeneratePasswordResetTokenAsync(user);
             var encodedToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
-            return new Successed<string>(encodedToken);
-        }
-        #endregion
-
-        #region SendForgotPasswordEmail (Handler)
-        public async Task<ApiResult<bool>> SendForgotPasswordEmail(string emailAddress, string token, string resetPasswordBaseUrl)
-        {
-            var user = await _userManager.FindByEmailAsync(emailAddress);
-            var resetPasswordUrl = resetPasswordBaseUrl + $"?userId={user.Id}&token={token}";
+            var resetPasswordUrl = resetPasswordBaseUrl + $"?userId={user.Id}&token={encodedToken}";
 
             var template = new EmailTemplate(_webHostEnvironment.WebRootPath);
             template.ForgotPassword(resetPasswordUrl, user.UserName);
@@ -178,12 +236,11 @@ namespace ZiTechDev.Api.Services.Auth
             email.Receivers.Add(new EmailBase(user.UserName, user.Email));
             email.Subject = template.Subject;
             email.Body = template.Content;
-            if(await _emailService.SendAsync(email))
+            if (await _emailService.SendAsync(email))
             {
                 return new Successed<bool>(true);
             }
-
-            return new Failed<bool>(string.Empty);
+            return new Failed<bool>("Lỗi hệ thông: không thể gửi xác thực");
         }
         #endregion
 
@@ -238,8 +295,6 @@ namespace ZiTechDev.Api.Services.Auth
             {
                 await _userManager.SetLockoutEndDateAsync(user, DateTimeOffset.UtcNow);
             }
-            user.EmailConfirmed = true;
-            await _userManager.UpdateAsync(user);
             return new Successed<bool>(true);
         }
         #endregion
@@ -247,10 +302,6 @@ namespace ZiTechDev.Api.Services.Auth
         #region VertifiedEmail (Handler)
         public async Task<ApiResult<bool>> VertifiedEmail(Guid userId, string token)
         {
-            if (string.IsNullOrEmpty(userId.ToString()) || string.IsNullOrEmpty(token))
-            {
-                return new Failed<bool>("Thông tin không hợp lệ");
-            }
             var user = await _userManager.FindByIdAsync(userId.ToString());
             string decodedToken;
             try
@@ -267,6 +318,56 @@ namespace ZiTechDev.Api.Services.Auth
                 return new Failed<bool>("Xác minh email không thành công do token đã thay đổi.");
             }
             return new Successed<bool>(true);
+        }
+        #endregion
+
+        #region VertifiedChangeEmail (Handler)
+        public async Task<ApiResult<bool>> VertifiedChangeEmail(Guid userId, string token, string newEmail)
+        {
+            var user = await _userManager.FindByIdAsync(userId.ToString());
+            if (user == null)
+            {
+                return new Failed<bool>("Không thể tìm thấy người dùng");
+            }
+            string decodedToken;
+            try
+            {
+                decodedToken = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(token));
+            }
+            catch
+            {
+                return new Failed<bool>("Token không hợp lệ");
+            }
+            var result = await _userManager.ChangeEmailAsync(user, newEmail, decodedToken);
+            if (!result.Succeeded)
+            {
+                return new Failed<bool>("Xác minh email không thành công do token đã thay đổi.");
+            }
+            return new Successed<bool>(true);
+        }
+        #endregion
+
+        #region ActivatedEmail (Handler)
+        public async Task<ApiResult<string>> ActivatedEmail(Guid userId, string token)
+        {
+            var user = await _userManager.FindByIdAsync(userId.ToString());
+            string decodedToken;
+            try
+            {
+                decodedToken = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(token));
+            }
+            catch
+            {
+                return new Failed<string>("Token không hợp lệ");
+            }
+            var result = await _userManager.ConfirmEmailAsync(user, decodedToken);
+            if (!result.Succeeded)
+            {
+                return new Failed<string>("Kích hoạt không thành công do token đã thay đổi.");
+            }
+            var resetPasswordToken = await _userManager.GeneratePasswordResetTokenAsync(user);
+            var encodedToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(resetPasswordToken));
+            return new Successed<string>(encodedToken);
         }
         #endregion
     }

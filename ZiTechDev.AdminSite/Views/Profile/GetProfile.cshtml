@@ -6,199 +6,210 @@
 }
 
 <hr />
-<div class="container-fluid">
-    <div class="card mb-4 bg-light">
-        <div class="card-body justify-content-center">
+<div class="container">
+    <div class="mb-4 bg-light row rounded">
 
-            <h1 class="form-group text-center text-uppercase">@ViewBag.Title</h1>
-            <dl class="row justify-content-center">
-                <div class="col-md-8 row">
-                    <dt class="col-md-5">
-                        @Html.DisplayNameFor(model => model.Id)
-                    </dt>
-                    <dd class="col-md-7">
-                        @Html.DisplayFor(model => model.Id)
-                    </dd>
+        <div class="col-md-4 text-center rounded-left" style="background-image: url('@Url.Content("~/img/vertical-background.jpg")'); background-repeat: no-repeat; background-size: cover;">
+
+            <a href="#">
+                <img class="avatar-md card-img img-thumbnail m-5 bg-dark shadow-lg" src="~/img/logo.jpg" />
+            </a>
+
+            <div class="card-text">
+                <button type="button" class="btn btn-info m-1" onclick="">Quản lý bài viết</button>
+                <button type="button" class="btn btn-warning m-1" onclick="location.href='@Url.Action("EditProfile", "Profile")'">Chỉnh sửa hồ sơ</button>
+                <button type="button" class="btn btn-primary m-1" onclick="location.href='@Url.Action("ChangePassword", "Profile")'">Đổi mật khẩu</button>
+            </div>
+        </div>
+
+        <div class="col-md-8">
+            <h1 class="card-header text-center text-uppercase">@ViewBag.Title</h1>
+            <div class="card-body justify-content-center ">
+
+                <div class="input-group mb-3 row">
+                    @{
+                        var id = Model.Id.ToString();
+                        var head = id.Substring(0, 5);
+                        var foot = id.Substring(id.Length - 5);
+                        id = head + "**********************" + foot;
+                    }
+                    <div class="input-group-prepend col-md-3 pr-0">
+                        <span class="input-group-text w-100 font-weight-bold bg-dark text-white">@Html.DisplayNameFor(model => model.Id)</span>
+                    </div>
+                    <input type="text" class="form-control col-md-9 text-right" readonly value="@id" />
+                </div>
+
+                @if (ViewBag.Success != null)
+                {
+                    <div class="alert alert-success text-center" role="alert">
+                        @ViewBag.Success
+                    </div>
+                }
+                @if (ViewBag.Fail != null)
+                {
+                    <div class="alert alert-danger text-center" role="alert">
+                        @ViewBag.Fail
+                    </div>
+                }
+
+                <div class="input-group mb-3 row">
                     @{ var fullName = Model.FirstName + " " + Model.MiddleName + " " + Model.LastName; }
-                    <dt class="col-md-5">
-                        Họ tên
-                    </dt>
-                    <dd class="col-md-7">
-                        @Html.DisplayFor(model => fullName)
-                    </dd>
+                    <div class="input-group-prepend col-md-3 pr-0">
+                        <span class="input-group-text w-100 font-weight-bold bg-dark text-white">Họ tên</span>
+                    </div>
+                    <input type="text" class="form-control col-md-9 text-right" readonly value="@fullName" />
+                </div>
 
+                <div class="input-group mb-3 row">
                     @{ var dob = Model.DateOfBirth.ToShortDateString(); }
-                    <dt class="col-md-5">
-                        @Html.DisplayNameFor(model => model.DateOfBirth)
-                    </dt>
-                    <dd class="col-md-7">
-                        @Html.DisplayFor(model => dob)
-                    </dd>
+                    <div class="input-group-prepend col-md-3 pr-0">
+                        <span class="input-group-text w-100 font-weight-bold bg-dark text-white">@Html.DisplayNameFor(model => model.DateOfBirth)</span>
+                    </div>
+                    <input type="text" class="form-control col-md-9 text-right" readonly value="@dob" />
+                </div>
+
+                <div class="input-group mb-3 row">
                     @{
                         var gender = "";
                         if (Model.Gender == GenderType.Male) gender = "Nam";
                         else if (Model.Gender == GenderType.Female) gender = "Nữ";
                         else gender = "Khác";
                     }
-                    <dt class="col-md-5">
-                        @Html.DisplayNameFor(model => model.Gender)
-                    </dt>
-                    <dd class="col-md-7">
-                        @Html.DisplayFor(model => gender)
-                    </dd>
+                    <div class="input-group-prepend col-md-3 pr-0">
+                        <span class="input-group-text w-100 font-weight-bold bg-dark text-white">@Html.DisplayNameFor(model => model.Gender)</span>
+                    </div>
+                    <input type="text" class="form-control col-md-9 text-right" readonly value="@gender" />
+                </div>
 
+                <div class="input-group mb-3 row">
+                    <div class="input-group-prepend col-md-3 pr-0">
+                        <span class="input-group-text w-100 font-weight-bold bg-dark text-white">@Html.DisplayNameFor(model => model.DisplayName)</span>
+                    </div>
+                    <input type="text" class="form-control col-md-9 text-right" readonly asp-for="DisplayName" />
+                </div>
 
-                    <dt class="col-md-5">
-                        @Html.DisplayNameFor(model => model.DisplayName)
-                    </dt>
-                    <dd class="col-md-7">
-                        @Html.DisplayFor(model => model.DisplayName)
-                    </dd>
-                    <dt class="col-md-5">
-                        @Html.DisplayNameFor(model => model.UserName)
-                    </dt>
-                    <dd class="col-md-7">
-                        @Html.DisplayFor(model => model.UserName)
-                    </dd>
+                <div class="input-group mb-3 row">
+                    <div class="input-group-prepend col-md-3 pr-0">
+                        <span class="input-group-text w-100 font-weight-bold bg-dark text-white">@Html.DisplayNameFor(model => model.UserName)</span>
+                    </div>
+                    <input type="text" class="form-control col-md-9 text-right" readonly asp-for="NormalizedUserName" />
+                </div>
 
-                    <dt class="col-md-5">
-                        @Html.DisplayNameFor(model => model.Email)
-                    </dt>
-                    <dd class="col-md-7">
-                        @Html.DisplayFor(model => model.Email)
+                <div class="input-group mb-3 row">
+                    <div class="input-group-prepend col-md-3 pr-0">
+                        <span class="input-group-text w-100 font-weight-bold bg-dark text-white">@Html.DisplayNameFor(model => model.DateOfJoin)</span>
+                    </div>
+                    <input type="text" class="form-control col-md-9 text-right" readonly asp-for="DateOfJoin" />
+                </div>
+
+                <div class="input-group mb-3 row">
+                    @{
+                        string roleStr = "";
+                        if (Model.Roles != null)
+                        {
+                            roleStr = string.Join(", ", Model.Roles);
+                        }
+                    }
+                    <div class="input-group-prepend col-md-3 pr-0">
+                        <span class="input-group-text w-100 font-weight-bold bg-dark text-white">@Html.DisplayNameFor(model => model.Roles)</span>
+                    </div>
+                    <input type="text" class="form-control col-md-9 text-right" readonly value="@roleStr" />
+                </div>
+
+                <div class="input-group mb-3 row">
+                    <div class="input-group-prepend col-md-3 pr-0">
+                        <span class="input-group-text w-100 font-weight-bold bg-dark text-white">@Html.DisplayNameFor(model => model.Email)</span>
+                    </div>
+                    <input type="text" class="form-control col-md-9 text-right" readonly asp-for="Email" />
+                    <div class="input-group-append">
                         @{
                             if (Model.EmailConfirmed)
                             {
-                                <i class="fa fa-check-circle" style="color:lightgreen"></i>
-                                <p class="text-success">Đã xác minh</p>
+                                <span class="input-group-text bg-success text-white">
+                                    <i class="fa fa-check mr-1"></i>
+                                    Đã xác minh
+                                </span>
                             }
                             else
                             {
-                                <i class="fas fa-exclamation-circle" style="color:orange"></i>
-                                <a class="text-danger">Xác minh ngay</a>
+                                <span class="input-group-text bg-danger text-white">
+                                    <i class="fas fa-exclamation mr-1"></i>
+                                    <a class="text-white" href="#">Xác minh ngay</a>
+                                </span>
                             }
                         }
-                    </dd>
-                    <dt class="col-md-5">
-                        @Html.DisplayNameFor(model => model.PhoneNumber)
-                    </dt>
-                    <dd class="col-md-7">
-                        @Html.DisplayFor(model => model.PhoneNumber)
+                    </div>
+                    <div class="input-group-append">
+                        <span class="input-group-text bg-warning text-white">
+                            <a href="@Url.Action("ChangeEmail","Profile")">
+                                <i class="fa fa-edit"></i>
+                            </a>
+                        </span>
+                    </div>
+                </div>
+
+                <div class="input-group mb-3 row">
+                    <div class="input-group-prepend col-md-3 pr-0">
+                        <span class="input-group-text w-100 font-weight-bold bg-dark text-white">@Html.DisplayNameFor(model => model.PhoneNumber)</span>
+                    </div>
+                    <input type="text" class="form-control col-md-9 text-right" readonly asp-for="PhoneNumber" />
+                    <div class="input-group-append">
                         @{
                             if (Model.PhoneNumberConfirmed)
                             {
-                                <i class="fa fa-check-circle" style="color:lightgreen"></i>
-                                <p class="text-success">Đã xác minh</p>
+                                <span class="input-group-text bg-success text-white">
+                                    <i class="fa fa-check mr-1"></i>
+                                    Đã xác minh
+                                </span>
                             }
                             else
                             {
-                                <i class="fas fa-exclamation-circle" style="color:orange"></i>
-                                <a class="text-danger">Xác minh ngay</a>
+                                <span class="input-group-text bg-danger text-white">
+                                    <i class="fas fa-exclamation mr-1"></i>
+                                    <a class="text-white" href="#">Xác minh ngay</a>
+                                </span>
                             }
                         }
-                    </dd>
-
-                    <dt class="col-md-5">
-                        @Html.DisplayNameFor(model => model.DateOfJoin)
-                    </dt>
-                    <dd class="col-md-7">
-                        @Html.DisplayFor(model => model.DateOfJoin)
-                    </dd>
-                    <dt class="col-md-5">
-                        @Html.DisplayNameFor(model => model.TwoFactorEnabled)
-                    </dt>
-                    <dd class="col-md-7">
-                        @{
-                            if (Model.TwoFactorEnabled)
-                            {
-                                <p>Đã kích hoạt</p>
-                            }
-                            else
-                            {
-                                <p>Chưa kích hoạt</p>
-                            }
-                        }
-                    </dd>
-                    <dt class="col-md-5">
-                        @Html.DisplayNameFor(model => model.Roles)
-                    </dt>
-                    <dd class="col-md-7">
-                        @{
-                            string roleStr = "";
-                            if (Model.Roles != null)
-                            {
-                                roleStr = string.Join(", ", Model.Roles);
-                            }
-                        }
-                        @Html.DisplayFor(model => roleStr)
-                    </dd>
-
-                    <dt class="col-md-5">
-                        @Html.DisplayNameFor(model => model.NormalizedUserName)
-                    </dt>
-                    <dd class="col-md-7">
-                        @Html.DisplayFor(model => model.NormalizedUserName)
-                    </dd>
-                    <dt class="col-md-5">
-                        @Html.DisplayNameFor(model => model.NormalizedEmail)
-                    </dt>
-                    <dd class="col-md-7">
-                        @Html.DisplayFor(model => model.NormalizedEmail)
-                    </dd>
-                    <dt class="col-md-5">
-                        @Html.DisplayNameFor(model => model.ConcurrencyStamp)
-                    </dt>
-                    <dd class="col-md-7">
-                        @Html.DisplayFor(model => model.ConcurrencyStamp)
-                    </dd>
-                    <dt class="col-md-5">
-                        @Html.DisplayNameFor(model => model.SecurityStamp)
-                    </dt>
-                    <dd class="col-md-7">
-                        @Html.DisplayFor(model => model.SecurityStamp)
-                    </dd>
-                    <dt class="col-md-5">
-                        @Html.DisplayNameFor(model => model.LockoutEnabled)
-                    </dt>
-                    <dd class="col-md-7">
-                        @{
-                            if (Model.LockoutEnabled)
-                            {
-                                <p>Bật</p>
-                            }
-                            else
-                            {
-                                <p>Tắt</p>
-                            }
-                        }
-                    </dd>
-                    <dt class="col-md-5">
-                        @Html.DisplayNameFor(model => model.LockoutEnd)
-                    </dt>
-                    <dd class="col-md-7">
-                        @Html.DisplayFor(model => model.LockoutEnd)
-                    </dd>
-                    <dt class="col-md-5">
-                        @Html.DisplayNameFor(model => model.LastAccess)
-                    </dt>
-                    <dd class="col-md-7">
-                        @Html.DisplayFor(model => model.LastAccess)
-                    </dd>
-                    <dt class="col-md-5">
-                        @Html.DisplayNameFor(model => model.AccessFailedCount)
-                    </dt>
-                    <dd class="col-md-7">
-                        @Html.DisplayFor(model => model.AccessFailedCount)
-                    </dd>
+                    </div>
+                    <div class="input-group-append">
+                        <span class="input-group-text bg-warning text-white">
+                            <a href="#">
+                                <i class="fa fa-edit"></i>
+                            </a>
+                        </span>
+                    </div>
                 </div>
-            </dl>
 
-            <div class="row justify-content-center">
-                <div class="col-md-8">
-                    <button type="button" class="form-group btn btn-warning w-100 m-1" onclick="location.href='@Url.Action("EditProfile", "Profile", new { userId = Model.Id })'">Chỉnh sửa</button>
-                    <button type="button" class="form-group btn btn-primary w-100 m-1" onclick="location.href='@Url.Action("ChangePassword", "Profile", new { userId = Model.Id })'">Đổi mật khẩu</button>
+                <div class="input-group mb-3 row">
+                    <div class="input-group-prepend col-md-3 pr-0">
+                        <span class="input-group-text w-100 font-weight-bold bg-dark text-white">@Html.DisplayNameFor(model => model.TwoFactorEnabled)</span>
+                    </div>
+                    @{
+                        if (Model.TwoFactorEnabled)
+                        {
+                            <input type="text" class="form-control col-md-9 text-right" readonly />
+                            <div class="input-group-append">
+                                <label class="switch input-group-text border-left-0">
+                                    <input type="checkbox" checked onchange="location.href = '@Url.ActionLink("Disable2FA", "Profile")'">
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+                        }
+                        else
+                        {
+                            <input type="text" class="form-control col-md-9 text-right" readonly />
+                            <div class="input-group-append">
+                                <label class="switch input-group-text border-left-0">
+                                    <input type="checkbox" onchange="location.href = '@Url.ActionLink("Enable2FA", "Profile")'">
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+                        }
+                    }
                 </div>
+
             </div>
         </div>
+
     </div>
 </div>

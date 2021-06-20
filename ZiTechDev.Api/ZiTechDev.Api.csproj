@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="wwwroot\EmailTemplates\ChangeEmailConfirmationBodyTemplate.txt" />
     <Content Remove="wwwroot\EmailTemplates\EmailConfirmationBodyTemplate.txt" />
     <Content Remove="wwwroot\EmailTemplates\EmailFooterTemplate.txt" />
     <Content Remove="wwwroot\EmailTemplates\EmailHeaderTemplate.txt" />
@@ -13,6 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="wwwroot\EmailTemplates\ChangeEmailConfirmationBodyTemplate.txt" />
     <None Include="wwwroot\EmailTemplates\EmailConfirmationBodyTemplate.txt" />
     <None Include="wwwroot\EmailTemplates\EmailFooterTemplate.txt" />
     <None Include="wwwroot\EmailTemplates\EmailHeaderTemplate.txt" />
@@ -21,6 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="GoogleAuthenticator" Version="2.1.1" />
     <PackageReference Include="MailKit" Version="2.12.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.15" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.1.4" />

@@ -1,0 +1,63 @@
+﻿@using ZiTechDev.CommonModel.Requests.CommonItems
+@model ZiTechDev.CommonModel.Requests.Profile.AuthenticateCodeRequest
+@{
+    ViewData["Title"] = ViewBag.Title;
+    Layout = "~/Views/Shared/_ProfileLayout.cshtml";
+}
+
+<hr />
+<div class="container">
+    <div class="card mb-4 bg-light">
+        <h1 class="card-header text-center text-uppercase">@ViewBag.Title</h1>
+        <div class="card-body justify-content-center">
+
+            <form asp-controller="Profile" asp-action="Enable2FA" method="post">
+                <h4>Bước 1: Cài đặt ứng dụng xác thực</h4>
+                <p>
+                    Sử dụng điện thoại của bạn, truy cập CH Play (Android) hoặc AppStore (IOS). Tìm và cài đặt ứng dụng có tên
+                    <a href="https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2&hl=vi&gl=US">
+                        <b>Google Authenticator</b>
+                    </a>
+                </p>
+                <div class="text-center">
+                    <img src="/img/google-authenticator-1.png" alt="Ảnh ứng dụng Google Authenticator trong CH Play" style="width:250px; height:270px" />
+                    <img src="/img/google-authenticator-2.png" alt="Màn hình khởi động ứng dụng Google Authenticator" style="width:210px; height:270px" />
+                </div>
+                <h4>Bước 2: Tùy chọn mã thiết lập</h4>
+                <p>
+                    Khởi chạy ứng dụng và nhấn vào nút <b>Bắt đầu</b>. Tại đây bạn có 2 lựa chọn:
+                    <ul>
+                        <li>1. Quét mã QR: <img src="@Model.QrCodeSetupImageUrl" /></li>
+                        <li>2. Nhập khóa thiết lập: @Model.ManualEntryKey</li>
+                    </ul>
+                </p>
+                <h4>Bước 3: Hoàn thành thiết lập</h4>
+                <p>Một mã gồm 6 chữ số được hiển thị trên màn hình. Vui lòng nhập mã vào ô bên dưới và nhấn <b>Gửi</b> trước khi mã hết hiệu lực. Nếu bỏ lỡ hãy chờ mã tiếp theo và nhập lại.</p>
+
+                <div class="form-group text-center">
+                    <div class="summary-error bg-danger text-white" asp-validation-summary="ModelOnly"></div>
+                </div>
+
+                <div class="form-group" hidden>
+                    <input asp-for="QrCodeSetupImageUrl" class="form-control" />
+                </div>
+
+                <div class="form-group" hidden>
+                    <input asp-for="ManualEntryKey" class="form-control" />
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="PinCode" class="control-label"></label>
+                    <span class="text-danger"> (*)</span>
+                    <input asp-for="PinCode" class="form-control" />
+                    <span asp-validation-for="PinCode" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Gửi" class="btn btn-primary w-100" />
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+

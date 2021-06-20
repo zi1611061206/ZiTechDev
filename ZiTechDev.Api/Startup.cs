@@ -13,6 +13,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using ZiTechDev.Api.EmailConfiguration;
 using ZiTechDev.Api.Services.Auth;
 using ZiTechDev.Api.Services.Profile;
@@ -155,6 +156,21 @@ namespace ZiTechDev.Api
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseAuthentication();
+            app.Use(async (context, next) => {
+                await next.Invoke();
+                //handle response
+                //you may also need to check the request path to check whether it requests image
+                if (context.User.Identity.IsAuthenticated)
+                {
+                    var userName = context.User.Identity.Name;
+                    //retrieve user by userName
+                    using var dbContext = context.RequestServices.GetRequiredService<ZiTechDevDBContext>();
+                    var user = dbContext.Users.Where(u => u.UserName == userName).FirstOrDefault();
+                    user.LastAccess = DateTime.Now;
+                    dbContext.Update(user);
+                    dbContext.SaveChanges();
+                }
+            });
             app.UseRouting();
             app.UseAuthorization();
             app.UseEndpoints(endpoints =>

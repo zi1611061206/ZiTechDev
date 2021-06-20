@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using ZiTechDev.CommonModel.Requests.CommonItems;
 using ZiTechDev.Data.Enums;
 
 namespace ZiTechDev.CommonModel.Requests.Auth
@@ -22,9 +24,6 @@ namespace ZiTechDev.CommonModel.Requests.Auth
         [DataType(DataType.Date)]
         public DateTime DateOfBirth { get; set; }
 
-        [Display(Name = "Giới tính")]
-        public GenderType Gender { get; set; }
-
         [Display(Name = "Số điện thoại")]
         [DataType(DataType.PhoneNumber)]
         public string PhoneNumber { get; set; }
@@ -35,5 +34,14 @@ namespace ZiTechDev.CommonModel.Requests.Auth
 
         [Display(Name = "Tên đăng nhập")]
         public string UserName { get; set; }
+
+        [Display(Name = "Giới tính")]
+        public GenderType Gender { get; set; }
+        public List<GenderItem> Genders { get; set; } = new List<GenderItem>()
+                    {
+                        new GenderItem(0, "Nam"),
+                        new GenderItem(1, "Nữ"),
+                        new GenderItem(2, "Giới tính khác")
+                    };
     }
 }

@@ -7,6 +7,9 @@ namespace ZiTechDev.CommonModel.Requests.Profile
 {
     public class ProfileViewModel
     {
+        [Display(Name = "Mã")]
+        public Guid Id { get; set; }
+
         [Display(Name = "Họ")]
         public string FirstName { get; set; }
 
@@ -22,17 +25,11 @@ namespace ZiTechDev.CommonModel.Requests.Profile
         [Display(Name = "Ngày sinh")]
         public DateTime DateOfBirth { get; set; }
 
-        [Display(Name = "Lần truy cập gần nhất")]
-        public DateTime? LastAccess { get; set; }
-
         [Display(Name = "Ngày đăng ký")]
         public DateTime DateOfJoin { get; set; }
 
         [Display(Name = "Giới tính")]
         public GenderType Gender { get; set; }
-
-        [Display(Name = "Thời gian khóa")]
-        public DateTimeOffset? LockoutEnd { get; set; }
 
         [Display(Name = "Xác thực 2 bước")]
         public bool TwoFactorEnabled { get; set; }
@@ -42,12 +39,6 @@ namespace ZiTechDev.CommonModel.Requests.Profile
 
         [Display(Name = "Số điện thoại")]
         public string PhoneNumber { get; set; }
-
-        [Display(Name = "Tem đồng bộ")]
-        public string ConcurrencyStamp { get; set; }
-
-        [Display(Name = "Tem bảo mật")]
-        public string SecurityStamp { get; set; }
 
         [Display(Name = "Đã xác thực Email")]
         public bool EmailConfirmed { get; set; }
@@ -63,15 +54,6 @@ namespace ZiTechDev.CommonModel.Requests.Profile
 
         [Display(Name = "Tên đăng nhập")]
         public string UserName { get; set; }
-
-        [Display(Name = "Mã")]
-        public Guid Id { get; set; }
-
-        [Display(Name = "Có thể khóa")]
-        public bool LockoutEnabled { get; set; }
-
-        [Display(Name = "Số lần truy cập thất bại")]
-        public int AccessFailedCount { get; set; }
 
         [Display(Name = "Vai trò")]
         public IList<string> Roles { get; set; }

@@ -27,14 +27,6 @@ namespace ZiTechDev.CommonModel.Requests.Profile
         [DataType(DataType.Date)]
         public DateTime DateOfBirth { get; set; }
 
-        [Display(Name = "Số điện thoại")]
-        [DataType(DataType.PhoneNumber)]
-        public string PhoneNumber { get; set; }
-
-        [Display(Name = "Email")]
-        [DataType(DataType.EmailAddress)]
-        public string Email { get; set; }
-
         [Display(Name = "Giới tính")]
         public GenderType Gender { get; set; }
         public List<GenderItem> Genders { get; set; } = new List<GenderItem>()

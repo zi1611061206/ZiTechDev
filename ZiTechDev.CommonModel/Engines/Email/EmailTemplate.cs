@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 
 namespace ZiTechDev.CommonModel.Engines.Email
 {
@@ -54,6 +55,17 @@ namespace ZiTechDev.CommonModel.Engines.Email
                 $" Nếu bạn quên mật khẩu hoặc nghi ngờ tài khoản của bạn bị tấn công," +
                 $" vui lòng nhấn nút bên dưới để tiến hành đổi mật khẩu.");
             Body = Body.Replace("PLACEHOLDER-LINK-FORGOT", forgotPasswordUrl);
+            Content = Header + Body + Footer;
+        }
+
+        public void ChangeEmailConfirmation(string changeEmailUrl, string userName)
+        {
+            Body = File.OpenText(RootPath + @"\EmailTemplates\ChangeEmailConfirmationBodyTemplate.txt").ReadToEnd();
+            Subject = "[ZITECHDEV] Thông báo thay đổi Email đăng ký";
+            Header = Header.Replace("PLACEHOLDER-TITLE", "THAY ĐỔI EMAIL");
+            Header = Header.Replace("PLACEHOLDER-DEAR", $"Chào {userName}." +
+                $" Vui lòng nhấn vào nút bên dưới để xác minh địa chỉ email mới của bạn.");
+            Body = Body.Replace("PLACEHOLDER-LINK-CONFIRM", changeEmailUrl);
             Content = Header + Body + Footer;
         }
     }

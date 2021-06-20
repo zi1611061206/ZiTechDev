@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using System;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
@@ -69,6 +70,55 @@ namespace ZiTechDev.AdminSite.ApiClientServices.Profile
             var content = JsonConvert.SerializeObject(request);
             var httpContent = new StringContent(content, Encoding.UTF8, "application/json");
             var response = await client.PutAsync("api/profiles/change-password?userId=" + request.Id, httpContent);
+            var body = await response.Content.ReadAsStringAsync();
+            if (response.IsSuccessStatusCode)
+            {
+                return new Successed<bool>(true);
+            }
+            return new Failed<bool>(body);
+        }
+        #endregion
+
+        #region ChageEmail (Call API)
+        public async Task<ApiResult<bool>> ChangeEmail(string changeEmailBaseUrl, ChangeEmailRequest request)
+        {
+            var client = GetHttpClient();
+
+            var content = JsonConvert.SerializeObject(request);
+            var httpContent = new StringContent(content, Encoding.UTF8, "application/json");
+            var response = await client.PutAsync("api/profiles/change-email?changeEmailBaseUrl=" + WebUtility.UrlEncode(changeEmailBaseUrl), httpContent);
+            var body = await response.Content.ReadAsStringAsync();
+            if (response.IsSuccessStatusCode)
+            {
+                return new Successed<bool>(true);
+            }
+            return new Failed<bool>(body);
+        }
+        #endregion
+
+        #region Setup2FA (Call API)
+        public async Task<ApiResult<string>> Setup2FA(Guid userId)
+        {
+            var client = GetHttpClient();
+
+            var response = await client.GetAsync($"api/profiles/setup-2fa?userId={userId}");
+            var body = await response.Content.ReadAsStringAsync();
+            if (response.IsSuccessStatusCode)
+            {
+                return new Successed<string>(body);
+            }
+            return new Failed<string>(body);
+        }
+        #endregion
+
+        #region Change2FA (Call API)
+        public async Task<ApiResult<bool>> Change2FA(Guid userId, AuthenticateCodeRequest request)
+        {
+            var client = GetHttpClient();
+
+            var content = JsonConvert.SerializeObject(request);
+            var httpContent = new StringContent(content, Encoding.UTF8, "application/json");
+            var response = await client.PostAsync($"api/profiles/change-2fa?userId={userId}", httpContent);
             var body = await response.Content.ReadAsStringAsync();
             if (response.IsSuccessStatusCode)
             {
