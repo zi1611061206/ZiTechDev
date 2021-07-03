@@ -21,6 +21,17 @@ namespace ZiTechDev.Api.Services.Auth
         Task<ApiResult<bool>> Register(string activatedEmailBaseUrl, RegisterRequest request);
 
         /// <summary>
+        /// Hàm kiểm tra tài khoản đăng nhập
+        /// </summary>
+        /// <typeparam name="LoginUserNameRequest"></typeparam>
+        /// <param name="request"></param>
+        /// <returns>
+        /// Trả về thông báo lỗi (Message) nếu không thành công,
+        /// Trả về true (ReturnedObject) nếu thành công
+        /// </returns>
+        Task<ApiResult<bool>> ValidateUserName(LoginUserNameRequest request);
+
+        /// <summary>
         /// Hàm kiểm tra thông tin đăng nhập (gửi email cảnh báo đăng nhập nếu bị khóa)
         /// </summary>
         /// <typeparam name="string"></typeparam>
@@ -43,6 +54,19 @@ namespace ZiTechDev.Api.Services.Auth
         /// Trả về chuỗi token người dùng đã mã hóa (ReturnedObject) nếu thành công
         /// </returns>
         Task<ApiResult<string>> Login(LoginRequest request);
+
+        /// <summary>
+        /// Hàm xử lý gửi mã xác thực
+        /// </summary>
+        /// <typeparam name="string"></typeparam>
+        /// <param name="userName"></param>
+        /// <typeparam name="string"></typeparam>
+        /// <param name="provider"></param>
+        /// <returns>
+        /// Trả về thông báo lỗi (Message) nếu không thành công,
+        /// Trả về true (ReturnedObject) nếu thành công
+        /// </returns>
+        Task<ApiResult<bool>> SendToAuthenticator(string userName, string provider);
 
         /// <summary>
         /// Hàm xử lý đăng nhập cho tài khoản đã bật xác thực 2 bước

@@ -100,8 +100,8 @@ namespace ZiTechDev.Api.Services.Auth
         }
         #endregion
 
-        #region CheckLogin (Handler)
-        public async Task<ApiResult<bool>> ValidateLogin(string resetPasswordBaseUrl, LoginRequest request)
+        #region ValidateUserName (Handler)
+        public async Task<ApiResult<bool>> ValidateUserName(LoginUserNameRequest request)
         {
             var user = await _userManager.FindByNameAsync(request.UserName);
             if (user == null)
@@ -112,7 +112,15 @@ namespace ZiTechDev.Api.Services.Auth
             {
                 return new Failed<bool>("Tài khoản chưa được kích hoạt. Vui lòng kiểm tra hộp thư của bạn");
             }
-            else if (!(await _userManager.CheckPasswordAsync(user, request.Password)))
+            return new Successed<bool>(true);
+        }
+        #endregion
+
+        #region ValidateLogin (Handler)
+        public async Task<ApiResult<bool>> ValidateLogin(string resetPasswordBaseUrl, LoginRequest request)
+        {
+            var user = await _userManager.FindByNameAsync(request.UserName);
+            if (!(await _userManager.CheckPasswordAsync(user, request.Password)))
             {
                 if (await _userManager.IsLockedOutAsync(user))
                 {
@@ -177,6 +185,44 @@ namespace ZiTechDev.Api.Services.Auth
         }
         #endregion
 
+        #region SendToAuthenticator (Handler)
+        public async Task<ApiResult<bool>> SendToAuthenticator(string userName, string provider)
+        {
+            var user = await _userManager.FindByNameAsync(userName);
+            if (user == null)
+            {
+                return new Failed<bool>("Người dùng không tồn tại hoặc đã bị xóa");
+            }
+            switch (provider.ToLower())
+            {
+                case "google":
+                    return new Successed<bool>(true);
+                case "microsoft":
+                    return new Successed<bool>(true);
+                case "sms":
+                    return new Successed<bool>(true);
+                case "recovery":
+                    return new Successed<bool>(true);
+                case "email":
+                    var code = await _userManager.GenerateTwoFactorTokenAsync(user, provider);
+                    var template = new EmailTemplate(_webHostEnvironment.WebRootPath);
+                    template.Authenticate2FA(userName, code);
+                    var email = new EmailItem();
+                    email.Senders.Add(new EmailBase(_configuration.GetValue<string>("EmailSender:Name"), _configuration.GetValue<string>("EmailSender:Address")));
+                    email.Receivers.Add(new EmailBase(user.UserName, user.Email));
+                    email.Subject = template.Subject;
+                    email.Body = template.Content;
+                    if (await _emailService.SendAsync(email))
+                    {
+                        return new Successed<bool>(true);
+                    }
+                    return new Failed<bool>("Không thể gửi mã đến " + user.Email);
+                default:
+                    return new Failed<bool>("Phương thức xác thực không hợp lệ");
+            }
+        }
+        #endregion
+
         #region Authenticate2FA (Handler)
         public async Task<ApiResult<string>> Authenticate2FA(Authenticate2FARequest request)
         {
@@ -185,17 +231,41 @@ namespace ZiTechDev.Api.Services.Auth
             {
                 return new Failed<string>("Người dùng không tồn tại hoặc đã bị xóa");
             }
-            TwoFactorAuthenticator twoFactorAuthenticator = new TwoFactorAuthenticator();
-            bool isValid = twoFactorAuthenticator.ValidateTwoFactorPIN(
-                $"{_configuration.GetValue<string>("Token:Key")}+{user.UserName}",
-                request.PinCode);
-            if (!isValid)
+
+            bool isValid;
+            switch (request.Provider.ToLower())
+            {
+                case "google":
+                    TwoFactorAuthenticator twoFactorAuthenticator = new TwoFactorAuthenticator();
+                    isValid = twoFactorAuthenticator.ValidateTwoFactorPIN(
+                        $"{_configuration.GetValue<string>("Token:Key")}+{user.UserName}",
+                        request.PinCode);
+                    break;
+                case "microsoft":
+                    return new Failed<string>("Phương thức xác thực không khả dụng");
+                case "sms":
+                    return new Failed<string>("Phương thức xác thực không khả dụng");
+                case "recovery":
+                    var resultRecoveryAuth = await _signInManager.TwoFactorRecoveryCodeSignInAsync(request.PinCode);
+                    isValid = resultRecoveryAuth.Succeeded;
+                    break;
+                case "email":
+                    var resultEmailAuth = await _signInManager.TwoFactorSignInAsync(request.Provider, request.PinCode, request.IsPersistent, request.IsRememberClient);
+                    isValid = resultEmailAuth.Succeeded;
+                    break;
+                default:
+                    return new Failed<string>("Phương thức xác thực không hợp lệ");
+            }
+
+            if (isValid)
             {
                 return new Failed<string>("Mã xác thực không hợp lệ");
             }
-            var roles = _userManager.GetRolesAsync(user);
-            var claims = new[]
+            else
             {
+                var roles = _userManager.GetRolesAsync(user);
+                var claims = new[]
+                {
                     new Claim("UserId", user.Id.ToString()),
                     new Claim(ClaimTypes.Email, user.Email),
                     new Claim(ClaimTypes.MobilePhone, user.PhoneNumber),
@@ -203,12 +273,13 @@ namespace ZiTechDev.Api.Services.Auth
                     new Claim("UserName", user.UserName),
                     new Claim(ClaimTypes.Role, string.Join(";", roles))
                 };
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Tokens:Key"]));
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-            var token = new JwtSecurityToken(
-                _configuration["Tokens:Issuer"], _configuration["Tokens:Issuer"],
-                claims, expires: DateTime.Now.AddHours(3), signingCredentials: creds);
-            return new Successed<string>(new JwtSecurityTokenHandler().WriteToken(token));
+                var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Tokens:Key"]));
+                var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+                var token = new JwtSecurityToken(
+                    _configuration["Tokens:Issuer"], _configuration["Tokens:Issuer"],
+                    claims, expires: DateTime.Now.AddHours(3), signingCredentials: creds);
+                return new Successed<string>(new JwtSecurityTokenHandler().WriteToken(token));
+            }
         }
         #endregion
 

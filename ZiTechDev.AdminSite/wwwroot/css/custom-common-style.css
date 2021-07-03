@@ -10,10 +10,31 @@
     border-radius: 50%;
 }
 
+.avatar-sm {
+    vertical-align: middle;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+}
+
 .avatar-md {
     vertical-align: middle;
     width: 250px;
     height: 250px;
+    border-radius: 50%;
+}
+
+.logo {
+    vertical-align: middle;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+}
+
+.logo-md {
+    vertical-align: middle;
+    width: 70px;
+    height: 70px;
     border-radius: 50%;
 }
 

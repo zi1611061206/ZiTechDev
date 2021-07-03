@@ -68,5 +68,15 @@ namespace ZiTechDev.CommonModel.Engines.Email
             Body = Body.Replace("PLACEHOLDER-LINK-CONFIRM", changeEmailUrl);
             Content = Header + Body + Footer;
         }
+
+        public void Authenticate2FA(string userName, string code)
+        {
+            Subject = "[ZITECHDEV] Xác thực 2 bước";
+            Header = Header.Replace("PLACEHOLDER-TITLE", "XÁC THỰC 2 BƯỚC");
+            Header = Header.Replace("PLACEHOLDER-DEAR", $"Chào {userName}." +
+                $" Mã xác thực của bạn là: <br/>" +
+                $"<h1>{code}</h1>");
+            Content = Header + Footer;
+        }
     }
 }

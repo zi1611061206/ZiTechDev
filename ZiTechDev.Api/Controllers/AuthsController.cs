@@ -38,10 +38,28 @@ namespace ZiTechDev.Api.Controllers
         }
         #endregion
 
+        #region Api/Auths/Validate-UserName
+        [HttpPost("validate-username")]
+        [AllowAnonymous]
+        public async Task<IActionResult> ValidateUserName([FromBody] LoginUserNameRequest request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var result = await _authService.ValidateUserName(request);
+            if (!result.IsSuccessed)
+            {
+                return BadRequest(result.Message);
+            }
+            return Ok(result.ReturnedObject);
+        }
+        #endregion
+
         #region Api/Auths/Validate-Login?resetPasswordBaseUrl={resetPasswordBaseUrl}
         [HttpPost("validate-login")]
         [AllowAnonymous]
-        public async Task<IActionResult> Login([FromQuery] string resetPasswordBaseUrl, [FromBody] LoginRequest request)
+        public async Task<IActionResult> ValidateLogin([FromQuery] string resetPasswordBaseUrl, [FromBody] LoginRequest request)
         {
             if (!ModelState.IsValid)
             {
@@ -66,6 +84,20 @@ namespace ZiTechDev.Api.Controllers
                 return BadRequest(ModelState);
             }
             var result = await _authService.Login(request);
+            if (!result.IsSuccessed)
+            {
+                return BadRequest(result.Message);
+            }
+            return Ok(result.ReturnedObject);
+        }
+        #endregion
+
+        #region Api/Auths/Send-To-Authenticator?userName={userName}&provider={provider}
+        [HttpGet("send-to-authenticator")]
+        [AllowAnonymous]
+        public async Task<IActionResult> SendToAuthenticator([FromQuery] string userName, string provider)
+        {
+            var result = await _authService.SendToAuthenticator(userName, provider);
             if (!result.IsSuccessed)
             {
                 return BadRequest(result.Message);

@@ -7,9 +7,19 @@ using ZiTechDev.CommonModel.Requests.CommonItems;
 
 namespace ZiTechDev.CommonModel.Requests.Auth
 {
-    public class Authenticate2FARequest : LoginRequest
+    public class Authenticate2FARequest
     {
+        public string UserName { get; set; }
+        public bool RememberMe { get; set; }
+        public string Provider { get; set; }
+
         [Display(Name = "Mã xác thực")]
         public string PinCode { get; set; }
+
+        [Display(Name = "Ghi nhớ tôi")]
+        public bool IsPersistent { get; set; } = false;
+
+        [Display(Name = "Ghi nhớ thiết bị này")]
+        public bool IsRememberClient { get; set; } = false;
     }
 }

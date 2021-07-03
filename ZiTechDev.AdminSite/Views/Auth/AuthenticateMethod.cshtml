@@ -1,0 +1,37 @@
+﻿@model ZiTechDev.CommonModel.Requests.Auth.LoginRequest
+@{
+    ViewData["Title"] = ViewBag.Title;
+    Layout = "~/Views/Shared/_AuthLayout.cshtml";
+}
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-5">
+            <div class="card shadow-lg border-0 rounded-lg mt-5">
+                <div class="card-header text-center">
+                    <img class="logo-md card-img img-thumbnail bg-dark shadow-lg" src="~/img/logo.jpg" />
+                    <h3 class="font-weight-light my-4">@ViewBag.Title</h3>
+                </div>
+                <div class="card-body">
+
+                    <button class="btn btn-outline-dark w-100 mb-1" onclick="location.href = '@Url.Action("Authenticate2FA", "Auth", new { userName = Model.UserName, rememberMe = Model.RememberMe, provider = "google" })'">
+                        <img src="~/img/google-authenticator-logo.png" class="logo"> Xác thực bằng Google Authenticator
+                    </button>
+                    <button class="btn btn-outline-dark w-100 mb-1" onclick="location.href = '@Url.Action("Authenticate2FA", "Auth", new { userName = Model.UserName, rememberMe = Model.RememberMe, provider = "microsoft" })'">
+                        <img src="~/img/microsoft-authenticator-logo.png" class="logo"> Xác thực bằng Microsoft Authenticator
+                    </button>
+                    <button class="btn btn-outline-dark w-100 mb-1" onclick="location.href = '@Url.Action("Authenticate2FA", "Auth", new { userName = Model.UserName, rememberMe = Model.RememberMe, provider = "email" })'">
+                        <img src="~/img/email-authenticator-logo.png" class="logo"> Xác thực bằng Email
+                    </button>
+                    <button class="btn btn-outline-dark w-100 mb-1" onclick="location.href = '@Url.Action("Authenticate2FA", "Auth", new { userName = Model.UserName, rememberMe = Model.RememberMe, provider = "sms" })'">
+                        <img src="~/img/sms-authenticator-logo.png" class="logo"> Xác thực bằng SMS
+                    </button>
+                    <button class="btn btn-outline-dark w-100 mb-1" onclick="location.href = '@Url.Action("Authenticate2FA", "Auth", new { userName = Model.UserName, rememberMe = Model.RememberMe, provider = "recovery" })'">
+                        <span class="text-danger">{####}</span> Xác thực bằng mã khôi phục
+                    </button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

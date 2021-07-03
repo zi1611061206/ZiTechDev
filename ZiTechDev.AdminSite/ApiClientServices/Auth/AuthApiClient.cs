@@ -35,6 +35,24 @@ namespace ZiTechDev.AdminSite.ApiClientServices.Auth
         }
         #endregion
 
+        #region ValidateUserName (Call API)
+        public async Task<ApiResult<bool>> ValidateUserName(LoginUserNameRequest request)
+        {
+            var client = _httpClientFactory.CreateClient("zitechdev");
+
+            var content = JsonConvert.SerializeObject(request);
+            var httpContent = new StringContent(content, Encoding.UTF8, "application/json");
+            var response = await client.PostAsync("api/auths/validate-username", httpContent);
+            var body = await response.Content.ReadAsStringAsync();
+            if (response.IsSuccessStatusCode)
+            {
+                bool result = bool.Parse(body);
+                return new Successed<bool>(result);
+            }
+            return new Failed<bool>(body);
+        }
+        #endregion
+
         #region ValidateLogin (Call API)
         public async Task<ApiResult<bool>> ValidateLogin(string resetPasswordBaseUrl, LoginRequest request)
         {
@@ -67,6 +85,21 @@ namespace ZiTechDev.AdminSite.ApiClientServices.Auth
                 return new Successed<string>(body);
             }
             return new Failed<string>(body);
+        }
+        #endregion
+
+        #region SendToAuthenticator (Call API)
+        public async Task<ApiResult<bool>> SendToAuthenticator(string userName, string provider)
+        {
+            var client = _httpClientFactory.CreateClient("zitechdev");
+
+            var response = await client.GetAsync($"api/auths/send-to-authenticator?userName={userName}&provider={provider}");
+            var body = await response.Content.ReadAsStringAsync();
+            if (response.IsSuccessStatusCode)
+            {
+                return new Successed<bool>(true);
+            }
+            return new Failed<bool>(body);
         }
         #endregion
 
