@@ -200,13 +200,14 @@ namespace ZiTechDev.Api.Services.Auth
                 case "microsoft":
                     return new Successed<bool>(true);
                 case "sms":
+                    var smsCode = await _userManager.GenerateTwoFactorTokenAsync(user, TokenOptions.DefaultPhoneProvider);
                     return new Successed<bool>(true);
                 case "recovery":
                     return new Successed<bool>(true);
                 case "email":
-                    var code = await _userManager.GenerateTwoFactorTokenAsync(user, provider);
+                    var emailCode = await _userManager.GenerateTwoFactorTokenAsync(user, TokenOptions.DefaultEmailProvider);
                     var template = new EmailTemplate(_webHostEnvironment.WebRootPath);
-                    template.Authenticate2FA(userName, code);
+                    template.Authenticate2FA(userName, emailCode);
                     var email = new EmailItem();
                     email.Senders.Add(new EmailBase(_configuration.GetValue<string>("EmailSender:Name"), _configuration.GetValue<string>("EmailSender:Address")));
                     email.Receivers.Add(new EmailBase(user.UserName, user.Email));
@@ -233,31 +234,36 @@ namespace ZiTechDev.Api.Services.Auth
             }
 
             bool isValid;
+            TwoFactorAuthenticator twoFactorAuthenticator = new TwoFactorAuthenticator();
             switch (request.Provider.ToLower())
             {
                 case "google":
-                    TwoFactorAuthenticator twoFactorAuthenticator = new TwoFactorAuthenticator();
                     isValid = twoFactorAuthenticator.ValidateTwoFactorPIN(
                         $"{_configuration.GetValue<string>("Token:Key")}+{user.UserName}",
                         request.PinCode);
                     break;
                 case "microsoft":
-                    return new Failed<string>("Phương thức xác thực không khả dụng");
+                    isValid = twoFactorAuthenticator.ValidateTwoFactorPIN(
+                        $"{_configuration.GetValue<string>("Token:Key")}+{user.UserName}",
+                        request.PinCode);
+                    break;
                 case "sms":
-                    return new Failed<string>("Phương thức xác thực không khả dụng");
+                    var resultSmsAuth = await _signInManager.TwoFactorSignInAsync(TokenOptions.DefaultPhoneProvider, request.PinCode, request.IsPersistent, request.IsRememberClient);
+                    isValid = resultSmsAuth.Succeeded;
+                    break;
                 case "recovery":
                     var resultRecoveryAuth = await _signInManager.TwoFactorRecoveryCodeSignInAsync(request.PinCode);
                     isValid = resultRecoveryAuth.Succeeded;
                     break;
                 case "email":
-                    var resultEmailAuth = await _signInManager.TwoFactorSignInAsync(request.Provider, request.PinCode, request.IsPersistent, request.IsRememberClient);
+                    var resultEmailAuth = await _signInManager.TwoFactorSignInAsync(TokenOptions.DefaultEmailProvider, request.PinCode, request.IsPersistent, request.IsRememberClient);
                     isValid = resultEmailAuth.Succeeded;
                     break;
                 default:
                     return new Failed<string>("Phương thức xác thực không hợp lệ");
             }
 
-            if (isValid)
+            if (!isValid)
             {
                 return new Failed<string>("Mã xác thực không hợp lệ");
             }

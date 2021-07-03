@@ -61,36 +61,11 @@ namespace ZiTechDev.AdminSite.Controllers
         }
         #endregion
 
-        #region Auth/Login || LoginUserName
+        #region Auth/Login
         [HttpGet]
         public IActionResult Login()
         {
-            ViewBag.Title = "Đăng nhập";
-            return View("LoginUserName");
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> LoginUserName(LoginUserNameRequest request)
-        {
-            // Kiểm tra tính hợp lệ của các trường thông tin đầu vào dựa trên Custom Validator / Identity Validator
-            if (!ModelState.IsValid)
-            {
-                ViewBag.Title = "Đăng nhập";
-                return View(request);
-            }
-            var checker = await _authApiClient.ValidateUserName(request);
-            if (!checker.IsSuccessed)
-            {
-                ModelState.AddModelError(string.Empty, checker.Message);
-                ViewBag.Title = "Đăng nhập";
-                return View(request);
-            }
-            var model = new LoginRequest()
-            {
-                UserName = request.UserName
-            };
-            ViewBag.Title = "Đăng nhập";
-            return View("Login", model);
+            return RedirectToAction("LoginUserName", new { userName = "" });
         }
 
         [HttpPost]
@@ -113,8 +88,7 @@ namespace ZiTechDev.AdminSite.Controllers
             var twoFactorsEnabled = checker.ReturnedObject;
             if (twoFactorsEnabled)
             {
-                ViewBag.Title = "Phương thức xác thực";
-                return View("AuthenticateMethod", request);
+                return RedirectToAction("AuthenticateMethod", "Auth", new { userName = request.UserName, rememberMe = request.RememberMe });
             }
             else
             {
@@ -159,9 +133,73 @@ namespace ZiTechDev.AdminSite.Controllers
         }
         #endregion
 
-        #region Auth/Authenticate2FA
+        #region Auth/LoginUserName?userName={userName}
         [HttpGet]
-        public async Task<IActionResult> Authenticate2FA(string userName, bool rememberMe, string provider)
+        public IActionResult LoginUserName(string userName)
+        {
+            var model = new LoginUserNameRequest();
+            if (!string.IsNullOrEmpty(userName))
+            {
+                model.UserName = userName;
+            }
+            ViewBag.Title = "Đăng nhập";
+            return View("LoginUserName", model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> LoginUserName(LoginUserNameRequest request)
+        {
+            // Kiểm tra tính hợp lệ của các trường thông tin đầu vào dựa trên Custom Validator / Identity Validator
+            if (!ModelState.IsValid)
+            {
+                ViewBag.Title = "Đăng nhập";
+                return View(request);
+            }
+            var checker = await _authApiClient.ValidateUserName(request);
+            if (!checker.IsSuccessed)
+            {
+                ModelState.AddModelError(string.Empty, checker.Message);
+                ViewBag.Title = "Đăng nhập";
+                return View(request);
+            }
+            var model = new LoginRequest()
+            {
+                UserName = request.UserName
+            };
+            ViewBag.Title = "Đăng nhập";
+            return View("Login", model);
+        }
+        #endregion
+
+        #region Auth/AuthenticateMethod?userName={userName}&rememberMe={rememberMe}
+        [HttpGet]
+        public IActionResult AuthenticateMethod(string userName, bool rememberMe)
+        {
+            var model = new Authenticate2FARequest()
+            {
+                UserName = userName,
+                RememberMe = rememberMe
+            };
+            ViewBag.Title = "Phương thức xác thực";
+            return View("AuthenticateMethod", model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AuthenticateMethod(Authenticate2FARequest request)
+        {
+            var result = await _authApiClient.SendToAuthenticator(request.UserName, request.Provider);
+            if (result.IsSuccessed)
+            {
+                return RedirectToAction("Authenticate2FA", new { userName = request.UserName, rememberMe = request.RememberMe, provider = request.Provider });
+            }
+            ModelState.AddModelError("", result.Message);
+            return View(request);
+        }
+        #endregion
+
+        #region Auth/Authenticate2FA?userName={userName}&rememberMe={rememberMe}&provider={provider}
+        [HttpGet]
+        public IActionResult Authenticate2FA(string userName, bool rememberMe, string provider)
         {
             var model = new Authenticate2FARequest()
             {
@@ -169,22 +207,8 @@ namespace ZiTechDev.AdminSite.Controllers
                 RememberMe = rememberMe,
                 Provider = provider
             };
-            var result = await _authApiClient.SendToAuthenticator(userName, provider);
-            if (result.IsSuccessed)
-            {
-                ViewBag.Title = "Xác thực bước 2";
-                return View(model);
-            }
-            else
-            {
-                var request = new LoginRequest()
-                {
-                    UserName = userName,
-                    RememberMe = rememberMe
-                };
-                ViewBag.Title = "Phương thức xác thực";
-                return View("AuthenticateMethod", request);
-            }
+            ViewBag.Title = "Xác thực bước 2";
+            return View(model);
         }
 
         [HttpPost]

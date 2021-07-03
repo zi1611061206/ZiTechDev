@@ -15,6 +15,7 @@
                 <div class="card-body">
 
                     <form asp-controller="Auth" asp-action="Authenticate2FA" method="post">
+
                         <div class="form-group text-center">
                             <div class="summary-error bg-danger text-white" asp-validation-summary="ModelOnly"></div>
                         </div>
@@ -31,15 +32,47 @@
                             <input asp-for="Provider" type="text" class="form-control" />
                         </div>
 
+                        <div class="card-body border bg-light rounded mb-2">
+                            @{
+                                switch (Model.Provider)
+                                {
+                                    case "google":
+                                        <p>Mở ứng dụng Google Authenticator trên điện thoại của bạn và sử dụng mã được cung cấp cho tài khoản của bạn. <a href="#" class="font-weight-bold">Tìm hiểu thêm</a></p>
+                                        break;
+                                    case "microsoft":
+                                        <p>Mở ứng dụng Microsoft Authenticator trên điện thoại của bạn và sử dụng mã được cung cấp cho tài khoản của bạn. <a href="#" class="font-weight-bold">Tìm hiểu thêm</a></p>
+                                        break;
+                                    case "email":
+                                        <p class="d-block">Kiểm tra hộp thư điện tử bạn dùng để đăng ký với chúng tôi để nhận mã xác minh. <a href="#" class="font-weight-bold">Tìm hiểu thêm</a></p>
+                                        <a class="small" href="@Url.Action("Authenticate2FA", "Auth", new { userName = Model.UserName, rememberMe = Model.RememberMe, provider = "email" })">Gửi lại mã</a>
+                                        break;
+                                    case "sms":
+                                        <p class="d-block">Mã xác minh được gửi bằng tin nhắn đến điện thoại của bạn. <a href="#" class="font-weight-bold">Tìm hiểu thêm</a></p>
+                                        <a class="small" href="@Url.Action("Authenticate2FA", "Auth", new { userName = Model.UserName, rememberMe = Model.RememberMe, provider = "sms" })">Gửi lại mã</a>
+                                        break;
+                                    case "recovery":
+                                        <p>Trong trường hợp không có phương thức xác thực nào khả dụng với bạn trong thời điểm này, bạn có thể sử dụng các mã khôi phục từng được cung cấp để thay thế. <a href="#" class="font-weight-bold">Tìm hiểu thêm</a></p>
+                                        break;
+                                    default: break;
+                                }
+                            }
+                        </div>
+
                         <div class="form-group">
                             <label asp-for="PinCode" class="control-label"></label>
                             <span class="text-danger"> (*)</span>
                             <input asp-for="PinCode" class="form-control" />
                             <span asp-validation-for="PinCode" class="text-danger"></span>
                         </div>
+
                         <div class="form-group">
                             <input type="submit" value="Xác nhận" class="btn btn-primary w-100" />
                         </div>
+
+                        <div class="form-group d-flex align-items-center justify-content-between">
+                            <a class="small" href="@Url.ActionLink("AuthenticateMethod", "Auth", new { userName = Model.UserName, rememberMe = Model.RememberMe })">Thử cách khác</a>
+                        </div>
+
                     </form>
 
                 </div>
