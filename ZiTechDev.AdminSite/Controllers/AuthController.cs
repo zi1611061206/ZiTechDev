@@ -65,7 +65,7 @@ namespace ZiTechDev.AdminSite.Controllers
         [HttpGet]
         public IActionResult Login()
         {
-            return RedirectToAction("LoginUserName", new { userName = "" });
+            return RedirectToAction("LoginUserName", new { userNameOrEmail = "" });
         }
 
         [HttpPost]
@@ -88,7 +88,7 @@ namespace ZiTechDev.AdminSite.Controllers
             var twoFactorsEnabled = checker.ReturnedObject;
             if (twoFactorsEnabled)
             {
-                return RedirectToAction("AuthenticateMethod", "Auth", new { userName = request.UserName, rememberMe = request.RememberMe });
+                return RedirectToAction("GetAuthenticationMethod", "Auth", new { userNameOrEmail = request.UserNameOrEmail, rememberMe = request.RememberMe });
             }
             else
             {
@@ -133,14 +133,14 @@ namespace ZiTechDev.AdminSite.Controllers
         }
         #endregion
 
-        #region Auth/LoginUserName?userName={userName}
+        #region Auth/LoginUserName?userNameOrEmail={userNameOrEmail}
         [HttpGet]
-        public IActionResult LoginUserName(string userName)
+        public IActionResult LoginUserName(string userNameOrEmail)
         {
             var model = new LoginUserNameRequest();
-            if (!string.IsNullOrEmpty(userName))
+            if (!string.IsNullOrEmpty(userNameOrEmail))
             {
-                model.UserName = userName;
+                model.UserNameOrEmail = userNameOrEmail;
             }
             ViewBag.Title = "Đăng nhập";
             return View("LoginUserName", model);
@@ -162,48 +162,94 @@ namespace ZiTechDev.AdminSite.Controllers
                 ViewBag.Title = "Đăng nhập";
                 return View(request);
             }
-            var model = new LoginRequest()
+            else if (!checker.ReturnedObject) // Email chưa được kích hoạt
             {
-                UserName = request.UserName
-            };
-            ViewBag.Title = "Đăng nhập";
-            return View("Login", model);
+                return RedirectToAction("ActiveAccount", new { userNameOrEmail = request.UserNameOrEmail });
+            }
+            else
+            {
+                var model = new LoginRequest()
+                {
+                    UserNameOrEmail = request.UserNameOrEmail
+                };
+                ViewBag.Title = "Đăng nhập";
+                return View("Login", model);
+            }
         }
         #endregion
 
-        #region Auth/AuthenticateMethod?userName={userName}&rememberMe={rememberMe}
+        #region Auth/ActiveAccount?userNameOrEmail={userNameOrEmail}
         [HttpGet]
-        public IActionResult AuthenticateMethod(string userName, bool rememberMe)
+        public IActionResult ActiveAccount(string userNameOrEmail)
         {
-            var model = new Authenticate2FARequest()
+            var model = new LoginUserNameRequest()
             {
-                UserName = userName,
-                RememberMe = rememberMe
+                UserNameOrEmail = userNameOrEmail
             };
-            ViewBag.Title = "Phương thức xác thực";
-            return View("AuthenticateMethod", model);
+
+            if (TempData["Success"] != null)
+            {
+                ViewBag.Success = TempData["Success"];
+            }
+            if (TempData["Fail"] != null)
+            {
+                ViewBag.Fail = TempData["Fail"];
+            }
+            ViewBag.UserNameOrEmail = userNameOrEmail;
+            ViewBag.Title = "Yêu cầu kích hoạt";
+            return View(model);
         }
 
         [HttpPost]
-        public async Task<IActionResult> AuthenticateMethod(Authenticate2FARequest request)
+        public async Task<IActionResult> ActiveAccount(LoginUserNameRequest request)
         {
-            var result = await _authApiClient.SendToAuthenticator(request.UserName, request.Provider);
+            var activatedEmailBaseUrl = Url.ActionLink("ActivatedEmail", "Auth", Request.Scheme).Split("?")[0];
+            var result = await _authApiClient.ActiveAccount(activatedEmailBaseUrl, request.UserNameOrEmail);
+            if (!result.IsSuccessed)
+            {
+                TempData["Fail"] = result.Message;
+            }
+            else
+            {
+                TempData["Success"] = "Vui lòng kiểm tra hộp thư của bạn!";
+            }
+            return RedirectToAction("ActiveAccount", new { request.UserNameOrEmail });
+        }
+        #endregion
+
+        #region Auth/GetAuthenticationMethod?userNameOrEmail={userNameOrEmail}&rememberMe={rememberMe}
+        [HttpGet]
+        public IActionResult GetAuthenticationMethod(string userNameOrEmail, bool rememberMe)
+        {
+            var model = new Authenticate2FARequest()
+            {
+                UserNameOrEmail = userNameOrEmail,
+                RememberMe = rememberMe
+            };
+            ViewBag.Title = "Phương thức xác thực";
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> GetAuthenticationMethod(Authenticate2FARequest request)
+        {
+            var result = await _authApiClient.GetAuthenticationMethod(request.UserNameOrEmail, request.Provider);
             if (result.IsSuccessed)
             {
-                return RedirectToAction("Authenticate2FA", new { userName = request.UserName, rememberMe = request.RememberMe, provider = request.Provider });
+                return RedirectToAction("Authenticate2FA", new { userNameOrEmail = request.UserNameOrEmail, rememberMe = request.RememberMe, provider = request.Provider });
             }
-            ModelState.AddModelError("", result.Message);
+            ModelState.AddModelError(string.Empty, result.Message);
             return View(request);
         }
         #endregion
 
-        #region Auth/Authenticate2FA?userName={userName}&rememberMe={rememberMe}&provider={provider}
+        #region Auth/Authenticate2FA?userNameOrEmail={userNameOrEmail}&rememberMe={rememberMe}&provider={provider}
         [HttpGet]
-        public IActionResult Authenticate2FA(string userName, bool rememberMe, string provider)
+        public IActionResult Authenticate2FA(string userNameOrEmail, bool rememberMe, string provider)
         {
             var model = new Authenticate2FARequest()
             {
-                UserName = userName,
+                UserNameOrEmail = userNameOrEmail,
                 RememberMe = rememberMe,
                 Provider = provider
             };
@@ -245,38 +291,63 @@ namespace ZiTechDev.AdminSite.Controllers
         }
         #endregion
 
-        #region Auth/ForgotPassword
+        #region Auth/GetForgotPasswordMethod?userNameOrEmail={userNameOrEmail}
         [HttpGet]
-        public async Task<IActionResult> ForgotPassword()
+        public IActionResult GetForgotPasswordMethod(string userNameOrEmail)
         {
-            HttpContext.Session.Remove("Token");
-            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            ViewBag.Title = "Quên mật khẩu";
-            return View();
+            var model = new AuthenticateForgotPasswordRequest()
+            {
+                UserNameOrEmail = userNameOrEmail
+            };
+            ViewBag.Title = "Phương thức xác thực";
+            return View(model);
         }
 
         [HttpPost]
-        public async Task<IActionResult> ForgotPassword(ForgotPasswordRequest request)
+        public async Task<IActionResult> GetForgotPasswordMethod(AuthenticateForgotPasswordRequest request)
+        {
+            var result = await _authApiClient.GetAuthenticationMethod(request.UserNameOrEmail, request.Provider);
+            if (result.IsSuccessed)
+            {
+                return RedirectToAction("AuthenticateForgotPassword", new { userNameOrEmail = request.UserNameOrEmail, provider = request.Provider });
+            }
+            ModelState.AddModelError(string.Empty, result.Message);
+            return View(request);
+        }
+        #endregion
+
+        #region Auth/AuthenticateForgotPassword?userNameOrEmail={userNameOrEmail}&provider={provider}
+        [HttpGet]
+        public IActionResult AuthenticateForgotPassword(string userNameOrEmail, string provider)
+        {
+            var model = new AuthenticateForgotPasswordRequest()
+            {
+                UserNameOrEmail = userNameOrEmail,
+                Provider = provider
+            };
+            ViewBag.Title = "Xác thực danh tính";
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AuthenticateForgotPassword(AuthenticateForgotPasswordRequest request)
         {
             if (!ModelState.IsValid)
             {
-                ViewBag.Title = "Quên mật khẩu";
+                ViewBag.Title = "Xác thực danh tính";
                 return View(request);
             }
-
-            var resetPasswordBaseUrl = Url.ActionLink("ResetPassword", "Auth", Request.Scheme).Split("?")[0];
-            var result = await _authApiClient.ForgotPassword(resetPasswordBaseUrl, request);
-            if (!result.IsSuccessed)
+            var result = await _authApiClient.AuthenticateForgotPassword(request);
+            if (result.IsSuccessed)
             {
-                ModelState.AddModelError(string.Empty, result.Message);
+                return RedirectToAction("ResetPassword", "Auth", new { userNameOrEmail = request.UserNameOrEmail, token = result.ReturnedObject });
             }
             else
             {
-                ViewBag.Success = "Một yêu cầu xác minh danh tính đã được gửi đến " + request.Email;
+                ModelState.AddModelError(string.Empty, result.Message);
+                ViewBag.Title = "Xác thực danh tính";
+                return View(request);
             }
-
-            ViewBag.Title = "Quên mật khẩu";
-            return View(request);
         }
         #endregion
 
@@ -294,13 +365,13 @@ namespace ZiTechDev.AdminSite.Controllers
         }
         #endregion
 
-        #region Auth/ResetPassword?userId={userId}&token={token}
+        #region Auth/ResetPassword?userNameOrEmail={userNameOrEmail}&token={token}
         [HttpGet]
-        public IActionResult ResetPassword(string userId, string token)
+        public IActionResult ResetPassword(string userNameOrEmail, string token)
         {
             var model = new ResetPasswordRequest()
             {
-                Id = Guid.Parse(userId),
+                UserNameOrEmail = userNameOrEmail,
                 Token = token
             };
             ViewBag.Title = "Đổi mật khẩu";
@@ -355,14 +426,14 @@ namespace ZiTechDev.AdminSite.Controllers
         }
         #endregion
 
-        #region Auth/ActivatedEmail?userId={userId}&token={token}
+        #region Auth/ActivatedEmail?userNameOrEmail={userNameOrEmail}&token={token}
         [HttpGet]
-        public async Task<IActionResult> ActivatedEmail(string userId, string token)
+        public async Task<IActionResult> ActivatedEmail(string userNameOrEmail, string token)
         {
-            var result = await _authApiClient.ActivatedEmail(Guid.Parse(userId), token);
+            var result = await _authApiClient.ActivatedEmail(userNameOrEmail, token);
             if (result.IsSuccessed)
             {
-                return RedirectToAction("ResetPassword", "Auth", new { userId, token = result.ReturnedObject });
+                return RedirectToAction("ResetPassword", "Auth", new { userNameOrEmail, token = result.ReturnedObject });
             }
             ViewBag.Error = result.Message;
             return View("FailedConfirm");

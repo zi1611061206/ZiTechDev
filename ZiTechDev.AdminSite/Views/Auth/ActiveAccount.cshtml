@@ -1,0 +1,93 @@
+﻿@model ZiTechDev.CommonModel.Requests.Auth.LoginUserNameRequest
+@{
+    ViewData["Title"] = ViewBag.Title;
+    Layout = "~/Views/Shared/_AuthLayout.cshtml";
+    var userNameOrEmail = ViewBag.UserNameOrEmail;
+}
+
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-lg-5">
+            <div class="card shadow-lg border-0 rounded-lg mt-5">
+                <div class="card-header text-center">
+                    <img class="logo-md card-img img-thumbnail bg-dark shadow-lg" src="~/img/logo.jpg" />
+                    <h3 class="font-weight-light my-4">@ViewBag.Title</h3>
+                </div>
+                <div class="card-body">
+
+                    <form asp-controller="Auth" asp-action="ActiveAccount" method="post">
+
+                        <div class="form-group text-center">
+                            <div class="summary-error bg-danger text-white" asp-validation-summary="ModelOnly"></div>
+                        </div>
+
+                        <div class="form-group text-center">
+                            <a class="btn btn-sm px-5 btn-outline-dark" href="@Url.ActionLink("LoginUserName", "Auth", new { userNameOrEmail = Model.UserNameOrEmail })" role="button">
+                                <img class="avatar-sm" src="~/img/logo.jpg" />
+                                @Model.UserNameOrEmail
+                                <input class="form-control py-4" type="text" asp-for="UserNameOrEmail" readonly hidden />
+                            </a>
+                            <span asp-validation-for="UserNameOrEmail" class="text-danger"></span>
+                        </div>
+
+                        <p class="p-2 text-center">
+                            Tài khoản của bạn chưa được kích hoạt, vì vậy chúng tôi không thể xác minh danh tính của bạn.
+                            Hay kiểm tra hộp thư bạn để nhận email kích hoạt. Nếu bạn không tìm thấy email nào từ chúng tôi
+                            hoặc bạn đã bỏ quên nó quá lâu, hãy xem xét các lựa chọn dưới đây.
+                        </p>
+
+                        @if (ViewBag.Success != null)
+                        {
+                            <div class="alert alert-success text-center" role="alert">
+                                @ViewBag.Success
+                            </div>
+                        }
+                        @if (ViewBag.Fail != null)
+                        {
+                            <div class="alert alert-danger text-center" role="alert">
+                                @ViewBag.Fail
+                            </div>
+                        }
+
+                        <div class="row m-1">
+
+                            <div class="col-6 p-1">
+                                <div class="card h-100 shadow">
+                                    <div class="d-flex justify-content-center">
+                                        <p class="card-header w-100 text-center font-weight-bold">Xác minh ngay</p>
+                                    </div>
+                                    <button type="submit" class="card-body text-center border-0 bg-white">
+                                        @if (ViewBag.Success != null)
+                                        {
+                                            <p class="card-text">Tôi đã kiểm tra hộp thư đến và spam nhưng vẫn chưa nhận được thư. Gửi lại cho tôi.</p>
+                                        }
+                                        else
+                                        {
+                                            <p class="card-text">Gửi liên kết xác minh danh tính đến email đăng ký của tôi.</p>
+                                        }
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="col-6 p-1" onclick="location.href='@Url.Action("Register", "Auth")'">
+                                <div class="card h-100 shadow">
+                                    <div class="d-flex justify-content-center">
+                                        <p class="card-header w-100 text-center font-weight-bold">Đăng ký mới</p>
+                                    </div>
+                                    <button type="button" class="card-body text-center border-0 bg-white">
+                                        <p class="card-text">Chúng tôi rất tiếc! Có lẽ phải tạo một tài khoản mới thôi.</p>
+                                        <p class="card-text">- ZiTeam -</p>
+                                    </button>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

@@ -26,19 +26,6 @@
             <h1 class="card-header text-center text-uppercase">@ViewBag.Title</h1>
             <div class="card-body justify-content-center ">
 
-                <div class="input-group mb-3 row">
-                    @{
-                        var id = Model.Id.ToString();
-                        var head = id.Substring(0, 5);
-                        var foot = id.Substring(id.Length - 5);
-                        id = head + "**********************" + foot;
-                    }
-                    <div class="input-group-prepend col-md-3 pr-0">
-                        <span class="input-group-text w-100 font-weight-bold bg-dark text-white">@Html.DisplayNameFor(model => model.Id)</span>
-                    </div>
-                    <input type="text" class="form-control col-md-9 text-right" readonly value="@id" />
-                </div>
-
                 @if (ViewBag.Success != null)
                 {
                     <div class="alert alert-success text-center" role="alert">
@@ -51,6 +38,19 @@
                         @ViewBag.Fail
                     </div>
                 }
+
+                <div class="input-group mb-3 row">
+                    @{
+                        var id = Model.Id.ToString();
+                        var head = id.Substring(0, 5);
+                        var foot = id.Substring(id.Length - 5);
+                        id = head + "**********************" + foot;
+                    }
+                    <div class="input-group-prepend col-md-3 pr-0">
+                        <span class="input-group-text w-100 font-weight-bold bg-dark text-white">@Html.DisplayNameFor(model => model.Id)</span>
+                    </div>
+                    <input type="text" class="form-control col-md-9 text-right" readonly value="@id" />
+                </div>
 
                 <div class="input-group mb-3 row">
                     @{ var fullName = Model.FirstName + " " + Model.MiddleName + " " + Model.LastName; }

@@ -7,8 +7,9 @@ namespace ZiTechDev.CommonModel.Requests.Auth
 {
     public class ResetPasswordRequest
     {
-        [Display(Name = "Mã")]
-        public Guid Id { get; set; }
+        [Display(Name = "Tên đăng nhập hoặc email")]
+        public string UserNameOrEmail { get; set; }
+
         [Display(Name = "Mã thông báo bảo mật")]
         public string Token { get; set; }
 

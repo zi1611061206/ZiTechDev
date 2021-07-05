@@ -8,7 +8,7 @@ namespace ZiTechDev.CommonModel.Validations.Auth
         public LoginValidator()
         {
             CascadeMode = CascadeMode.Stop;
-            RuleFor(x => x.UserName)
+            RuleFor(x => x.UserNameOrEmail)
                 .NotEmpty().WithMessage("Tên đăng nhập là bắt buộc");
             RuleFor(x => x.Password)
                 .NotEmpty().WithMessage("Mật khẩu là bắt buộc");

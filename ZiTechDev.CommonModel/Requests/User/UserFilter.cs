@@ -28,7 +28,6 @@ namespace ZiTechDev.CommonModel.Requests.User
         public string PhoneNumber { get; set; } = null;
 
         [Display(Name = "Email")]
-        [DataType(DataType.EmailAddress)]
         public string Email { get; set; } = null;
 
         [Display(Name = "Ngày sinh")]

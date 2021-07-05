@@ -29,7 +29,7 @@ namespace ZiTechDev.Api.Controllers
             {
                 return BadRequest(ModelState);
             }
-            var result = await _authService.Register(activatedEmailBaseUrl,request);
+            var result = await _authService.Register(WebUtility.UrlDecode(activatedEmailBaseUrl),request);
             if (!result.IsSuccessed)
             {
                 return BadRequest(result.Message);
@@ -92,12 +92,26 @@ namespace ZiTechDev.Api.Controllers
         }
         #endregion
 
-        #region Api/Auths/Send-To-Authenticator?userName={userName}&provider={provider}
-        [HttpGet("send-to-authenticator")]
+        #region Api/Auths/Active-Account?activatedEmailBaseUrl={activatedEmailBaseUrl}&userNameOrEmail={userNameOrEmail}
+        [HttpGet("active-account")]
         [AllowAnonymous]
-        public async Task<IActionResult> SendToAuthenticator([FromQuery] string userName, string provider)
+        public async Task<IActionResult> ActiveAccount([FromQuery] string activatedEmailBaseUrl, [FromQuery] string userNameOrEmail)
         {
-            var result = await _authService.SendToAuthenticator(userName, provider);
+            var result = await _authService.ActiveAccount(WebUtility.UrlDecode(activatedEmailBaseUrl), userNameOrEmail);
+            if (!result.IsSuccessed)
+            {
+                return BadRequest(result.Message);
+            }
+            return Ok(result.ReturnedObject);
+        }
+        #endregion
+
+        #region Api/Auths/Get-Authentication-Method?userNameOrEmail={userNameOrEmail}&provider={provider}
+        [HttpGet("get-authentication-method")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetAuthenticationMethod([FromQuery] string userNameOrEmail, string provider)
+        {
+            var result = await _authService.GetAuthenticationMethod(userNameOrEmail, provider);
             if (!result.IsSuccessed)
             {
                 return BadRequest(result.Message);
@@ -124,16 +138,16 @@ namespace ZiTechDev.Api.Controllers
         }
         #endregion
 
-        #region Api/Auths/Forgot-Password?resetPasswordBaseUrl={resetPasswordBaseUrl}
-        [HttpPost("forgot-password")]
+        #region Api/Auths/Authenticate-Forgot-Password
+        [HttpPost("authenticate-forgot-password")]
         [AllowAnonymous]
-        public async Task<IActionResult> ForgotPassword([FromQuery] string resetPasswordBaseUrl, [FromBody] ForgotPasswordRequest request)
+        public async Task<IActionResult> AuthenticateForgotPassword([FromBody] AuthenticateForgotPasswordRequest request)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            var result = await _authService.ForgotPassword(resetPasswordBaseUrl, request);
+            var result = await _authService.AuthenticateForgotPassword(request);
             if (!result.IsSuccessed)
             {
                 return BadRequest(result.Message);
@@ -202,12 +216,12 @@ namespace ZiTechDev.Api.Controllers
         }
         #endregion
 
-        #region Api/Auths/Activated-Email?userId={userId}&token={token}
+        #region Api/Auths/Activated-Email?userNameOrEmail={userNameOrEmail}&token={token}
         [HttpGet("activated-email")]
         [AllowAnonymous]
-        public async Task<IActionResult> ActivatedEmail([FromQuery] string userId, [FromQuery] string token)
+        public async Task<IActionResult> ActivatedEmail([FromQuery] string userNameOrEmail, [FromQuery] string token)
         {
-            var result = await _authService.ActivatedEmail(Guid.Parse(userId), token);
+            var result = await _authService.ActivatedEmail(userNameOrEmail, token);
             if (!result.IsSuccessed)
             {
                 return BadRequest(result.Message);

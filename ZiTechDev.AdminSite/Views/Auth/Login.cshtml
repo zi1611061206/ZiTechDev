@@ -22,12 +22,12 @@
                         </div>
 
                         <div class="form-group text-center">
-                            <a class="btn btn-sm px-5 btn-outline-dark" href="@Url.ActionLink("LoginUserName", "Auth", new { userName = Model.UserName })" role="button">
+                            <a class="btn btn-sm px-5 btn-outline-dark" href="@Url.ActionLink("LoginUserName", "Auth", new { userNameOrEmail = Model.UserNameOrEmail })" role="button">
                                 <img class="avatar-sm" src="~/img/logo.jpg" />
-                                @Model.UserName
-                                <input class="form-control py-4" type="text" asp-for="UserName" readonly hidden />
+                                @Model.UserNameOrEmail
+                                <input class="form-control py-4" type="text" asp-for="UserNameOrEmail" readonly hidden />
                             </a>
-                            <span asp-validation-for="UserName" class="text-danger"></span>
+                            <span asp-validation-for="UserNameOrEmail" class="text-danger"></span>
                         </div>
 
                         <div class="form-group">
@@ -49,7 +49,7 @@
                         <div class="form-group">
                             <div class="custom-control custom-checkbox">
                                 <input class="custom-control-input" asp-for="RememberMe" type="checkbox" />
-                                <label class="custom-control-label" asp-for="RememberMe">Ghi nhớ tôi</label>
+                                <label class="custom-control-label" asp-for="RememberMe"></label>
                                 <span asp-validation-for="RememberMe" class="text-danger"></span>
                             </div>
                         </div>
@@ -59,7 +59,7 @@
                         </div>
 
                         <div class="form-group d-flex justify-content-center mt-4 mb-0">
-                            <a class="small" href="/Auth/ForgotPassword">Quên mật khẩu?</a>
+                            <a class="small" href="@Url.ActionLink("GetForgotPasswordMethod", "Auth", new { userNameOrEmail = Model.UserNameOrEmail })">Quên mật khẩu?</a>
                         </div>
 
                     </form>

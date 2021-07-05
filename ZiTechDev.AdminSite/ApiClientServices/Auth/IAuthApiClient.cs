@@ -27,7 +27,7 @@ namespace ZiTechDev.AdminSite.ApiClientServices.Auth
         /// <param name="request"></param>
         /// <returns>
         /// Trả về thông báo lỗi (Message) nếu không thành công,
-        /// Trả về true (ReturnedObject) nếu thành công
+        /// Trả về EmailConfirmed (ReturnedObject) nếu thành công
         /// </returns>
         Task<ApiResult<bool>> ValidateUserName(LoginUserNameRequest request);
 
@@ -56,20 +56,33 @@ namespace ZiTechDev.AdminSite.ApiClientServices.Auth
         Task<ApiResult<string>> Login(LoginRequest request);
 
         /// <summary>
-        /// Gọi tới API xử lý gửi mã xác thực
+        /// Gọi tới API xử lý gửi email kích hoạt tài khoản
         /// </summary>
         /// <typeparam name="string"></typeparam>
-        /// <param name="userName"></param>
+        /// <param name="activatedEmailBaseUrl"></param>
+        /// <typeparam name="string"></typeparam>
+        /// <param name="userNameOrEmail"></param>
+        /// <returns>
+        /// Trả về thông báo lỗi (Message) nếu không thành công,
+        /// Trả về true (ReturnedObject) nếu thành công
+        /// </returns>
+        Task<ApiResult<bool>> ActiveAccount(string activatedEmailBaseUrl, string userNameOrEmail);
+
+        /// <summary>
+        /// Gọi tới API xử lý gửi mã xác thực danh tính theo phương thức xác thực được chọn
+        /// </summary>
+        /// <typeparam name="string"></typeparam>
+        /// <param name="userNameOrEmail"></param>
         /// <typeparam name="string"></typeparam>
         /// <param name="provider"></param>
         /// <returns>
         /// Trả về thông báo lỗi (Message) nếu không thành công,
         /// Trả về true (ReturnedObject) nếu thành công
         /// </returns>
-        Task<ApiResult<bool>> SendToAuthenticator(string userName, string provider);
+        Task<ApiResult<bool>> GetAuthenticationMethod(string userNameOrEmail, string provider);
 
         /// <summary>
-        /// Gọi tới API đăng nhập cho tài khoản đã bật xác thực 2 bước
+        /// Gọi tới API đối chiếu mã xác thực bước 2 trường hợp đăng nhập cho tài khoản bật 2FA
         /// </summary>
         /// <typeparam name="Authenticate2FARequest"></typeparam>
         /// <param name="request"></param>
@@ -80,17 +93,15 @@ namespace ZiTechDev.AdminSite.ApiClientServices.Auth
         Task<ApiResult<string>> Authenticate2FA(Authenticate2FARequest request);
 
         /// <summary>
-        /// Gọi tới API quên mật khẩu (gửi email xác nhận đặt lại mật khẩu)
+        /// Gọi tới API đối chiếu mã xác thực danh tính trường hợp quên mật khẩu
         /// </summary>
-        /// <typeparam name="string"></typeparam>
-        /// <param name="resetPasswordBaseUrl"></param>
-        /// <typeparam name="ForgotPasswordRequest"></typeparam>
+        /// <typeparam name="AuthenticateForgotPasswordRequest"></typeparam>
         /// <param name="request"></param>
         /// <returns>
         /// Trả về thông báo lỗi (Message) nếu không thành công,
-        /// Trả về true (ReturnedObject) nếu thành công
+        /// Trả về chuỗi token ResetPassword đã mã hóa (ReturnedObject) nếu thành công
         /// </returns>
-        Task<ApiResult<bool>> ForgotPassword(string resetPasswordBaseUrl, ForgotPasswordRequest request);
+        Task<ApiResult<string>> AuthenticateForgotPassword(AuthenticateForgotPasswordRequest request);
 
         /// <summary>
         /// Gọi tới API mở khóa tài khoản
@@ -145,14 +156,14 @@ namespace ZiTechDev.AdminSite.ApiClientServices.Auth
         /// <summary>
         /// Gọi tới API xử lý kích hoạt email (Bắt buộc đổi mật khẩu)
         /// </summary>
-        /// <typeparam name="Guid"></typeparam>
-        /// <param name="userId"></param>
+        /// <typeparam name="string"></typeparam>
+        /// <param name="userNameOrEmail"></param>
         /// <typeparam name="string"></typeparam>
         /// <param name="token"></param>
         /// <returns>
         /// Trả về thông báo lỗi (Message) nếu không thành công,
         /// Trả về token đặt lại mật khẩu (ReturnedObject) nếu thành công
         /// </returns>
-        Task<ApiResult<string>> ActivatedEmail(Guid userId, string token);
+        Task<ApiResult<string>> ActivatedEmail(string userNameOrEmail, string token);
     }
 }

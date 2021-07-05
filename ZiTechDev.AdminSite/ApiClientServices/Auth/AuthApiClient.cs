@@ -88,12 +88,27 @@ namespace ZiTechDev.AdminSite.ApiClientServices.Auth
         }
         #endregion
 
-        #region SendToAuthenticator (Call API)
-        public async Task<ApiResult<bool>> SendToAuthenticator(string userName, string provider)
+        #region ActiveAccount (Call API)
+        public async Task<ApiResult<bool>> ActiveAccount(string activatedEmailBaseUrl, string userNameOrEmail)
         {
             var client = _httpClientFactory.CreateClient("zitechdev");
 
-            var response = await client.GetAsync($"api/auths/send-to-authenticator?userName={userName}&provider={provider}");
+            var response = await client.GetAsync("api/auths/active-account?activatedEmailBaseUrl="+ WebUtility.UrlEncode(activatedEmailBaseUrl) + $"&userNameOrEmail={userNameOrEmail}");
+            var body = await response.Content.ReadAsStringAsync();
+            if (response.IsSuccessStatusCode)
+            {
+                return new Successed<bool>(true);
+            }
+            return new Failed<bool>(body);
+        }
+        #endregion
+
+        #region GetAuthenticationMethod (Call API)
+        public async Task<ApiResult<bool>> GetAuthenticationMethod(string userNameOrEmail, string provider)
+        {
+            var client = _httpClientFactory.CreateClient("zitechdev");
+
+            var response = await client.GetAsync($"api/auths/get-authentication-method?userNameOrEmail={userNameOrEmail}&provider={provider}");
             var body = await response.Content.ReadAsStringAsync();
             if (response.IsSuccessStatusCode)
             {
@@ -120,20 +135,20 @@ namespace ZiTechDev.AdminSite.ApiClientServices.Auth
         }
         #endregion
 
-        #region ForgotPassword (Call API)
-        public async Task<ApiResult<bool>> ForgotPassword(string resetPasswordBaseUrl, ForgotPasswordRequest request)
+        #region AuthenticateForgotPassword (Call API)
+        public async Task<ApiResult<string>> AuthenticateForgotPassword(AuthenticateForgotPasswordRequest request)
         {
             var client = _httpClientFactory.CreateClient("zitechdev");
 
             var content = JsonConvert.SerializeObject(request);
             var httpContent = new StringContent(content, Encoding.UTF8, "application/json");
-            var response = await client.PostAsync($"api/auths/forgot-password?resetPasswordBaseUrl=" + WebUtility.UrlEncode(resetPasswordBaseUrl), httpContent);
+            var response = await client.PostAsync("api/auths/authenticate-forgot-password", httpContent);
             var body = await response.Content.ReadAsStringAsync();
             if (response.IsSuccessStatusCode)
             {
-                return new Successed<bool>(true);
+                return new Successed<string>(body);
             }
-            return new Failed<bool>(body);
+            return new Failed<string>(body);
         }
         #endregion
 
@@ -200,11 +215,11 @@ namespace ZiTechDev.AdminSite.ApiClientServices.Auth
         #endregion
 
         #region ActivatedEmail (Call API)
-        public async Task<ApiResult<string>> ActivatedEmail(Guid userId, string token)
+        public async Task<ApiResult<string>> ActivatedEmail(string userNameOrEmail, string token)
         {
             var client = _httpClientFactory.CreateClient("zitechdev");
 
-            var response = await client.GetAsync($"api/auths/activated-email?userId={userId}&token={token}");
+            var response = await client.GetAsync($"api/auths/activated-email?userNameOrEmail={userNameOrEmail}&token={token}");
             var body = await response.Content.ReadAsStringAsync();
             if (response.IsSuccessStatusCode)
             {

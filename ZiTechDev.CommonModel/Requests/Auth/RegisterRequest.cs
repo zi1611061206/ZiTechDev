@@ -29,7 +29,6 @@ namespace ZiTechDev.CommonModel.Requests.Auth
         public string PhoneNumber { get; set; }
 
         [Display(Name = "Email")]
-        [DataType(DataType.EmailAddress)]
         public string Email { get; set; }
 
         [Display(Name = "Tên đăng nhập")]
