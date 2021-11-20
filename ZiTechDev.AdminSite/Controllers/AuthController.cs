@@ -77,6 +77,7 @@ namespace ZiTechDev.AdminSite.Controllers
                 ViewBag.Title = "Đăng nhập";
                 return View(request);
             }
+
             var resetPasswordBaseUrl = Url.ActionLink("ResetPassword", "Auth", Request.Scheme).Split("?")[0];
             var checker = await _authApiClient.ValidateLogin(resetPasswordBaseUrl, request);
             if (!checker.IsSuccessed)
@@ -85,6 +86,7 @@ namespace ZiTechDev.AdminSite.Controllers
                 ViewBag.Title = "Đăng nhập";
                 return View(request);
             }
+
             var twoFactorsEnabled = checker.ReturnedObject;
             if (twoFactorsEnabled)
             {
@@ -217,6 +219,7 @@ namespace ZiTechDev.AdminSite.Controllers
         }
         #endregion
 
+        // Lấy chuỗi email & phone & recoveryEmail ẩn
         #region Auth/GetAuthenticationMethod?userNameOrEmail={userNameOrEmail}&rememberMe={rememberMe}
         [HttpGet]
         public IActionResult GetAuthenticationMethod(string userNameOrEmail, bool rememberMe)
@@ -291,6 +294,7 @@ namespace ZiTechDev.AdminSite.Controllers
         }
         #endregion
 
+        // Lấy chuỗi email & phone & recoveryEmail ẩn
         #region Auth/GetForgotPasswordMethod?userNameOrEmail={userNameOrEmail}
         [HttpGet]
         public IActionResult GetForgotPasswordMethod(string userNameOrEmail)
@@ -351,6 +355,8 @@ namespace ZiTechDev.AdminSite.Controllers
         }
         #endregion
 
+        // Thay UserId 
+        // Thêm userToken để khống chế hoặc chỉ dùng cho admin
         #region Auth/UnlockOut?userId={userId}
         [HttpGet]
         public async Task<IActionResult> UnlockOut(string userId)
@@ -398,6 +404,7 @@ namespace ZiTechDev.AdminSite.Controllers
         }
         #endregion
 
+        // Thay UserId 
         #region Auth/VertifiedEmail?userId={userId}&token={token}
         [HttpGet]
         public async Task<IActionResult> VertifiedEmail(string userId, string token)
@@ -412,6 +419,7 @@ namespace ZiTechDev.AdminSite.Controllers
         }
         #endregion
 
+        // Thay UserId 
         #region Auth/VertifiedChangeEmail?userId={userId}&token={token}&newEmail={newEmail}
         [HttpGet]
         public async Task<IActionResult> VertifiedChangeEmail(string userId, string token, string newEmail)
