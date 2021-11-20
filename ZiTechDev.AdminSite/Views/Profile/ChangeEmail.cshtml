@@ -1,0 +1,55 @@
+﻿@model ZiTechDev.CommonModel.Requests.Profile.ChangeEmailRequest
+@{
+    ViewData["Title"] = ViewBag.Title;
+    Layout = "~/Views/Shared/_ProfileLayout.cshtml";
+}
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-5">
+            <div class="card shadow-lg border-0 rounded-lg mt-5">
+                <div class="card-header"><h3 class="text-center font-weight-light my-4">@ViewBag.Title</h3></div>
+                <div class="card-body">
+
+                    @if (ViewBag.Success != null)
+                    {
+                        <div class="alert alert-success text-center" role="alert">
+                            @ViewBag.Success
+                        </div>
+                    }
+
+                <form asp-controller="Profile" asp-action="ChangeEmail" method="post">
+                    <div asp-validation-summary="ModelOnly" class="summary-error bg-danger text-white text-center"></div>
+
+                    <div class="form-group" hidden>
+                        <label asp-for="OldEmail" class="control-label"></label>
+                        <input asp-for="OldEmail" class="form-control"/>
+                        <span asp-validation-for="OldEmail" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="NewEmail" class="control-label"></label>
+                        <input asp-for="NewEmail" class="form-control" placeholder="Địa chỉ email mới" />
+                        <span asp-validation-for="NewEmail" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        @{
+                            if (ViewBag.Success != null)
+                            {
+                                <button type="submit" class="btn btn-primary w-100 mb-1">Gửi lại</button>
+                                <button type="button" class="btn btn-primary w-100 mb-1" onclick="location.href='@Url.Action("GetProfile", "Profile")'">Quay về</button>
+                            }
+                            else
+                            {
+                                <button type="submit" class="btn btn-primary w-100 mb-1">Gửi xác nhận</button>
+                            }
+                        }
+                    </div>
+                </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

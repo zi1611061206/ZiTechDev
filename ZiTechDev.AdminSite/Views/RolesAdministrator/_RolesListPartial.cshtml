@@ -1,0 +1,61 @@
+﻿@using ZiTechDev.CommonModel.Requests.Role;
+@using ZiTechDev.CommonModel.Engines.Paginition;
+@{
+    PaginitionEngines<RoleViewModel> roles = ViewData["Roles"] as PaginitionEngines<RoleViewModel>;
+}
+
+<table class="table table-bordered" width="100%" cellspacing="0">
+    <thead>
+        <tr class="btn-info">
+            <th class="text-center">Mã</th>
+            <th class="text-center">Tên vai trò</th>
+            <th class="text-center">Tên chuẩn hóa</th>
+            <th class="text-center">Tem đồng bộ</th>
+            <th class="text-center">Mô tả</th>
+            <th class="text-center">Thao tác</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in roles.Item)
+        {
+            <tr>
+                @{
+                    string fullId = item.Id.ToString();
+                    string id = fullId.Length > 13 ? fullId.Substring(0, 9) + "..." : fullId;
+                }
+                <td class="limitContent" data-content="@item.Id">@Html.DisplayFor(modelItem => id)</td>
+                <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                <td>@Html.DisplayFor(modelItem => item.NormalizedName)</td>
+                <td class="limitContent" data-content="@item.ConcurrencyStamp">@Html.DisplayFor(modelItem => item.ConcurrencyStamp)</td>
+                <td class="limitContent" data-content="@item.Description">@Html.DisplayFor(modelItem => item.Description)</td>
+                <td class="text-center w-25">
+                    <button type="button" class="btn-sm btn-warning m-1" title="Chỉnh sửa vai trò" onclick="location.href='@Url.Action("Update", "RolesAdministrator", new { roleId = item.Id })'"><i class="fa fa-pen"></i></button>
+                    <button type="button" class="btn-sm btn-danger m-1" title="Xóa vai trò" data-toggle="modal" data-target="#deleteModal"><i class="fa fa-trash"></i></button>
+                    <button type="button" class="btn-sm btn-light m-1" title="Sao chép mã vai trò" onclick="CopyToClipboard('@item.Id')"><i class="fa fa-copy"></i></button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<!-- Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">Xóa vai trò</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body row d-flex justify-content-center">
+                <p class="col-md-12 text-center">Nhập mã vai trò để xác nhận xóa</p>
+                <input class="col-md-10 text-danger text-center" id="txbDeleteId" autofocus />
+            </div>
+            <div class="modal-footer justify-content-center row">
+                <button type="button" class="btn btn-primary col-md-2" onclick="btnDeleteConfirmClick()">Đồng ý</button>
+                <button type="button" class="btn btn-secondary col-md-2" data-dismiss="modal">Hủy</button>
+            </div>
+        </div>
+    </div>
+</div>

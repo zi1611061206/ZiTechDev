@@ -1,0 +1,70 @@
+﻿@using ZiTechDev.CommonModel.Engines.Paginition
+@model ZiTechDev.CommonModel.Engines.Paginition.PaginitionConfiguration
+@{
+    //Hiển thị tối đa 5 trang phía trước và sau trang hiện tại
+    //Nếu index - 5 <= trang đầu thì bắt đầu từ trang 1 << 1 2 3 4 5 [6] ... >>
+    //Ngược lại bắt đầu từ index - 5 << ... 3 4 5 6 7 [8] ... >>
+    //Nếu index + 5 >= trang cuối thì kết thúc ở trang cuối 1 << ... [9] 10 11 12 >>
+    //Ngược lại kết thúc ở index + 5 << [8] 9 10 11 12 13 ... >>
+    var startIndex = Math.Max(Model.CurrentPageIndex - 5, 1);
+    var finishIndex = Math.Min(Model.CurrentPageIndex + 5, Model.TotalPages);
+    var defaultConfig = new PaginitionConfiguration();
+}
+
+@{
+    // Vẽ label records
+    <div class="d-block w-100">
+        @if (Model.CurrentPageIndex == Model.TotalPages)
+        {
+            <label class="small mb-1">Đang hiển thị @Model.TotalRecordsLastPage / @Model.TotalRecords bản ghi</label>
+        }
+        else
+        {
+            <label class="small mb-1">Đang hiển thị @Model.PageSize / @Model.TotalRecords bản ghi</label>
+        }
+        <label class="small mb-1">(Tổng số @Model.TotalPages trang).</label>
+        <label class="small mb-1">Cho phép hiển thị: </label>
+        <input id="txbPageSizeEnter" class="form-control-sm py-2 text-center" style="width : 40px" value="@Model.PageSize" onchange="pageSizeChanged()" />
+        <label class="small mb-1">bản ghi trên trang</label>
+    </div>
+}
+
+@if (Model.TotalPages > 1)
+{
+    // Vẽ thanh phân trang
+    <ul class="pagination">
+        @if (Model.CurrentPageIndex != startIndex)
+        {
+            <li class="page-item">
+                <a class="page-link" title="1" onclick="btnPageClick(1)">Đầu</a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" onclick="btnPageClick(@Model.CurrentPageIndex - 1)">Trước</a>
+            </li>
+        }
+        @for (var i = startIndex; i <= finishIndex; i++)
+        {
+            if (i == Model.CurrentPageIndex)
+            {
+                <li class="page-item active">
+                    <a class="page-link" href="#">@i <span class="sr-only">(current)</span></a>
+                </li>
+            }
+            else
+            {
+                <li class="page-item">
+                    <a class="page-link" title="Trang @i.ToString()" onclick="btnPageClick(@i)">@i</a>
+                </li>
+            }
+        }
+        @if (Model.CurrentPageIndex != finishIndex)
+        {
+            <li class="page-item">
+                <a class="page-link" title="@Model.TotalPages.ToString()" onclick="btnPageClick(@Model.CurrentPageIndex+1)">Sau</a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" onclick="btnPageClick(@Model.TotalPages)">Cuối</a>
+            </li>
+        }
+    </ul>
+}

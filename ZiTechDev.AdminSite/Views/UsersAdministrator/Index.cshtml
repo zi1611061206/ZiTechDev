@@ -1,0 +1,201 @@
+﻿@using ZiTechDev.CommonModel.Requests.User;
+@using ZiTechDev.CommonModel.Engines.Paginition;
+@{
+    ViewData["Title"] = ViewBag.Title;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    PaginitionEngines<UserViewModel> users = ViewData["Users"] as PaginitionEngines<UserViewModel>;
+    UserFilter filter = ViewData["Filter"] as UserFilter;
+}
+
+<div class="container-fluid">
+    <h1 class="mt-4">@ViewBag.Title</h1>
+    <div class="card mb-4 bg-light">
+        <div class="card-body">
+            <ol class="breadcrumb mb-4">
+                <li class="breadcrumb-item"><a href="/Home/Index">Trang chủ</a></li>
+                <li class="breadcrumb-item active">@ViewBag.Title</li>
+            </ol>
+
+            <div class="row justify-content-md-center">
+                <div class="col-md-6 row m-0 justify-content-md-start">
+                    <form asp-controller="UsersAdministrator" asp-action="Create" method="get">
+                        <button id="btnCreate" type="submit" title="Thêm người dùng" class="btn-sm btn-success m-1"><i class="fa fa-plus"></i></button>
+                    </form>
+                    <button type="button" title="Bộ lọc" class="btn-sm btn-secondary m-1" onclick="btnFilterClick()"><i class="fa fa-filter"></i></button>
+                </div>
+
+                <div class="col-md-6 row m-0">
+                    <div class="input-group">
+                        <input id="txbSearch" class="form-control mb-1" type="text" placeholder="Từ khóa tìm kiếm" asp-for="@filter.Keyword">
+                        <div class="input-group-append">
+                            <button id="btnSearch" type="button" title="Tìm kiếm" class="input-group-text mb-1" onclick="btnSearchClick()">
+                                <i class="fa fa-search"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <form id="filterForm" hidden asp-controller="UsersAdministrator" asp-action="Index" method="post">
+                <div class="row">
+                    <div class="form-group col-md-2 col-md-offset-1" hidden>
+                        <label class="small mb-1" asp-for="@filter.CurrentPageIndex"></label>
+                        <input id="txbPageIndex" class="form-control py-2" type="text" asp-for="@filter.CurrentPageIndex" />
+                    </div>
+                    <div class="form-group col-md-2 col-md-offset-1" hidden>
+                        <label class="small mb-1" asp-for="@filter.PageSize"></label>
+                        <input id="txbPageSize" class="form-control py-2" type="text" asp-for="@filter.PageSize" />
+                    </div>
+                    <div class="form-group col-md-2" hidden>
+                        <label class="small mb-1" asp-for="@filter.Keyword"></label>
+                        <input id="txbKeyword" class="form-control py-2" type="text" placeholder="Từ khóa tìm kiếm" asp-for="@filter.Keyword" />
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label class="small mb-1" asp-for="@filter.Id"></label>
+                        <input id="txbId" class="form-control py-2" type="text" placeholder="VD: 98BCFFA5-07F7-4544-9B87-1CE105E26E63" asp-for="@filter.Id" />
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label class="small mb-1" asp-for="@filter.FullName"></label>
+                        <input id="txbFullName" class="form-control py-2" type="text" placeholder="VD: Nguyễn Văn Anh" asp-for="@filter.FullName" />
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label class="small mb-1" asp-for="@filter.UserName"></label>
+                        <input id="txbUserName" class="form-control py-2" type="text" placeholder="VD: ZiTechDev" asp-for="@filter.UserName" />
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label class="small mb-1" asp-for="@filter.DisplayName"></label>
+                        <input id="txbDisplayName" class="form-control py-2" type="text" placeholder="VD: Anh Nguyễn" asp-for="@filter.DisplayName" />
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label class="small mb-1" asp-for="@filter.PhoneNumber"></label>
+                        <input id="txbPhoneNumber" class="form-control py-2" type="text" placeholder="VD: 0912345678" asp-for="@filter.PhoneNumber" />
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label class="small mb-1" asp-for="@filter.Email"></label>
+                        <input id="txbEmail" class="form-control py-2" type="text" placeholder="VD: nva@gmail.com" asp-for="@filter.Email" />
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label class="small mb-1" asp-for="@filter.Gender"></label>
+                        <select id="cbGenders" class="form-control py-2" asp-for="@filter.Gender">
+                            @foreach (var item in filter.Genders)
+                            {
+                                if (filter.Gender == item.Id)
+                                {
+                                    <option value="@item.Id" selected>@item.Name</option>
+                                }
+                                else
+                                {
+                                    <option value="@item.Id">@item.Name</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label class="small mb-1" asp-for="@filter.EmailConfirmed"></label>
+                        <select id="cbGenders" class="form-control py-2" asp-for="@filter.EmailConfirmed">
+                            @foreach (var item in filter.EmailStatus)
+                            {
+                                if (filter.EmailConfirmed == item.Id)
+                                {
+                                    <option value="@item.Id" selected>@item.Name</option>
+                                }
+                                else
+                                {
+                                    <option value="@item.Id">@item.Name</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label class="small mb-1" asp-for="@filter.PhoneNumberConfirmed"></label>
+                        <select id="cbGenders" class="form-control py-2" asp-for="@filter.PhoneNumberConfirmed">
+                            @foreach (var item in filter.PhoneStatus)
+                            {
+                                if (filter.PhoneNumberConfirmed == item.Id)
+                                {
+                                    <option value="@item.Id" selected>@item.Name</option>
+                                }
+                                else
+                                {
+                                    <option value="@item.Id">@item.Name</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label class="small mb-1" asp-for="@filter.TwoFactorEnabled"></label>
+                        <select id="cbGenders" class="form-control py-2" asp-for="@filter.TwoFactorEnabled">
+                            @foreach (var item in filter.TwoFactorStatus)
+                            {
+                                if (filter.TwoFactorEnabled == item.Id)
+                                {
+                                    <option value="@item.Id" selected>@item.Name</option>
+                                }
+                                else
+                                {
+                                    <option value="@item.Id">@item.Name</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label class="small mb-1" asp-for="@filter.FromDOB"></label>
+                        <input id="dtpFromDOB" class="form-control py-2" asp-for="@filter.FromDOB">
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label class="small mb-1" asp-for="@filter.ToDOB"></label>
+                        <input id="dtpToDOB" class="form-control py-2" asp-for="@filter.ToDOB">
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label class="small mb-1" asp-for="@filter.FromDOJ"></label>
+                        <input id="dtpFromDOJ" class="form-control py-2" asp-for="@filter.FromDOJ">
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label class="small mb-1" asp-for="@filter.ToDOJ"></label>
+                        <input id="dtpToDOJ" class="form-control py-2" asp-for="@filter.ToDOJ">
+                    </div>
+                </div>
+                <div class="row justify-content-center">
+                    <button id="filterApply" class="form-group col-md-5 btn btn-primary m-1" type="submit" onclick="btnFilterClick()">Áp dụng</button>
+                    <button id="btnReset" class="form-group col-md-5 btn btn-dark m-1" type="reset" onclick="window.location.href='/UsersAdministrator/Index'">Bỏ lọc</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="card mb-4 bg-light">
+        <div class="card-body">
+            @if (ViewBag.Success != null)
+            {
+                <div class="alert alert-success text-center" role="alert">
+                    @ViewBag.Success
+                </div>
+            }
+            @if (ViewBag.Fail != null)
+            {
+                <div class="alert alert-danger text-center" role="alert">
+                    @ViewBag.Fail
+                </div>
+            }
+            @if (ViewBag.Info != null)
+            {
+                <div class="alert alert-info text-center" role="alert">
+                    @ViewBag.Info
+                </div>
+            }
+            <div class="table-responsive">
+                <div id="partial">
+                    <partial name="_UsersListPartial" view-data="ViewData" />
+                </div>
+                <div class="d-flex justify-content-center">
+                    @await Component.InvokeAsync("Paging", users)
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script type="text/javascript" src="/js/UsersAdministrator/index.js" defer></script>
+}

@@ -1,0 +1,89 @@
+﻿@model ZiTechDev.CommonModel.Requests.Profile.ProfileEditRequest
+@{
+    ViewData["Title"] = ViewBag.Title;
+    Layout = "~/Views/Shared/_ProfileLayout.cshtml";
+}
+
+<hr />
+<div class="container">
+    <div class="card mb-4 bg-light">
+        <h1 class="card-header text-center text-uppercase">@ViewBag.Title</h1>
+        <div class="card-body justify-content-center">
+
+            <form asp-controller="Auth" asp-action="EditProfile" method="post">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group text-center">
+                            <div class="summary-error bg-danger text-white" asp-validation-summary="ModelOnly"></div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-12 row justify-content-center">
+                        <div class="col-md-6">
+                            <div class="form-group" hidden>
+                                <label asp-for="Id" class="control-label"></label>
+                                <input asp-for="Id" class="form-control" />
+                                <span asp-validation-for="Id" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="FirstName" class="control-label"></label>
+                                <span class="text-danger"> (*)</span>
+                                <input id="txbFirstName" asp-for="FirstName" class="form-control" onchange="fullNameChanged()" />
+                                <span asp-validation-for="FirstName" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="MiddleName" class="control-label"></label>
+                                <input id="txbMiddleName" asp-for="MiddleName" class="form-control" onchange="fullNameChanged()" />
+                                <span asp-validation-for="MiddleName" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="LastName" class="control-label"></label>
+                                <span class="text-danger"> (*)</span>
+                                <input id="txbLastName" asp-for="LastName" class="form-control" onchange="fullNameChanged()" />
+                                <span asp-validation-for="LastName" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="DisplayName" class="control-label"></label>
+                                <span class="text-danger"> (*)</span>
+                                <input id="txbDisplayName" asp-for="DisplayName" class="form-control" />
+                                <span asp-validation-for="DisplayName" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="DateOfBirth" class="control-label"></label>
+                                <span class="text-danger"> (*)</span>
+                                <input asp-for="DateOfBirth" class="form-control" />
+                                <span asp-validation-for="DateOfBirth" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Gender" class="control-label"></label>
+                                <span class="text-danger"> (*)</span>
+                                <select class="form-control py-2" asp-for="Gender">
+                                    @foreach (var item in Model.Genders)
+                                    {
+                                        if (item.Id == (int)Model.Gender)
+                                        {
+                                            <option value="@item.Id" selected>@item.Name</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="@item.Id">@item.Name</option>
+                                        }
+                                    }
+                                </select>
+                                <span asp-validation-for="Gender" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <button type="submit" class="form-control btn btn-primary w-100">Lưu</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script type="text/javascript" src="~/js/Profile/edit-profile.js" defer></script>
+}

@@ -1,0 +1,133 @@
+﻿@model ZiTechDev.CommonModel.Requests.Auth.RegisterRequest
+
+@{
+    ViewData["Title"] = ViewBag.Title;
+    Layout = "~/Views/Shared/_AuthLayout.cshtml";
+}
+
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-lg-5">
+            <div class="card shadow-lg border-0 rounded-lg mt-5">
+                <div class="card-header text-center">
+                    <img class="logo-md card-img img-thumbnail bg-dark shadow-lg" src="~/img/logo.jpg" />
+                    <h3 class="font-weight-light my-4">@ViewBag.Title</h3>
+                </div>
+                <div class="card-body">
+
+                    @if (ViewBag.Success != null)
+                    {
+                        <div class="alert alert-success text-center" role="alert">
+                            @ViewBag.Success
+                        </div>
+                    }
+
+                    <form asp-controller="Auth" asp-action="Register" method="post">
+                        <div class="form-group text-center">
+                            <div class="summary-error bg-danger text-white" asp-validation-summary="ModelOnly"></div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-md-4">
+                                <label asp-for="FirstName" class="control-label"></label>
+                                <span class="text-danger"> (*)</span>
+                                <input asp-for="FirstName" class="form-control" />
+                                <span asp-validation-for="FirstName" class="text-danger"></span>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label asp-for="MiddleName" class="control-label"></label>
+                                <input asp-for="MiddleName" class="form-control" />
+                                <span asp-validation-for="MiddleName" class="text-danger"></span>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label asp-for="LastName" class="control-label"></label>
+                                <span class="text-danger"> (*)</span>
+                                <input asp-for="LastName" class="form-control" />
+                                <span asp-validation-for="LastName" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label asp-for="DateOfBirth" class="control-label"></label>
+                                <span class="text-danger"> (*)</span>
+                                <input asp-for="DateOfBirth" class="form-control" />
+                                <span asp-validation-for="DateOfBirth" class="text-danger"></span>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label asp-for="Gender" class="control-label"></label>
+                                <span class="text-danger"> (*)</span>
+                                <select class="form-control py-2" asp-for="Gender">
+                                    @foreach (var item in Model.Genders)
+                                    {
+                                        if (item.Id == (int)Model.Gender)
+                                        {
+                                            <option value="@item.Id" selected>@item.Name</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="@item.Id">@item.Name</option>
+                                        }
+                                    }
+                                </select>
+                                <span asp-validation-for="Gender" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label asp-for="UserName" class="control-label"></label>
+                                <span class="text-danger"> (*)</span>
+                                <input id="txbUserName" asp-for="UserName" class="form-control" onchange="userNameChanged()" />
+                                <span asp-validation-for="UserName" class="text-danger"></span>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label asp-for="DisplayName" class="control-label"></label>
+                                <input id="txbDisplayName" asp-for="DisplayName" class="form-control" />
+                                <span asp-validation-for="DisplayName" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label asp-for="Email" class="control-label"></label>
+                                <span class="text-danger"> (*)</span>
+                                <input asp-for="Email" class="form-control" />
+                                <span asp-validation-for="Email" class="text-danger"></span>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label asp-for="PhoneNumber" class="control-label"></label>
+                                <span class="text-danger"> (*)</span>
+                                <input asp-for="PhoneNumber" class="form-control" />
+                                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-info w-100 mb-1">Lưu</button>
+                        </div>
+
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <a href="#" class="btn btn-outline-danger w-100 m-1">
+                                    <img src="~/img/google_logo.png" class="logo">
+                                    Đăng ký bằng tài khoản Google
+                                </a>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <a href="#" class="btn btn-outline-primary w-100 m-1">
+                                    <img src="~/img/facebook-logo.jpg" class="logo">
+                                    Đăng ký bằng tài khoản Facebook
+                                </a>
+                            </div>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script type="text/javascript" src="/js/Auth/register.js" defer></script>
+}

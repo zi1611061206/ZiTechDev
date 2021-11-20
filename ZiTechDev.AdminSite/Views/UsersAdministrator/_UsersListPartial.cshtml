@@ -1,0 +1,113 @@
+﻿@using ZiTechDev.CommonModel.Requests.User;
+@using ZiTechDev.CommonModel.Engines.Paginition;
+@using ZiTechDev.Data.Enums;
+@{
+    PaginitionEngines<UserViewModel> users = ViewData["Users"] as PaginitionEngines<UserViewModel>;
+}
+
+<table class="table table-bordered" width="100%" cellspacing="0">
+    <thead>
+        <tr class="btn-info">
+            <th class="text-center">Mã</th>
+            <th class="text-center">Họ Tên</th>
+            <th class="text-center">Tên hiển thị</th>
+            <th class="text-center">Tên người dùng</th>
+            <th class="text-center">Giới tính</th>
+            <th class="text-center">SĐT</th>
+            <th class="text-center">Email</th>
+            <th class="text-center">Vai trò</th>
+            <th class="text-center">Ngày sinh</th>
+            <th class="text-center">Ngày đăng ký</th>
+            <th class="text-center">Thao tác</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in users.Item)
+        {
+            <tr>
+                @{
+                    string fullId = item.Id.ToString();
+                    string id = fullId.Length > 13 ? fullId.Substring(0, 9) + "..." : fullId;
+                    string fullName = item.FirstName + " " + item.MiddleName + " " + item.LastName;
+                    string bod = item.DateOfBirth.ToString("dd/MM/yyyy");
+                    string doj = item.DateOfJoin.ToString("dd/MM/yyyy");
+                    string sex = "";
+                    if (item.Gender == GenderType.Male) sex = "Nam";
+                    else if (item.Gender == GenderType.Female) sex = "Nữ";
+                    else sex = "Khác";
+                    string roleStr = "";
+                    if (item.Roles != null)
+                    {
+                        roleStr = string.Join("\n", item.Roles);
+                    }
+                }
+                <td class="limitContent" data-content="@item.Id">@Html.DisplayFor(modelItem => id)</td>
+                <td>@Html.DisplayFor(modelItem => fullName)</td>
+                <td>@Html.DisplayFor(modelItem => item.DisplayName)</td>
+                <td>@Html.DisplayFor(modelItem => item.UserName)</td>
+                <td>@Html.DisplayFor(modelItem => sex)</td>
+                @{
+                    if (item.PhoneNumberConfirmed)
+                    {
+                        <td class="text-success">@Html.DisplayFor(modelItem => item.PhoneNumber)</td>
+                    }
+                    else
+                    {
+                        <td class="text-danger">@Html.DisplayFor(modelItem => item.PhoneNumber)</td>
+                    }
+                    if (item.EmailConfirmed)
+                    {
+                        <td class="limitContent text-success" data-content="@item.Email">@Html.DisplayFor(modelItem => item.Email)</td>
+                    }
+                    else
+                    {
+                        <td class="limitContent text-danger" data-content="@item.Email">@Html.DisplayFor(modelItem => item.Email)</td>
+                    }
+                }
+                <td>@Html.DisplayFor(modelItem => roleStr)</td>
+                <td>@Html.DisplayFor(modelItem => bod)</td>
+                <td>@Html.DisplayFor(modelItem => doj)</td>
+                <td class="text-center w-25">
+                    <div class="w-100">
+                        <button type="button" class="btn-sm btn-info m-1" title="Chi tiết người dùng" onclick="location.href='@Url.Action("Detail", "UsersAdministrator", new { userId = item.Id })'"><i class="fa fa-book"></i></button>
+                        <button type="button" class="btn-sm btn-warning m-1" title="Chỉnh sửa người dùng" onclick="location.href='@Url.Action("Update", "UsersAdministrator", new { userId = item.Id })'"><i class="fa fa-pen"></i></button>
+                        <button type="button" class="btn-sm btn-danger m-1" title="Xóa người dùng" data-toggle="modal" data-target="#deleteModal"><i class="fa fa-trash"></i></button>
+                    </div>
+                    <div class="w-100">
+                        <button type="button" class="btn-sm btn-light m-1" title="Sao chép mã người dùng" onclick="CopyToClipboard('@item.Id')"><i class="fa fa-copy"></i></button>
+                        @if (!item.EmailConfirmed)
+                        {
+                            <button type="button" class="btn-sm btn-secondary m-1" title="Gửi yêu cầu xác nhận email" onclick="location.href='@Url.Action("ConfirmEmail", "UsersAdministrator", new { userId = item.Id })'"><i class="fa fa-envelope"></i></button>
+                        }
+                        @if (!item.PhoneNumberConfirmed)
+                        {
+                            <button type="button" class="btn-sm btn-dark m-1" title="Gửi yêu cầu xác nhận số điện thoại" onclick="location.href='@Url.Action("ConfirmPhone", "UsersAdministrator", new { userId = item.Id })'"><i class="fa fa-sms"></i></button>
+                        }
+                    </div>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<!-- Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">Xóa người dùng</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body row d-flex justify-content-center">
+                <p class="col-md-12 text-center">Nhập mã người dùng để xác nhận xóa</p>
+                <input class="col-md-10 text-danger text-center" id="txbDeleteId" autofocus />
+            </div>
+            <div class="modal-footer justify-content-center row">
+                <button type="button" class="btn btn-primary col-md-2" onclick="btnDeleteConfirmClick()">Đồng ý</button>
+                <button type="button" class="btn btn-secondary col-md-2" data-dismiss="modal">Hủy</button>
+            </div>
+        </div>
+    </div>
+</div>

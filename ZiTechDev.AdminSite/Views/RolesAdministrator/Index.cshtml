@@ -1,0 +1,106 @@
+﻿@using ZiTechDev.CommonModel.Requests.Role;
+@using ZiTechDev.CommonModel.Engines.Paginition;
+@{
+    ViewData["Title"] = ViewBag.Title;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    PaginitionEngines<RoleViewModel> roles = ViewData["Roles"] as PaginitionEngines<RoleViewModel>;
+    RoleFilter filter = ViewData["Filter"] as RoleFilter;
+}
+
+<div class="container-fluid">
+    <h1 class="mt-4">@ViewBag.Title</h1>
+    <div class="card mb-4 bg-light">
+        <div class="card-body">
+            <ol class="breadcrumb mb-4">
+                <li class="breadcrumb-item"><a href="/Home/Index">Trang chủ</a></li>
+                <li class="breadcrumb-item active">@ViewBag.Title</li>
+            </ol>
+
+            <div class="row justify-content-md-center">
+                <div class="col-md-6 row m-0 justify-content-md-start">
+                    <form asp-controller="RolesAdministrator" asp-action="Create" method="get">
+                        <button id="btnCreate" type="submit" title="Thêm vai trò" class="btn-sm btn-success m-1"><i class="fa fa-plus"></i></button>
+                    </form>
+                    <button type="button" title="Bộ lọc" class="btn-sm btn-secondary m-1" onclick="btnFilterClick()"><i class="fa fa-filter"></i></button>
+                </div>
+
+                <div class="col-md-6 row m-0">
+                    <div class="input-group">
+                        <input id="txbSearch" class="form-control mb-1" type="text" placeholder="Từ khóa tìm kiếm" asp-for="@filter.Keyword">
+                        <div class="input-group-append">
+                            <button id="btnSearch" type="button" title="Tìm kiếm" class="input-group-text mb-1" onclick="btnSearchClick()">
+                                <i class="fa fa-search"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <form id="filterForm" hidden class="row" asp-controller="RolesAdministrator" asp-action="Index" method="post">
+                <div class="form-group col-md-2 col-md-offset-1" hidden>
+                    <label class="small mb-1" asp-for="@filter.CurrentPageIndex"></label>
+                    <input id="txbPageIndex" class="form-control py-2" type="text" asp-for="@filter.CurrentPageIndex" />
+                </div>
+                <div class="form-group col-md-2 col-md-offset-1" hidden>
+                    <label class="small mb-1" asp-for="@filter.PageSize"></label>
+                    <input id="txbPageSize" class="form-control py-2" type="text" asp-for="@filter.PageSize" />
+                </div>
+                <div class="form-group col-md-2" hidden>
+                    <label class="small mb-1" asp-for="@filter.Keyword"></label>
+                    <input id="txbKeyword" class="form-control py-2" type="text" placeholder="Từ khóa tìm kiếm" asp-for="@filter.Keyword" />
+                </div>
+                <div class="form-group col-md-6">
+                    <label class="small mb-1" asp-for="@filter.Id"></label>
+                    <input id="txbId" class="form-control py-2" type="text" placeholder="VD: 98BCFFA5-07F7-4544-9B87-1CE105E26E63" asp-for="@filter.Id" />
+                </div>
+                <div class="form-group col-md-6">
+                    <label class="small mb-1" asp-for="@filter.Name"></label>
+                    <input id="txbName" class="form-control py-2" type="text" placeholder="VD: Admin" asp-for="@filter.Name" />
+                </div>
+
+                <div class="form-group col-md-6">
+                    <button id="filterApply" class="form-control btn btn-primary w-100 h-100" type="submit" onclick="btnFilterClick()">Áp dụng</button>
+                </div>
+                <div class="form-group col-md-6">
+                    <button id="btnReset" class="form-control btn btn-dark w-100 h-100" type="reset" onclick="window.location.href='/RolesAdministrator/Index'">Bỏ lọc</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="card mb-4 bg-light">
+        <div class="card-body">
+            @if (ViewBag.Success != null)
+            {
+                <div class="alert alert-success text-center" role="alert">
+                    @ViewBag.Success
+                </div>
+            }
+            @if (ViewBag.Fail != null)
+            {
+                <div class="alert alert-danger text-center" role="alert">
+                    @ViewBag.Fail
+                </div>
+            }
+            @if (ViewBag.Info != null)
+            {
+                <div class="alert alert-info text-center" role="alert">
+                    @ViewBag.Info
+                </div>
+            }
+            <div class="table-responsive">
+                <div id="partial">
+                    <partial name="_RolesListPartial" view-data="ViewData" />
+                </div>
+                <div class="d-flex justify-content-center">
+                    @await Component.InvokeAsync("Paging", roles)
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script type="text/javascript" src="/js/RolesAdministrator/index.js" defer></script>
+}
